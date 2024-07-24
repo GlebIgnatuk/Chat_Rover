@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: import.meta.env.DEV ? '/' : '/clickerMiniapp',
     element: <HomeLayout />,
     children: [
       {
