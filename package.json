@@ -1,0 +1,19 @@
+{
+  "name": "clicker-miniapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:client": "cd client && yarn build",
+    "build:server": "cd server && yarn build",
+    "start:server": "cd server && yarn start",
+    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\"",
+    "start": "yarn build:client && yarn build:server && yarn start:server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
