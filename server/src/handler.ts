@@ -15,7 +15,6 @@ const handler = async (options?: { request: Request; response: Response }) => {
     expressApp.use(
       express.static(path.join(ROOT_DIR, '..', 'public'), {
         setHeaders: (res, path, stat) => {
-          console.log(path)
           if (path.endsWith('/index.html')) {
             res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
           }

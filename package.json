@@ -6,8 +6,11 @@
   "scripts": {
     "build:client": "cd client && yarn build",
     "build:server": "cd server && yarn build",
+    "build:client:dev": "cd client && yarn build:dev",
+    "build:server:dev": "cd server && yarn build:dev",
     "build": "yarn build:server && yarn build:client",
-    "start:server": "cd server && yarn start",
+    "build:dev": "yarn build:server:dev && yarn build:client:dev",
+    "start": "cd server && yarn start",
     "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\""
   },
   "keywords": [],

@@ -1,3 +1,4 @@
+import { buildUrl } from '@/utils/url'
 import { faAnchor, faBaby, faHome, faQuestion, faUser, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, useLocation } from 'react-router-dom'
@@ -37,11 +38,11 @@ const NavigationItem = ({ href, icon, label }: NavigationItemProps) => {
 export const Navigation = () => {
   return (
     <nav className="flex divide-x-[1px] border-t-[1px] bg-gray-700/45">
-      <NavigationItem icon={faQuestion} label="quest" href="/quest" />
-      <NavigationItem icon={faBaby} label="Baby" href="/baby" />
-      <NavigationItem icon={faHome} label="Home" href="/" />
-      <NavigationItem icon={faAnchor} label="Convene" href="/convene" />
-      <NavigationItem icon={faUser} label="Account" href="/account" />
+      <NavigationItem icon={faQuestion} label="quest" href={buildUrl('/quest')} />
+      <NavigationItem icon={faBaby} label="Baby" href={buildUrl('/baby')} />
+      <NavigationItem icon={faHome} label="Home" href={buildUrl('/')} />
+      <NavigationItem icon={faAnchor} label="Convene" href={buildUrl('/convene')} />
+      <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
     </nav>
   )
 }

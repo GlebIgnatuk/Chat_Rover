@@ -1,10 +1,15 @@
 import { HomeLayout } from '@/pages/home/Home.layout'
 import { HomeScreen } from '@/pages/home/Home.screen'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { buildUrl } from '@/utils/url'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([
   {
-    path: import.meta.env.DEV ? '/' : '/clickerMiniapp',
+    path: '',
+    element: <Navigate to={buildUrl('')} />,
+  },
+  {
+    path: buildUrl(''),
     element: <HomeLayout />,
     children: [
       {
