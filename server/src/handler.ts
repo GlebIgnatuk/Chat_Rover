@@ -2,26 +2,26 @@ import { dev, GATEWAY_PATH, ROOT_DIR } from '@/config/config'
 import { MongoDBService } from '@/services/database'
 import express, { Router } from 'express'
 import { Request, Response } from 'firebase-functions'
+import fs from 'fs'
+import { createServer } from 'https'
 import path from 'path'
 import { registerRoutes } from './router'
 
 const PORT = parseInt(process.env.PORT || '4000')
 
 const expressApp = express()
+const server = dev
+  ? createServer(
+      {
+        cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
+        key: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'key.pem')),
+      },
+      expressApp,
+    )
+  : expressApp
 
 const handler = async (options?: { request: Request; response: Response }) => {
   expressApp.use(express.json())
-  if (!dev) {
-    expressApp.use(
-      express.static(path.join(ROOT_DIR, '..', 'public'), {
-        setHeaders: (res, path, stat) => {
-          if (path.endsWith('/index.html')) {
-            res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
-          }
-        },
-      }),
-    )
-  }
 
   // GCP prefixes the domain with pathname
   const router = Router({ mergeParams: true })
@@ -39,17 +39,53 @@ const handler = async (options?: { request: Request; response: Response }) => {
 
   // Forward cloud function request to express
   if (options) {
-    return expressApp(options.request, options.response)
-  }
+    expressApp.use(
+      '/public',
+      express.static(path.join(ROOT_DIR, '..', 'public'), {
+        setHeaders: (res, path, stat) => {
+          if (path.endsWith('/index.html')) {
+            res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+          }
+        },
+        fallthrough: false,
+        redirect: false,
+      }),
+    )
+    expressApp.use('*', (req, res, next) => {
+      res
+        .setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+        .sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
+    })
 
-  // Start development server
-  expressApp.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`> Ready on http://localhost:${PORT}`)
-    console.log(`  Environment: ${process.env.NODE_ENV}`)
-    console.log(`          App: ${process.env.APP_ENV}`)
-    console.log(`       Logger: ${process.env.LOGGER_LEVEL}`)
-  })
+    return expressApp(options.request, options.response)
+  } else {
+    expressApp.use(
+      `${GATEWAY_PATH}/public`,
+      express.static(path.join(ROOT_DIR, '..', 'public'), {
+        setHeaders: (res, path, stat) => {
+          if (path.endsWith('/index.html')) {
+            res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+          }
+        },
+        fallthrough: false,
+        redirect: false,
+      }),
+    )
+    expressApp.use('*', (req, res, next) => {
+      res
+        .setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+        .sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
+    })
+
+    // Start development server
+    server.listen(PORT, () => {
+      // eslint-disable-next-line no-console
+      console.log(`> Ready on http://localhost:${PORT}`)
+      console.log(`  Environment: ${process.env.NODE_ENV}`)
+      console.log(`          App: ${process.env.APP_ENV}`)
+      console.log(`       Logger: ${process.env.LOGGER_LEVEL}`)
+    })
+  }
 }
 
 export default handler

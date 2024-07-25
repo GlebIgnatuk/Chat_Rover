@@ -24,7 +24,7 @@ export default defineConfig({
   build: {
     outDir: dev ? '' : '../server/dist/public',
   },
-  base: dev ? '/' : '/clickerMiniapp',
+  base: dev ? '/' : '/clickerMiniapp/public',
   server: {
     proxy: {
       '/clickerMiniapp/api': {
