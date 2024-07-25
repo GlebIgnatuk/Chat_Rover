@@ -5,11 +5,11 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([
   {
-    path: '',
-    element: <Navigate to={buildUrl('')} />,
+    path: '/',
+    element: <Navigate to={buildUrl('/')} />,
   },
   {
-    path: buildUrl(''),
+    path: buildUrl('/'),
     element: <HomeLayout />,
     children: [
       {

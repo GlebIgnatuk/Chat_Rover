@@ -16,7 +16,7 @@ export const HomeLayout = () => {
 
       <img
         src={backgroundImage}
-        className="bg-black object-cover object-center absolute top-0 left-0 right-0 w-full h-full z-0"
+        className="bg-black object-cover object-bottom absolute top-0 left-0 right-0 w-full h-full z-0"
       />
     </div>
   )

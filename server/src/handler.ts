@@ -1,4 +1,4 @@
-import { dev, GATEWAY_PATH, ROOT_DIR } from '@/config/config'
+import { dev, GATEWAY_PATH, hmr, ROOT_DIR } from '@/config/config'
 import { MongoDBService } from '@/services/database'
 import express, { Router } from 'express'
 import { Request, Response } from 'firebase-functions'
@@ -7,18 +7,19 @@ import { createServer } from 'https'
 import path from 'path'
 import { registerRoutes } from './router'
 
-const PORT = parseInt(process.env.PORT || '4000')
+const PORT = parseInt(process.env.PORT || (hmr ? '4000' : '3000'))
 
 const expressApp = express()
-const server = dev
-  ? createServer(
-      {
-        cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
-        key: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'key.pem')),
-      },
-      expressApp,
-    )
-  : expressApp
+const server =
+  dev && !hmr
+    ? createServer(
+        {
+          cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
+          key: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'key.pem')),
+        },
+        expressApp,
+      )
+    : expressApp
 
 const handler = async (options?: { request: Request; response: Response }) => {
   expressApp.use(express.json())
@@ -27,6 +28,7 @@ const handler = async (options?: { request: Request; response: Response }) => {
   const router = Router({ mergeParams: true })
   router.use(async (req, res, next) => {
     try {
+      res.setHeader('cache-control', 'max-age=0, private, must-revalidate')
       await MongoDBService.lazy(process.env.MONGO_URI)
 
       next()

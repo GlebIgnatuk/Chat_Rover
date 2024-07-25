@@ -26,6 +26,7 @@ export default defineConfig({
   },
   base: dev ? '/' : '/clickerMiniapp/public',
   server: {
+    host: '0.0.0.0',
     proxy: {
       '/clickerMiniapp/api': {
         target: 'http://127.0.0.1:4000',
