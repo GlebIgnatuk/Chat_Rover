@@ -1,12 +1,23 @@
-import { api } from '@/services/api'
-import { useEffect } from 'react'
+import { useCounter } from '@/context/counter/useCounter'
+
+const format = new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+})
 
 export const HomeScreen = () => {
-  useEffect(() => {
-    api('/health')
-      .then((r) => r.json())
-      .then(console.log)
-  }, [])
+    const { count, increaseBy } = useCounter()
 
-  return <div>Home</div>
+    return (
+        <div onClick={() => increaseBy((prev) => prev + 10)}>
+            <div
+                className="text-4xl text-center pt-4 select-none"
+                style={{
+                    color: `hsl(${count / 10 + (50 % 255)}, 51%, 79%)`,
+                }}
+            >
+                <span>{format.format(count)}</span>
+                <span className="text-sm text-white font-medium">{format.format(Math.ceil(count / 1000))}t/s</span>
+            </div>
+        </div>
+    )
 }

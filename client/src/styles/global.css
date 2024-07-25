@@ -19,3 +19,17 @@ html, body, #root {
 #root {
   @apply overflow-hidden text-primary-100 bg-gray-700;
 }
+
+@keyframes pulse-25-50 {
+  0% {
+    opacity: .25;
+  }
+
+  50% {
+    opacity: .5;
+  }
+
+  100% {
+    opacity: .25;
+  }
+}
