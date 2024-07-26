@@ -51,9 +51,9 @@ export const RightNavigation = () => {
             <NavigationItem icon={faQuestion} label="quest" href={buildUrl('/quest')} disabled />
             <NavigationItem icon={faBaby} label="Baby" href={buildUrl('/baby')} disabled />
             <NavigationItem icon={faAnchor} label="Convene" href={buildUrl('/convene')} disabled />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
         </nav>
     )
 }
@@ -61,10 +61,10 @@ export const RightNavigation = () => {
 export const LeftNavigation = () => {
     return (
         <nav className="absolute z-0 top-0 left-1 w-14 space-y-1 mt-10">
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
-            <NavigationItem icon={faUser} label="Account" href={buildUrl('/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
+            <NavigationItem icon={faUser} label="Account" href={buildUrl('/home/account')} />
         </nav>
     )
 }

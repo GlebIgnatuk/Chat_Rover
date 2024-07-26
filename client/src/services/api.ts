@@ -19,9 +19,13 @@ export const api = async <T = unknown>(path: string, init?: RequestInit): Promis
     if (rawResponse.ok) {
         return await rawResponse.json()
     } else {
-        return {
-            success: false,
-            error: 'Unhandled error',
+        try {
+            return await rawResponse.json()
+        } catch {
+            return {
+                success: false,
+                error: rawResponse.status.toString(),
+            }
         }
     }
 }

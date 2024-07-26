@@ -13,5 +13,7 @@ export const registerRoutes = (router: Router) => {
         })
     })
 
-    router.get('/me', UsersController.getAuthenticated)
+    router.get('/users/me', UsersController.getAuthenticated)
+    router.delete('/users/me', UsersController.deleteAuthenticated)
+    router.post('/users', UsersController.create)
 }
