@@ -7,8 +7,9 @@ import { api } from '@/services/api'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import { Navigation } from './Navigation'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { HomeScreen } from './Home.screen'
+import { LeftNavigation, RightNavigation } from './Navigation'
 import { TopRibbon } from './TopRibbon'
 
 export const HomeLayout = () => {
@@ -23,6 +24,17 @@ export const HomeLayout = () => {
             }
         })
     }, [])
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        // @ts-expect-error fix ts later
+        window.Telegram.WebApp.BackButton.show()
+        // @ts-expect-error fix ts later
+        window.Telegram.WebView.onEvent('back_button_pressed', () => {
+            navigate(-1)
+        })
+    }, [navigate])
 
     if (!user) {
         return (
@@ -46,9 +58,13 @@ export const HomeLayout = () => {
                     <div className="relative z-10 h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
                         <TopRibbon />
 
-                        <Outlet />
+                        <div className="relative h-full">
+                            <HomeScreen />
+                            <LeftNavigation />
+                            <RightNavigation />
 
-                        <Navigation />
+                            <Outlet />
+                        </div>
                     </div>
 
                     <img

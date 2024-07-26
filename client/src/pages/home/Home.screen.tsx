@@ -8,7 +8,7 @@ export const HomeScreen = () => {
     const { count, increaseBy } = useCounter()
 
     return (
-        <div onClick={() => increaseBy((prev) => prev + 10)}>
+        <div className="h-full" onClick={() => increaseBy((prev) => prev + 10)}>
             <div
                 className="text-4xl text-center pt-4 select-none"
                 style={{

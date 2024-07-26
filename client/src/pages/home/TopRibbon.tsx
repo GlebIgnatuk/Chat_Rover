@@ -24,7 +24,7 @@ const Item = ({ count, icon }: ItemProps) => {
 
 export const TopRibbon = () => {
     return (
-        <div className="bg-amber-950/75 p-2  flex items-center gap-4">
+        <div className="bg-black/75 p-2 flex items-center gap-4">
             <Item icon={faApple} count={12130} />
             <Item icon={faAndroid} count={10} />
             <Item icon={faArchive} count={3110} />
