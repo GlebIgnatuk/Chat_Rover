@@ -6,12 +6,14 @@ import fs from 'fs'
 import { createServer } from 'https'
 import path from 'path'
 import { registerRoutes } from './router'
+import cors from 'cors'
 
 const PORT = parseInt(process.env.PORT || (hmr ? '4000' : '3000'))
 
 const expressApp = express()
 const server =
-    dev && !hmr
+    // dev && !hmr
+    dev
         ? createServer(
               {
                   cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
@@ -23,6 +25,9 @@ const server =
 
 const handler = async (options?: { request: Request; response: Response }) => {
     expressApp.use(express.json())
+    expressApp.use(cors({
+        origin: 'https://127.0.0.1:3000'
+    }))
 
     // GCP prefixes the domain with pathname
     const router = Router({ mergeParams: true })
