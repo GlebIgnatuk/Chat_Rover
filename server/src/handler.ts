@@ -39,7 +39,6 @@ const handler = async (options?: { request: Request; response: Response }) => {
     const router = Router({ mergeParams: true })
     router.use(async (req, res, next) => {
         try {
-            res.setHeader('cache-control', 'max-age=0, private, must-revalidate')
             console.log(`Incoming request: ${req.method} ${req.originalUrl} | ${req.baseUrl}`)
 
             next()
