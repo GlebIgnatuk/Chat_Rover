@@ -24,11 +24,11 @@ export default defineConfig({
   build: {
     outDir: dev ? '' : '../server/dist/public',
   },
-  base: dev ? '/' : '/clickerMiniapp/public',
+  base: dev ? '/' : '/public',
   server: {
     host: '0.0.0.0',
     proxy: {
-      '/clickerMiniapp/api': {
+      '/api': {
         target: 'http://127.0.0.1:4000',
         changeOrigin: true,
         secure: false,

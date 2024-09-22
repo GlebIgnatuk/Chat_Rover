@@ -1,1 +1,1 @@
-export const pathPrefix = '/clickerMiniapp'
+export const pathPrefix = ''

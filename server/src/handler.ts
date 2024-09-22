@@ -1,4 +1,4 @@
-import { dev, GATEWAY_PATH, hmr, ROOT_DIR } from '@/config/config'
+import { dev, hmr, ROOT_DIR } from '@/config/config'
 import { MongoDBService } from '@/services/database'
 import express, { Router } from 'express'
 import { Request, Response } from 'firebase-functions'
@@ -26,7 +26,11 @@ const server =
 const handler = async (options?: { request: Request; response: Response }) => {
     expressApp.use(express.json())
     expressApp.use(cors({
-        origin: 'https://127.0.0.1:3000'
+        origin: [
+            'https://127.0.0.1:3000',
+            'https://roverchat.pokoichangli.ru',
+            'https://dev.roverchat.pokoichangli.ru'
+        ]
     }))
 
     // GCP prefixes the domain with pathname
@@ -41,50 +45,32 @@ const handler = async (options?: { request: Request; response: Response }) => {
             res.sendStatus(500)
         }
     })
-    expressApp.use(dev ? `${GATEWAY_PATH}/api` : '/api', router)
+    expressApp.use('/api', router)
     registerRoutes(router)
     router.use('*', (req, res) => res.sendStatus(404))
 
+    expressApp.use(
+        '/public',
+        express.static(path.join(ROOT_DIR, '..', 'public'), {
+            setHeaders: (res, path, stat) => {
+                if (path.endsWith('/index.html')) {
+                    res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+                }
+            },
+            fallthrough: false,
+            redirect: false,
+        }),
+    )
+    expressApp.use('*', (req, res, next) => {
+        res.setHeader('cache-control', 'no-cache, no-store, must-revalidate').sendFile(
+            path.join(ROOT_DIR, '..', 'public', 'index.html'),
+        )
+    })
+
     // Forward cloud function request to express
     if (options) {
-        expressApp.use(
-            '/public',
-            express.static(path.join(ROOT_DIR, '..', 'public'), {
-                setHeaders: (res, path, stat) => {
-                    if (path.endsWith('/index.html')) {
-                        res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
-                    }
-                },
-                fallthrough: false,
-                redirect: false,
-            }),
-        )
-        expressApp.use('*', (req, res, next) => {
-            res.setHeader('cache-control', 'no-cache, no-store, must-revalidate').sendFile(
-                path.join(ROOT_DIR, '..', 'public', 'index.html'),
-            )
-        })
-
         return expressApp(options.request, options.response)
     } else {
-        expressApp.use(
-            `${GATEWAY_PATH}/public`,
-            express.static(path.join(ROOT_DIR, '..', 'public'), {
-                setHeaders: (res, path, stat) => {
-                    if (path.endsWith('/index.html')) {
-                        res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
-                    }
-                },
-                fallthrough: false,
-                redirect: false,
-            }),
-        )
-        expressApp.use('*', (req, res, next) => {
-            res.setHeader('cache-control', 'no-cache, no-store, must-revalidate').sendFile(
-                path.join(ROOT_DIR, '..', 'public', 'index.html'),
-            )
-        })
-
         // Start development server
         server.listen(PORT, () => {
             // eslint-disable-next-line no-console
