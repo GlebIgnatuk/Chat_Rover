@@ -24,6 +24,8 @@ const server =
         : expressApp
 
 const handler = async (options?: { request: Request; response: Response }) => {
+    await MongoDBService.lazy(process.env.MONGO_URI)
+
     expressApp.use(express.json())
     expressApp.use(cors({
         origin: [
@@ -38,7 +40,7 @@ const handler = async (options?: { request: Request; response: Response }) => {
     router.use(async (req, res, next) => {
         try {
             res.setHeader('cache-control', 'max-age=0, private, must-revalidate')
-            await MongoDBService.lazy(process.env.MONGO_URI)
+            console.log(`Incoming request: ${req.method} ${req.originalUrl} | ${req.baseUrl}`)
 
             next()
         } catch (e) {
@@ -51,20 +53,10 @@ const handler = async (options?: { request: Request; response: Response }) => {
 
     expressApp.use(
         '/public',
-        express.static(path.join(ROOT_DIR, '..', 'public'), {
-            setHeaders: (res, path, stat) => {
-                if (path.endsWith('/index.html')) {
-                    res.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
-                }
-            },
-            fallthrough: false,
-            redirect: false,
-        }),
+        express.static(path.join(ROOT_DIR, '..', 'public'))
     )
-    expressApp.use('*', (req, res, next) => {
-        res.setHeader('cache-control', 'no-cache, no-store, must-revalidate').sendFile(
-            path.join(ROOT_DIR, '..', 'public', 'index.html'),
-        )
+    expressApp.use('*', (_, res) => {
+        res.sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
     })
 
     // Forward cloud function request to express
