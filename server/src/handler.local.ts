@@ -1,7 +1,10 @@
 import dotenv from 'dotenv'
-dotenv.config({
-  path: '.env.local',
-})
 
-import handler from './handler'
-handler()
+(async () => {
+  dotenv.config({
+    path: '.env.local',
+  })
+
+  const module = await import('./handler')
+  module.default()
+})();

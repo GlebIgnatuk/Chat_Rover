@@ -1,60 +1,56 @@
 import { UserModel } from '@/models/user'
 import { validateUserPayload } from '@/services/telegram'
 import { Handler } from 'express'
+import { IAuthorizedRequestHandler } from '../types'
 
-export const getAuthenticated: Handler = async (req, res) => {
-    const token = process.env.TELEGRAM_TOKEN || ''
-
+export const getAuthenticated: IAuthorizedRequestHandler = async (_, res, next) => {
     try {
-        const { user: identity } = validateUserPayload(req.headers['x-telegram-init-data'] as string, token)
+        const { repositories, identity } = res.locals
 
+        // @todo remove delay
         await new Promise((res) => setTimeout(res, 2000))
 
-        const user = await UserModel.getByUserId(identity.id)
+        const user = await repositories.user.getByExternalId(identity.user.id)
         if (!user) {
             return res.status(404).json({ success: false, error: 'NOT_FOUND' })
         }
 
         res.json({ success: true, data: { user, identity } })
     } catch (e) {
-        res.status(403).json({ success: false, error: 'Invalid user data' })
+        next(e)
     }
 }
 
-export const create: Handler = async (req, res) => {
-    const token = process.env.TELEGRAM_TOKEN || ''
-
+export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
-        const { user: identity } = validateUserPayload(req.headers['x-telegram-init-data'] as string, token)
+        const { repositories, identity } = res.locals
 
+        // @todo remove delay
         await new Promise((res) => setTimeout(res, 2000))
 
-        const user = await UserModel.create({
-            displayName: req.body.displayName,
-            userId: identity.id,
+        const user = await repositories.user.create({
+            externalId: identity.user.id,
+            language: req.body.language,
+            nickname: req.body.nickname
         })
-        if (!user) {
-            return res.status(500)
-        }
 
         res.json({ success: true, data: { user, identity } })
     } catch (e) {
-        res.status(403).json({ success: false, error: 'Invalid user data' })
+        next(e)
     }
 }
 
-export const deleteAuthenticated: Handler = async (req, res) => {
-    const token = process.env.TELEGRAM_TOKEN || ''
-
+export const deleteAuthenticated: IAuthorizedRequestHandler = async (_, res, next) => {
     try {
-        const { user: identity } = validateUserPayload(req.headers['x-telegram-init-data'] as string, token)
+        const { identity, repositories } = res.locals
 
+        // @todo remove delay
         await new Promise((res) => setTimeout(res, 1000))
 
-        await UserModel.deleteByUserId(identity.id)
+        await repositories.user.deleteByExternalId(identity.user.id)
 
         res.json({ success: true })
     } catch (e) {
-        res.status(403).json({ success: false, error: 'Invalid user data' })
+        next(e)
     }
 }
