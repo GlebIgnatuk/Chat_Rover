@@ -1,4 +1,6 @@
 import * as UsersController from '@/modules/users/users.controller'
+import * as PrivateChatsController from '@/modules/privateChats/privateChats.controller'
+import * as ChatMessagesController from '@/modules/chatMessages/chatMessages.controller'
 import { Router } from 'express'
 import { ValidatedUserPayload, validateUserPayload } from './services/telegram'
 import { config } from './config/config'
@@ -71,6 +73,16 @@ export const registerRoutes = (router: Router, repositories: IRepositories) => {
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)
 
+    // Private chat
+    authorized.get('/privateChats', PrivateChatsController.listMyChats)
+    authorized.post('/privateChats', PrivateChatsController.create)
+    authorized.delete('/privateChats/:chatId', PrivateChatsController.remove)
+
+    // Chat message
+    authorized.get('/chats/:chatId/messages', ChatMessagesController.list)
+    authorized.post('/chats/:chatId/messages', ChatMessagesController.create)
+    authorized.patch('/chats/:chatId/messages/:messageId', ChatMessagesController.patch)
+    authorized.delete('/chats/:chatId/messages/:messageId', ChatMessagesController.remove)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))

@@ -7,6 +7,8 @@ import path from 'path'
 import { registerRoutes } from './router'
 import { IRepositories } from './repositories/repositories'
 import { UserRepository } from './repositories/impl/user'
+import { PrivateChatRepository } from './repositories/impl/privateChat'
+import { ChatMessageRepository } from './repositories/impl/chatMessage'
 
 const expressApp = express()
 const server =
@@ -25,6 +27,8 @@ const handler = async () => {
     await MongoDBService.lazy(config.MONGO_URI)
 
     const repositories: IRepositories = {
+        chatMessage: new ChatMessageRepository(),
+        privateChat: new PrivateChatRepository(),
         user: new UserRepository()
     }
 
@@ -41,6 +45,15 @@ const handler = async () => {
     expressApp.use('*', (_, res) => {
         res.sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
     })
+
+    expressApp.use([(err, req, res, next) => {
+        console.error(err.stack)
+
+        res.status(500).json({
+            success: false,
+            error: 'Something went wrong.'
+        })
+    }])
 
     // Start the server
     server.listen(PORT, () => {
