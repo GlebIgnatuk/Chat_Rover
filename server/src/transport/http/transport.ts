@@ -41,7 +41,6 @@ export const setupHttpRouter = (
     })
 
     const authorized = Router({ mergeParams: true })
-    router.use('/', authorized)
 
     // Protect endpoints with telegram data hash check
     authorized.use((req, res, next) => {
@@ -62,7 +61,7 @@ export const setupHttpRouter = (
         next()
     })
 
-    // Routes
+    // Public routes
     router.get('/health', (req, res) => {
         res.json({
             sucess: true,
@@ -73,6 +72,9 @@ export const setupHttpRouter = (
             },
         })
     })
+
+    // Protected routes
+    router.use('/', authorized)
 
     // User
     authorized.get('/users', UsersController.search)
