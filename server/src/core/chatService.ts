@@ -1,9 +1,8 @@
-import { IChatMessageRepository } from "@/repositories/chatMessage";
-import { IPrivateChatRepository } from "@/repositories/privateChat";
-import { IUserRepository } from "@/repositories/user";
-import { ValidatedUserPayload } from "@/services/telegram";
-import { Namespace, Server } from "socket.io";
-
+import { IChatMessageRepository } from '@/repositories/chatMessage'
+import { IPrivateChatRepository } from '@/repositories/privateChat'
+import { IUserRepository } from '@/repositories/user'
+import { ValidatedUserPayload } from '@/services/telegram'
+import { Namespace, Server } from 'socket.io'
 
 export class ChatService {
     private readonly privateNS: Namespace
@@ -17,7 +16,7 @@ export class ChatService {
         wss: Server,
         privateChatRepo: IPrivateChatRepository,
         userRepo: IUserRepository,
-        chatMessageRepo: IChatMessageRepository
+        chatMessageRepo: IChatMessageRepository,
     ) {
         this.privateNS = wss.of('/ws/chats/private')
         this.privateChatRepo = privateChatRepo
@@ -27,7 +26,7 @@ export class ChatService {
 
     async sendMessage(chatId: string, text: string, ctx: ValidatedUserPayload) {
         if (text.length === 0) {
-            throw new Error('Message can\'t be empty')
+            throw new Error("Message can't be empty")
         }
 
         const user = await this.userRepo.getByExternalId(ctx.user.id)
@@ -35,20 +34,22 @@ export class ChatService {
             throw new Error('No such user')
         }
 
-        const hasAccess = await this.privateChatRepo.hasMember(chatId, user._id)
-        if (!hasAccess) {
-            throw new Error('You don\'t have access to this chat')
+        const chat = await this.privateChatRepo.get(chatId)
+        if (!chat || chat.members.some((m) => m._id.equals(user._id)) === false) {
+            throw new Error("You don't have access to this chat")
         }
 
         const message = await this.chatMessageRepo.create({
             chatId: chatId,
             userId: user._id,
-            text: text
+            text: text,
+        })
+        await this.privateChatRepo.patch(chat._id, {
+            lastMessageSentAt: new Date(),
         })
 
-        this.privateNS.to(user._id.toString()).emit('messages:post', message)
+        this.privateNS.to(chat.members.map((m) => m._id.toString())).emit('messages:post', message)
 
         return message
     }
-
 }

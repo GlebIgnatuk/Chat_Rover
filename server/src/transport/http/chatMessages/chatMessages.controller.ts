@@ -50,38 +50,10 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
         const chatId = req.params.chatId
-        const text = (req.body.text || '').trim()
 
-        if (text.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: "Message can't be empty",
-            })
-        }
+        const { identity, services } = res.locals
 
-        const { identity, repositories } = res.locals
-
-        const user = await repositories.user.getByExternalId(identity.user.id)
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                error: 'No such user',
-            })
-        }
-
-        const hasAccess = await repositories.privateChat.hasMember(chatId, user._id)
-        if (!hasAccess) {
-            return res.status(403).json({
-                success: false,
-                error: "You don't have access to this chat",
-            })
-        }
-
-        const message = await repositories.chatMessage.create({
-            chatId: chatId,
-            userId: user._id,
-            text: req.body.text,
-        })
+        const message = await services.chat.sendMessage(chatId, req.body.text, identity)
 
         return res.json({
             success: true,

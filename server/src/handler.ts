@@ -33,13 +33,19 @@ const wss = new Server(server)
 const handler = async () => {
     await MongoDBService.lazy(config.MONGO_URI)
 
+    const privateChat = new PrivateChatRepository()
     const repositories: IRepositories = {
-        chatMessage: new ChatMessageRepository(),
-        privateChat: new PrivateChatRepository(),
-        user: new UserRepository()
+        chatMessage: new ChatMessageRepository(privateChat),
+        privateChat: privateChat,
+        user: new UserRepository(),
     }
     const services: IServices = {
-        chat: new ChatService(wss, repositories.privateChat, repositories.user, repositories.chatMessage)
+        chat: new ChatService(
+            wss,
+            repositories.privateChat,
+            repositories.user,
+            repositories.chatMessage,
+        ),
     }
 
     // API routes
@@ -49,7 +55,6 @@ const handler = async () => {
     // WS routes
     setupWsRouter(wss, repositories, services)
 
-    
     // Static assets
     // expressApp.use(
     //     '/public',
@@ -61,14 +66,16 @@ const handler = async () => {
 
     app.use('/api', api)
 
-    app.use([(err, _, res, __) => {
-        console.error(err.stack)
+    app.use([
+        (err, _, res, __) => {
+            console.error(err.stack)
 
-        res.status(500).json({
-            success: false,
-            error: 'Something went wrong.'
-        })
-    }])
+            res.status(500).json({
+                success: false,
+                error: 'Something went wrong.',
+            })
+        },
+    ])
 
     // Start the server
     server.listen(PORT, () => {

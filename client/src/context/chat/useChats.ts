@@ -1,5 +1,6 @@
 import { api } from '@/services/api'
 import { useEffect, useState } from 'react'
+import { io } from 'socket.io-client'
 
 export type PrivateChat = {
     _id: string
@@ -7,6 +8,11 @@ export type PrivateChat = {
         _id: string
         nickname: string
         avatarUrl: string | null
+    }
+    lastMessage: {
+        chatId: string
+        text: string
+        createdAt: string
     }
 }
 
@@ -33,6 +39,40 @@ export const useChats = () => {
             setIsLoading(false)
         }
     }
+
+    useEffect(() => {
+        const socket = io(`${import.meta.env.VITE_WS_URL}/chats/private`, {
+            query: {
+                // @ts-expect-error add type definition later
+                'x-telegram-init-data': window.Telegram.WebApp.initData,
+            },
+            transports: ['websocket', 'polling'],
+        })
+
+        socket.on('connect', async () => {
+            console.log('Connected')
+        })
+
+        let abortController = new AbortController()
+        socket.on('messages:post', async (message) => {
+            abortController.abort()
+            abortController = new AbortController()
+
+            // const hasChat = chats.find((c) => c._id === message.chatId)
+            // if (!hasChat) {
+            //     loadChats(abortController.signal)
+            // }
+            loadChats(abortController.signal)
+        })
+
+        socket.on('connect_error', () => {
+            socket.io.opts.transports = ['polling', 'websocket']
+        })
+
+        return () => {
+            socket.disconnect()
+        }
+    }, [])
 
     useEffect(() => {
         const abortController = new AbortController()

@@ -1,25 +1,38 @@
-import { ChatMessageModel, IChatMessageDTO, MessageType } from "@/models/chatMessage";
-import { IChatMessageCreate, IChatMessagePatch, IChatMessageRepository } from "../chatMessage";
-import { ID, PaginationOptions } from "../types";
-import { Types } from "mongoose";
-import { UserModel } from "@/models/user";
+import { ChatMessageModel, IChatMessageDTO, MessageType } from '@/models/chatMessage'
+import { IChatMessageCreate, IChatMessagePatch, IChatMessageRepository } from '../chatMessage'
+import { ID, PaginationOptions } from '../types'
+import { Types } from 'mongoose'
+import { UserModel } from '@/models/user'
+import { IPrivateChatRepository } from '../privateChat'
 
 export class ChatMessageRepository implements IChatMessageRepository {
+    private readonly chatRepo: IPrivateChatRepository
+
+    constructor(chatRepo: IPrivateChatRepository) {
+        this.chatRepo = chatRepo
+    }
+
     async get(id: ID): Promise<IChatMessageDTO | null> {
-        const messages = await ChatMessageModel.getCollection().aggregate<IChatMessageDTO>([
-            { $match: { _id: new Types.ObjectId(id) } },
-            { $limit: 1 },
-            { $lookup: {
-                from: UserModel.getCollection().name,
-                localField: 'createdBy',
-                foreignField: '_id',
-                as: 'createdBy'
-            } },
-            { $unwind: {
-                path: '$createdBy',
-                preserveNullAndEmptyArrays: true
-            } }
-        ]).toArray()
+        const messages = await ChatMessageModel.getCollection()
+            .aggregate<IChatMessageDTO>([
+                { $match: { _id: new Types.ObjectId(id) } },
+                { $limit: 1 },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'createdBy',
+                        foreignField: '_id',
+                        as: 'createdBy',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$createdBy',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+            ])
+            .toArray()
 
         return messages[0] ?? null
     }
@@ -28,22 +41,28 @@ export class ChatMessageRepository implements IChatMessageRepository {
         const page = options?.page ?? 0
         const limit = options?.limit ?? 15
 
-        const messages = ChatMessageModel.getCollection().aggregate<IChatMessageDTO>([
-            { $match: { chatId: new Types.ObjectId(chatId) } },
-            { $sort: { createdAt: -1 } },
-            { $skip: page * limit },
-            { $limit: limit },
-            { $lookup: {
-                from: UserModel.getCollection().name,
-                localField: 'createdBy',
-                foreignField: '_id',
-                as: 'createdBy'
-            } },
-            { $unwind: {
-                path: '$createdBy',
-                preserveNullAndEmptyArrays: true
-            } }
-        ]).toArray()
+        const messages = ChatMessageModel.getCollection()
+            .aggregate<IChatMessageDTO>([
+                { $match: { chatId: new Types.ObjectId(chatId) } },
+                { $sort: { createdAt: -1 } },
+                { $skip: page * limit },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'createdBy',
+                        foreignField: '_id',
+                        as: 'createdBy',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$createdBy',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+            ])
+            .toArray()
 
         return messages
     }
@@ -59,12 +78,17 @@ export class ChatMessageRepository implements IChatMessageRepository {
             text: payload.text,
             type: type,
             createdAt: now,
-            updatedAt: now
+            updatedAt: now,
         })
         const message = await this.get(inserted.insertedId)
         if (!message) {
             throw new Error('Failed to create message')
         }
+
+        // @todo add transactions
+        await this.chatRepo.patch(payload.chatId, {
+            lastMessageSentAt: now,
+        })
 
         return message
     }
@@ -81,7 +105,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
 
         const updated = await ChatMessageModel.getCollection().updateOne(
             { _id: new Types.ObjectId(messageId) },
-            { $set: update }
+            { $set: update },
         )
 
         if (updated.modifiedCount === 0) {
@@ -93,7 +117,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
 
     async delete(id: ID): Promise<void> {
         const deleted = await ChatMessageModel.getCollection().findOneAndDelete({
-            _id: new Types.ObjectId(id)
+            _id: new Types.ObjectId(id),
         })
 
         if (!deleted) {

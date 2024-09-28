@@ -30,10 +30,14 @@ export const ChatsScreen = () => {
                     <div className="grow flex flex-col justify-center">
                         <div className="flex items-center justify-between">
                             <div className="font-semibold">{chat.peer.nickname}</div>
-                            <div className="text-xs">23:03</div>
+                            <div className="text-xs">
+                                {new Date(chat.lastMessage.createdAt)
+                                    .toTimeString()
+                                    .substring(0, 9)}
+                            </div>
                         </div>
                         <div>
-                            <div className="">Hello there my friend, how is it going?</div>
+                            <div className="">{chat.lastMessage.text}</div>
                         </div>
                     </div>
                 </NavLink>
