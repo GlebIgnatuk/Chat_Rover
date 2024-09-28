@@ -54,7 +54,7 @@ export const useChats = () => {
         })
 
         let abortController = new AbortController()
-        socket.on('messages:post', async (message) => {
+        socket.on('messages:post', async () => {
             abortController.abort()
             abortController = new AbortController()
 
