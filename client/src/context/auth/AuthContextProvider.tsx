@@ -15,8 +15,11 @@ export const AuthContextProvider = () => {
         return response
     }
 
-    const signUp = async (displayName: string) => {
-        const response = await api<IUser>('/users', { method: 'POST', body: JSON.stringify({ displayName }) })
+    const signUp = async (nickname: string) => {
+        const response = await api<IUser>('/users', {
+            method: 'POST',
+            body: JSON.stringify({ nickname }),
+        })
         if (response.success) {
             setUser(response.data)
         }
