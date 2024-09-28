@@ -1,7 +1,23 @@
-import { UserModel } from '@/models/user'
-import { validateUserPayload } from '@/services/telegram'
-import { Handler } from 'express'
 import { IAuthorizedRequestHandler } from '../types'
+
+export const search: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { repositories, identity } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(400).json({ success: false, error: 'No such user' })
+        }
+
+        const users = await repositories.user.search({
+            exceptFor: user._id,
+        })
+
+        return res.json({ success: true, data: users })
+    } catch (e) {
+        next(e)
+    }
+}
 
 export const getAuthenticated: IAuthorizedRequestHandler = async (_, res, next) => {
     try {
@@ -31,7 +47,7 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
         const user = await repositories.user.create({
             externalId: identity.user.id,
             language: req.body.language,
-            nickname: req.body.nickname
+            nickname: req.body.nickname,
         })
 
         res.json({ success: true, data: { user, identity } })

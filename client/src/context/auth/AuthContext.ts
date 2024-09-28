@@ -13,14 +13,15 @@ export interface IUser {
     }
     user: {
         _id: string
-        displayName: string
+        nickname: string
+        avatarUrl: string | null
     }
 }
 
 export interface IAuthContext {
     user: IUser | null
     signIn: () => Promise<APIResponse<IUser>>
-    signUp: (displayName: string) => Promise<APIResponse<IUser>>
+    signUp: (nickname: string) => Promise<APIResponse<IUser>>
     logout: () => void
 }
 

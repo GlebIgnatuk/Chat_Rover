@@ -7,6 +7,10 @@ import { buildUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuthContextProvider } from './context/auth/AuthContextProvider'
 import { ProtectedRoute } from './context/auth/ProtectedRoute'
+import { ChatsScreen } from './pages/chats/Chats.screen'
+import { ChatScreen } from './pages/chats/Chat.screen'
+import { HomeScreen } from './pages/home/Home.screen'
+import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 
 const router = createBrowserRouter([
     {
@@ -40,8 +44,24 @@ const router = createBrowserRouter([
                         element: <HomeLayout />,
                         children: [
                             {
+                                path: '',
+                                element: <HomeScreen />,
+                            },
+                            {
                                 path: 'account',
                                 element: <AccountScreen />,
+                            },
+                            {
+                                path: 'chats',
+                                element: <ChatsScreen />,
+                            },
+                            {
+                                path: 'chats/new',
+                                element: <ChatNewScreen />,
+                            },
+                            {
+                                path: 'chats/:id',
+                                element: <ChatScreen />,
                             },
                         ],
                     },

@@ -1,4 +1,4 @@
-import { IAuthorizedRequestHandler } from "../types";
+import { IAuthorizedRequestHandler } from '../types'
 
 export const list: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -12,7 +12,7 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                error: 'No such user'
+                error: 'No such user',
             })
         }
 
@@ -20,25 +20,27 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!hasAccess) {
             return res.status(403).json({
                 success: false,
-                error: 'You don\' have access to this chat'
+                error: "You don' have access to this chat",
             })
         }
 
         const messages = await repositories.chatMessage.list(chatId, {
             page: page - 1,
-            limit
+            limit,
         })
+
+        messages.reverse()
 
         return res.json({
             success: true,
-            messages,
+            data: messages,
             meta: {
                 pagination: {
                     page,
                     itemsPerPage: limit,
-                    items: messages.length
-                }
-            }
+                    items: messages.length,
+                },
+            },
         })
     } catch (e) {
         next(e)
@@ -53,7 +55,7 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
         if (text.length === 0) {
             return res.status(400).json({
                 success: false,
-                error: 'Message can\'t be empty'
+                error: "Message can't be empty",
             })
         }
 
@@ -63,7 +65,7 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                error: 'No such user'
+                error: 'No such user',
             })
         }
 
@@ -71,19 +73,19 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!hasAccess) {
             return res.status(403).json({
                 success: false,
-                error: 'You don\'t have access to this chat'
+                error: "You don't have access to this chat",
             })
         }
 
         const message = await repositories.chatMessage.create({
             chatId: chatId,
             userId: user._id,
-            text: req.body.text
+            text: req.body.text,
         })
 
         return res.json({
             success: true,
-            data: message
+            data: message,
         })
     } catch (e) {
         next(e)
@@ -98,7 +100,7 @@ export const patch: IAuthorizedRequestHandler = async (req, res, next) => {
         if (text.length === 0) {
             return res.status(400).json({
                 success: false,
-                error: 'Message can\'t be empty'
+                error: "Message can't be empty",
             })
         }
 
@@ -108,7 +110,7 @@ export const patch: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                error: 'No such user'
+                error: 'No such user',
             })
         }
 
@@ -116,7 +118,7 @@ export const patch: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!hasAccess) {
             return res.status(403).json({
                 success: false,
-                error: 'You don\'t have access to this chat'
+                error: "You don't have access to this chat",
             })
         }
 
@@ -124,24 +126,24 @@ export const patch: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!message) {
             return res.status(400).json({
                 success: false,
-                error: 'No such message'
+                error: 'No such message',
             })
         }
 
         if (message.createdBy._id.equals(user._id) === false) {
             return res.status(403).json({
                 success: false,
-                error: 'You don\'t have access to this chat'
+                error: "You don't have access to this chat",
             })
         }
 
         const updatedMessage = await repositories.chatMessage.patch(messageId, {
-            text: req.body.text
+            text: req.body.text,
         })
 
         return res.json({
             success: true,
-            data: updatedMessage
+            data: updatedMessage,
         })
     } catch (e) {
         next(e)
@@ -157,7 +159,7 @@ export const remove: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                error: 'No such user'
+                error: 'No such user',
             })
         }
 
@@ -165,14 +167,14 @@ export const remove: IAuthorizedRequestHandler = async (req, res, next) => {
         if (!hasAccess) {
             return res.status(403).json({
                 success: false,
-                error: 'You don\' have access to this chat'
+                error: "You don' have access to this chat",
             })
         }
 
         await repositories.chatMessage.delete(messageId)
 
         return res.json({
-            success: true
+            success: true,
         })
     } catch (e) {
         next(e)

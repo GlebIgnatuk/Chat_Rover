@@ -1,33 +1,40 @@
-import * as UsersController from '@/modules/users/users.controller'
-import * as PrivateChatsController from '@/modules/privateChats/privateChats.controller'
-import * as ChatMessagesController from '@/modules/chatMessages/chatMessages.controller'
+import * as UsersController from './users/users.controller'
+import * as PrivateChatsController from './privateChats/privateChats.controller'
+import * as ChatMessagesController from './chatMessages/chatMessages.controller'
 import { Router } from 'express'
-import { ValidatedUserPayload, validateUserPayload } from './services/telegram'
-import { config } from './config/config'
-import { IRepositories } from './repositories/repositories'
+import { ValidatedUserPayload, validateUserPayload } from '@/services/telegram'
+import { config } from '@/config/config'
 import express from 'express'
 import cors from 'cors'
+import { IRepositories } from '@/repositories/repositories'
+import { IServices } from '@/core/types'
 
-export const registerRoutes = (router: Router, repositories: IRepositories) => {
+export const setupHttpRouter = (
+    router: Router,
+    repositories: IRepositories,
+    services: IServices,
+) => {
     // Middlewares
     router.use(express.json())
-    router.use(cors({
-        origin: [
-            'https://127.0.0.1:3000',
-            'https://roverchat.pokoichangli.ru',
-            'https://dev.roverchat.pokoichangli.ru'
-        ]
-    }))
+    router.use(
+        cors({
+            origin: [
+                'https://127.0.0.1:3000',
+                'https://roverchat.pokoichangli.ru',
+                'https://dev.roverchat.pokoichangli.ru',
+            ],
+        }),
+    )
     router.use(async (req, _, next) => {
         console.info(`Incoming request: ${req.method} ${req.originalUrl} | ${req.baseUrl}`)
         next()
     })
-
-    // Inject repositories
     router.use((_, res, next) => {
+        // Inject dependencies
         res.locals = {
             ...res.locals,
-            repositories
+            repositories,
+            services,
         }
 
         next()
@@ -49,7 +56,7 @@ export const registerRoutes = (router: Router, repositories: IRepositories) => {
 
         res.locals = {
             ...res.locals,
-            identity
+            identity,
         }
 
         next()
@@ -67,8 +74,8 @@ export const registerRoutes = (router: Router, repositories: IRepositories) => {
         })
     })
 
-
     // User
+    authorized.get('/users', UsersController.search)
     authorized.get('/users/me', UsersController.getAuthenticated)
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)

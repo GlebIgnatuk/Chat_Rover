@@ -1,3 +1,4 @@
+import { IServices } from "@/core/types";
 import { IRepositories } from "@/repositories/repositories";
 import { ValidatedUserPayload } from "@/services/telegram";
 import { RequestHandler } from "express";
@@ -8,7 +9,7 @@ export type IRequestHandler<
     ReqBody = any,
     ReqQuery = Record<string, string>,
     Locals extends Record<string, any> = Record<string, any>
-> = RequestHandler<P, ResBody, ReqBody, ReqQuery, { repositories: IRepositories } & Locals>
+> = RequestHandler<P, ResBody, ReqBody, ReqQuery, { repositories: IRepositories, services: IServices } & Locals>
 
 export type IAuthorizedRequestHandler<
     P = Record<string, string>,
@@ -16,4 +17,4 @@ export type IAuthorizedRequestHandler<
     ReqBody = any,
     ReqQuery = Record<string, string>,
     Locals extends Record<string, any> = Record<string, any>
-> = RequestHandler<P, ResBody, ReqBody, ReqQuery, { repositories: IRepositories, identity: ValidatedUserPayload } & Locals>
+> = RequestHandler<P, ResBody, ReqBody, ReqQuery, { repositories: IRepositories, services: IServices, identity: ValidatedUserPayload } & Locals>

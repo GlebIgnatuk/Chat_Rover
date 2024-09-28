@@ -2,26 +2,33 @@ import { config, dev, hmr, PORT, ROOT_DIR } from '@/config/config'
 import { MongoDBService } from '@/services/database'
 import express, { Router } from 'express'
 import fs from 'fs'
-import { createServer } from 'https'
+import http from 'http'
+import https from 'https'
 import path from 'path'
-import { registerRoutes } from './router'
+import { setupHttpRouter } from './transport/http/transport'
+import { setupWsRouter } from './transport/ws/transport'
 import { IRepositories } from './repositories/repositories'
 import { UserRepository } from './repositories/impl/user'
 import { PrivateChatRepository } from './repositories/impl/privateChat'
 import { ChatMessageRepository } from './repositories/impl/chatMessage'
+import { Server } from 'socket.io'
+import { IServices } from './core/types'
+import { ChatService } from './core/chatService'
 
-const expressApp = express()
-const server =
-    dev && !hmr
-    // dev
-        ? createServer(
-              {
-                  cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
-                  key: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'key.pem')),
-              },
-              expressApp,
-          )
-        : expressApp
+const app = express()
+let server: http.Server | https.Server
+if (dev && !hmr) {
+    server = https.createServer(
+        {
+            cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
+            key: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'key.pem')),
+        },
+        app,
+    )
+} else {
+    server = http.createServer(app)
+}
+const wss = new Server(server)
 
 const handler = async () => {
     await MongoDBService.lazy(config.MONGO_URI)
@@ -31,22 +38,30 @@ const handler = async () => {
         privateChat: new PrivateChatRepository(),
         user: new UserRepository()
     }
+    const services: IServices = {
+        chat: new ChatService(wss, repositories.privateChat, repositories.user, repositories.chatMessage)
+    }
 
     // API routes
     const api = Router({ mergeParams: true })
-    expressApp.use('/api', api)
-    registerRoutes(api, repositories)
+    setupHttpRouter(api, repositories, services)
 
+    // WS routes
+    setupWsRouter(wss, repositories, services)
+
+    
     // Static assets
-    expressApp.use(
-        '/public',
-        express.static(path.join(ROOT_DIR, '..', 'public'))
-    )
-    expressApp.use('*', (_, res) => {
-        res.sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
-    })
+    // expressApp.use(
+    //     '/public',
+    //     express.static(path.join(ROOT_DIR, '..', 'public'))
+    // )
+    // expressApp.use('*', (_, res) => {
+    //     res.sendFile(path.join(ROOT_DIR, '..', 'public', 'index.html'))
+    // })
 
-    expressApp.use([(err, req, res, next) => {
+    app.use('/api', api)
+
+    app.use([(err, _, res, __) => {
         console.error(err.stack)
 
         res.status(500).json({

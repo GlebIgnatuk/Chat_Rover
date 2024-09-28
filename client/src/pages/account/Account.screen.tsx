@@ -22,7 +22,7 @@ export const AccountScreen = () => {
 
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-slate-800/10 backdrop-blur-sm p-2">
-            <p className="font-bold text-3xl">{user.user.displayName}</p>
+            <p className="font-bold text-3xl">{user.user.nickname}</p>
 
             <button
                 onClick={deleteAccount}

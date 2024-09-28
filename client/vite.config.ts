@@ -9,12 +9,7 @@ const dev = process.env.NODE_ENV !== 'production'
 export default defineConfig({
   plugins: [
     react(),
-    basicSsl({
-      /** name of certification */
-      name: 'wuwa',
-      /** custom trust domains */
-      domains: ['*.wuwa.com'],
-    }),
+    basicSsl(),
   ],
   resolve: {
     alias: {
@@ -33,6 +28,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/socket.io': {
+        target: 'ws://127.0.0.1:4000',
+        ws: true,
+        rewriteWsOrigin: true,
+        secure: false,
+      }
     },
   },
 })

@@ -1,8 +1,7 @@
-import { IUserDTO, UserModel } from "@/models/user";
-import { ID } from "../types";
-import { IUserCreate, IUserRepository } from "../user";
-import { Types } from "mongoose";
-
+import { IUserDTO, UserModel } from '@/models/user'
+import { ID } from '../types'
+import { IUserCreate, IUserRepository } from '../user'
+import { Types } from 'mongoose'
 
 export class UserRepository implements IUserRepository {
     async get(id: ID): Promise<IUserDTO | null> {
@@ -11,6 +10,14 @@ export class UserRepository implements IUserRepository {
 
     async getByExternalId(id: number): Promise<IUserDTO | null> {
         return UserModel.getCollection().findOne({ externalId: id })
+    }
+
+    async search({ exceptFor }: { exceptFor: ID }): Promise<IUserDTO[]> {
+        return UserModel.getCollection()
+            .find({
+                _id: { $ne: new Types.ObjectId(exceptFor) },
+            })
+            .toArray()
     }
 
     async create(payload: IUserCreate): Promise<IUserDTO> {

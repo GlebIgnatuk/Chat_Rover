@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "mongoose": "^8.5.1",
-    "mongoose-query-logger": "^0.2.3"
+    "mongoose-query-logger": "^0.2.3",
+    "socket.io": "^4.8.0"
   }
 }
