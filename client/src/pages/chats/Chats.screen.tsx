@@ -10,12 +10,12 @@ export const ChatsScreen = () => {
 
     return (
         <div className="h-full overflow-hidden">
-            <div className="p-1 overflow-auto">
+            <div className="p-1 h-full overflow-y-auto space-y-1">
                 {chats.map((chat) => (
                     <NavLink
                         key={chat._id}
                         to={`/home/chats/${chat._id}`}
-                        className="flex gap-4 p-2 bg-[#FFFAE7]"
+                        className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 bg-[#FFFAE7]"
                     >
                         {chat.peer.avatarUrl ? (
                             <img
@@ -23,7 +23,7 @@ export const ChatsScreen = () => {
                                 className="w-14 h-14 object-cover object-center border-2 border-[#A17DA8] rounded-full shrink-0"
                             />
                         ) : (
-                            <div className="flex items-center justify-center border-2 border-[#A17DA8] bg-gradient-to-b from-[#f0c0fb] to-[#A17DA8] rounded-full w-14 h-14 uppercase font-semibold text-xl overflow-hidden">
+                            <div className="flex items-center justify-center border-2 border-[#A17DA8] bg-gradient-to-b from-[#f0c0fb] to-[#A17DA8] rounded-full w-14 h-14 uppercase font-semibold text-xl overflow-hidden shrink-0">
                                 {chat.peer.nickname.substring(0, 2)}
                             </div>
                         )}
@@ -33,14 +33,18 @@ export const ChatsScreen = () => {
                                 <div className="font-semibold text-[#E79B46]">
                                     {chat.peer.nickname}
                                 </div>
+
                                 <div className="text-xs text-[#8b673e]">
                                     {new Date(chat.lastMessage.createdAt)
                                         .toTimeString()
                                         .substring(0, 9)}
                                 </div>
                             </div>
-                            <div>
-                                <div className="text-[#8b673e]">{chat.lastMessage.text}</div>
+
+                            <div className="text-[#8b673e]">
+                                <div className="whitespace-nowrap text-ellipsis overflow-hidden">
+                                    {chat.lastMessage.text}
+                                </div>
                             </div>
                         </div>
                     </NavLink>

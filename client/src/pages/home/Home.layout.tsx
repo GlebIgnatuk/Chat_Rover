@@ -69,7 +69,7 @@ export const HomeLayout = () => {
                 )}
 
                 <div className="relative z-10 grow grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
-                    <div className="grid grid-cols-3 items-end bg-[#FFFAE7] pt-20 pb-10">
+                    <div className="grid grid-cols-3 items-end bg-[#FFFAE7] pt-32 pb-10">
                         {navigation.map((n) => (
                             <NavLink
                                 key={n.path}

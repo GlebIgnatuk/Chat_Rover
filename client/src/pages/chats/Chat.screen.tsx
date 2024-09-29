@@ -65,12 +65,10 @@ export const ChatScreen = () => {
                                     >
                                         <div
                                             className={cn(
-                                                'px-2 py-1 rounded-md transition-colors duration-500 text-[#232323] min-w-24',
+                                                'px-2 py-1 rounded-md transition-colors duration-500 text-[#232323] min-w-24 max-w-4/5',
                                                 {
-                                                    'items-end rounded-br-none':
-                                                        m.createdBy._id === user._id,
-                                                    'items-start rounded-lr-none':
-                                                        m.createdBy._id !== user._id,
+                                                    'rounded-br-none': m.createdBy._id === user._id,
+                                                    'rounded-bl-none': m.createdBy._id !== user._id,
                                                     'bg-[#FFFAE7]': status === 'sent',
                                                     'bg-amber-600': status === 'pending',
                                                     'bg-red-800': status === 'errored',
