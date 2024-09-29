@@ -94,17 +94,25 @@ export const useChat = (chatId: string) => {
                 }),
             })
             if (response.success) {
-                setMessages((prev) => prev.map((p) => (p.message._id === id ? { ...p, status: 'sent' } : p)))
+                setMessages((prev) =>
+                    prev.map((p) => (p.message._id === id ? { ...p, status: 'sent' } : p)),
+                )
             } else {
                 setMessages((prev) =>
-                    prev.map((p) => (p.message._id === id ? { ...p, status: 'errored', error: response.error } : p)),
+                    prev.map((p) =>
+                        p.message._id === id
+                            ? { ...p, status: 'errored', error: response.error }
+                            : p,
+                    ),
                 )
             }
         } catch (e) {
             console.error(e)
             setMessages((prev) =>
                 prev.map((p) =>
-                    p.message._id === id ? { ...p, status: 'errored', error: 'Something went wrong' } : p,
+                    p.message._id === id
+                        ? { ...p, status: 'errored', error: 'Something went wrong' }
+                        : p,
                 ),
             )
         }
@@ -124,7 +132,10 @@ export const useChat = (chatId: string) => {
         })
 
         socket.on('messages:post', (message) => {
-            setMessages((prev) => [...prev, { message, status: 'sent' }])
+            setMessages((prev) => {
+                if (prev.some((p) => p.message._id === message._id)) return prev
+                return [...prev, { message, status: 'sent' }]
+            })
         })
 
         socket.on('connect_error', () => {
