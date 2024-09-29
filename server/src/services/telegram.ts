@@ -39,3 +39,16 @@ export const validateUserPayload = (payload: string, botToken: string) => {
         throw new Error('Data is invalid')
     }
 }
+
+export const validateUserPayloadMock = (payload: string, botToken: string) => {
+    const params = new URLSearchParams(payload)
+    params.delete('hash')
+
+    if (params.get('user') === null) throw new Error('Data is invalid')
+
+    return Array.from(params).reduce<Record<string, any>>((acc, [k, v]) => {
+        acc[k] = k === 'user' ? JSON.parse(v) : v
+
+        return acc
+    }, {}) as ValidatedUserPayload
+}

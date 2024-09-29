@@ -2,7 +2,11 @@ import * as UsersController from './users/users.controller'
 import * as PrivateChatsController from './privateChats/privateChats.controller'
 import * as ChatMessagesController from './chatMessages/chatMessages.controller'
 import { Router } from 'express'
-import { ValidatedUserPayload, validateUserPayload } from '@/services/telegram'
+import {
+    ValidatedUserPayload,
+    validateUserPayload,
+    validateUserPayloadMock,
+} from '@/services/telegram'
 import { config } from '@/config/config'
 import express from 'express'
 import cors from 'cors'
@@ -48,7 +52,11 @@ export const setupHttpRouter = (
 
         let identity: ValidatedUserPayload
         try {
-            identity = validateUserPayload(initData, config.TELEGRAM_BOT_TOKEN)
+            if (config.ALLOW_FAKE_PROFILES === 'true') {
+                identity = validateUserPayloadMock(initData, config.TELEGRAM_BOT_TOKEN)
+            } else {
+                identity = validateUserPayload(initData, config.TELEGRAM_BOT_TOKEN)
+            }
         } catch {
             return res.status(403).json({ success: false, error: 'Invalid user data' })
         }

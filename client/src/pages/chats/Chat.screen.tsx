@@ -64,23 +64,33 @@ export const ChatScreen = () => {
                                         })}
                                     >
                                         <div
-                                            className={cn('px-2 py-1 rounded-md transition-colors duration-500', {
-                                                'items-end rounded-br-none': m.createdBy._id === user._id,
-                                                'items-start rounded-lr-none': m.createdBy._id !== user._id,
-                                                'bg-green-900': status === 'sent',
-                                                'bg-amber-600': status === 'pending',
-                                                'bg-red-800': status === 'errored',
-                                            })}
+                                            className={cn(
+                                                'px-2 py-1 rounded-md transition-colors duration-500 text-[#232323] min-w-24',
+                                                {
+                                                    'items-end rounded-br-none':
+                                                        m.createdBy._id === user._id,
+                                                    'items-start rounded-lr-none':
+                                                        m.createdBy._id !== user._id,
+                                                    'bg-[#FFFAE7]': status === 'sent',
+                                                    'bg-amber-600': status === 'pending',
+                                                    'bg-red-800': status === 'errored',
+                                                },
+                                            )}
                                             onClick={() => {
                                                 if (error) alert(error)
                                             }}
                                         >
-                                            {m.createdBy._id !== user._id && (
+                                            {/* {m.createdBy._id !== user._id && (
                                                 <div className="">{m.createdBy.nickname}</div>
-                                            )}
-                                            <div className="text-right">{m.text}</div>
+                                                )} */}
+                                            <div className="font-semibold">
+                                                {m.createdBy.nickname}
+                                            </div>
+                                            <div>{m.text}</div>
                                             <div className="text-xs text-right">
-                                                {new Date(m.createdAt).toTimeString().substring(0, 9)}
+                                                {new Date(m.createdAt)
+                                                    .toTimeString()
+                                                    .substring(0, 9)}
                                             </div>
                                         </div>
                                     </div>
@@ -92,14 +102,20 @@ export const ChatScreen = () => {
             </div>
 
             <div className="flex items-stretch">
-                <input type="text" className="grow px-3 py-2 outline-none text-black text-md" ref={ref} />
+                <input
+                    type="text"
+                    className="grow px-3 py-2 outline-none text-black text-md"
+                    ref={ref}
+                />
                 <button
-                    className="shrink-0 px-3 py-2 bg-[#D2AA6C] font-medium"
+                    className="shrink-0 px-3 py-2 bg-[#E79B46] text-[#FFFAE7] font-medium disabled:bg-gray-500"
+                    disabled={
+                        messages.length !== 0 && messages[messages.length - 1].status === 'pending'
+                    }
                     onClick={() => {
                         if (ref.current && ref.current.value.trim() !== '') {
-                            sendMessage(ref.current.value).then(() => {
-                                if (ref.current) ref.current.value = ''
-                            })
+                            sendMessage(ref.current.value)
+                            ref.current.value = ''
                         }
                     }}
                 >

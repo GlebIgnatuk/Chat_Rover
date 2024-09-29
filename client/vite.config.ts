@@ -7,33 +7,30 @@ const dev = process.env.NODE_ENV !== 'production'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    basicSsl(),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+    plugins: [react(), basicSsl()],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
     },
-  },
-  build: {
-    outDir: dev ? '' : '../server/dist/public',
-  },
-  base: dev ? '/' : '/public',
-  server: {
-    host: '0.0.0.0',
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:4000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/socket.io': {
-        target: 'ws://127.0.0.1:4000',
-        ws: true,
-        rewriteWsOrigin: true,
-        secure: false,
-      }
+    build: {
+        outDir: dev ? '' : '../server/dist/public',
     },
-  },
+    base: dev ? '/' : '/public',
+    server: {
+        host: '0.0.0.0',
+        proxy: {
+            '/api': {
+                target: 'http://192.168.100.5:4000',
+                changeOrigin: true,
+                secure: false,
+            },
+            '/socket.io': {
+                target: 'ws://192.168.100.5:4000',
+                ws: true,
+                rewriteWsOrigin: true,
+                secure: false,
+            },
+        },
+    },
 })

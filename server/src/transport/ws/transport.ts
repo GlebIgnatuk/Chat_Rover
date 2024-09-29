@@ -1,8 +1,12 @@
-import { Server } from "socket.io";
-import { ValidatedUserPayload, validateUserPayload } from "@/services/telegram";
-import { config } from "@/config/config";
-import { IRepositories } from "@/repositories/repositories";
-import { IServices } from "@/core/types";
+import { Server } from 'socket.io'
+import {
+    ValidatedUserPayload,
+    validateUserPayload,
+    validateUserPayloadMock,
+} from '@/services/telegram'
+import { config } from '@/config/config'
+import { IRepositories } from '@/repositories/repositories'
+import { IServices } from '@/core/types'
 
 export const setupWsRouter = (wss: Server, repositories: IRepositories, services: IServices) => {
     const chats = wss.of('/ws/chats/private')
@@ -11,8 +15,18 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
         let identity: ValidatedUserPayload
         try {
             const initData = socket.handshake.query['x-telegram-init-data']
-            const validated = validateUserPayload(initData?.toString() ?? '', config.TELEGRAM_BOT_TOKEN)
-            identity = validated
+
+            if (config.ALLOW_FAKE_PROFILES === 'true') {
+                identity = validateUserPayloadMock(
+                    initData?.toString() ?? '',
+                    config.TELEGRAM_BOT_TOKEN,
+                )
+            } else {
+                identity = validateUserPayload(
+                    initData?.toString() ?? '',
+                    config.TELEGRAM_BOT_TOKEN,
+                )
+            }
         } catch (e) {
             return socket.disconnect(true)
         }

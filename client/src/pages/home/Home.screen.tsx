@@ -43,9 +43,12 @@ export const HomeScreen = () => {
     }
 
     return (
-        <div className="overflow-auto">
+        <div className="h-full overflow-auto p-1 shadow-inner space-y-2">
             {users.map((u) => (
-                <div key={u._id} className="bg-black/70 px-4 py-3 flex gap-3 items-center">
+                <div
+                    key={u._id}
+                    className="bg-[#FFFAE7] p-2 flex gap-3 items-center rounded-xl border-[4px] border-[#D2AA6C]"
+                >
                     {u.avatarUrl ? (
                         <img
                             src={u.avatarUrl}
@@ -57,9 +60,12 @@ export const HomeScreen = () => {
                         </div>
                     )}
 
-                    <div className="grow font-semibold">{u.nickname}</div>
+                    <div className="grow font-semibold text-[#E79B46]">{u.nickname}</div>
 
-                    <NavLink to={`/home/chats/new?peerId=${u._id}`} className="text-2xl w-8 h-8 text-center">
+                    <NavLink
+                        to={`/home/chats/new?peerId=${u._id}`}
+                        className="text-2xl w-8 h-8 text-center"
+                    >
                         💬
                     </NavLink>
                 </div>
