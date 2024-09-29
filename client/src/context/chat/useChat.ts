@@ -93,6 +93,7 @@ export const useChat = (chatId: string) => {
                     text,
                 }),
             })
+
             if (response.success) {
                 setMessages((prev) =>
                     prev.map((p) => (p.message._id === id ? { ...p, status: 'sent' } : p)),
@@ -132,10 +133,9 @@ export const useChat = (chatId: string) => {
         })
 
         socket.on('messages:post', (message) => {
-            setMessages((prev) => {
-                if (prev.some((p) => p.message._id === message._id)) return prev
-                return [...prev, { message, status: 'sent' }]
-            })
+            if (message.createdBy._id === user._id) return
+
+            setMessages((prev) => [...prev, { message, status: 'sent' }])
         })
 
         socket.on('connect_error', () => {
