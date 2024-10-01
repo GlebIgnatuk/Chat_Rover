@@ -55,12 +55,9 @@ export const ChatScreen = () => {
                         {messages.loading.is === false &&
                             messages.loading.error === null &&
                             Object.entries(groupped).map(([date, messages]) => (
-                                <div className="relative flex flex-col gap-2">
+                                <div className="relative flex flex-col gap-2" key={date}>
                                     {
-                                        <p
-                                            key={`indicator_${date}`}
-                                            className="bg-black/75 self-center px-2 py-1 rounded-xl sticky top-1 text-xs"
-                                        >
+                                        <p className="bg-black/75 self-center px-2 py-1 rounded-xl sticky top-1 text-xs">
                                             {new Date(date).toDateString()}
                                         </p>
                                     }

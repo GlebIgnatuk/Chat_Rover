@@ -1,5 +1,6 @@
 import { useUser } from '@/context/auth/useUser'
 import { ChatContextProvider } from '@/context/chat'
+import { ProfilesContextProvider } from '@/context/profiles'
 import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -47,55 +48,57 @@ export const HomeLayout = () => {
     }, [navigate])
 
     return (
-        <ChatContextProvider>
-            <div className="relative h-full bg-[#C3B6A0] flex flex-col">
-                {import.meta.env.DEV && (
-                    <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
-                        <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                            {user.user.nickname} | {location.pathname}
+        <ProfilesContextProvider>
+            <ChatContextProvider>
+                <div className="relative h-full bg-[#C3B6A0] flex flex-col">
+                    {import.meta.env.DEV && (
+                        <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
+                            <div className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                {user.user.nickname} | {location.pathname}
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    className="p-1 rounded-md bg-red-900"
+                                    onClick={() => {
+                                        sessionStorage.removeItem('__telegram__initParams')
+                                        window.location.reload()
+                                    }}
+                                >
+                                    Logout
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex justify-end">
-                            <button
-                                className="p-1 rounded-md bg-red-900"
-                                onClick={() => {
-                                    sessionStorage.removeItem('__telegram__initParams')
-                                    window.location.reload()
-                                }}
-                            >
-                                Logout
-                            </button>
+                    )}
+
+                    <div className="relative z-10 grow grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
+                        <div className="grid grid-cols-3 items-end bg-[#FFFAE7] pt-32 pb-10">
+                            {navigation.map((n) => (
+                                <NavLink
+                                    key={n.path}
+                                    to={n.path}
+                                    end
+                                    className={({ isActive }) =>
+                                        cn(
+                                            'text-center py-2 transition-all duration-300 font-semibold white rounded-t-xl',
+                                            {
+                                                'bg-[#57BEFF] pt-3': isActive,
+                                                'bg-[#C3B6A0]': !isActive,
+                                                'pointer-events-none bg-gray-500': n.disabled,
+                                            },
+                                        )
+                                    }
+                                >
+                                    {n.label}
+                                </NavLink>
+                            ))}
                         </div>
-                    </div>
-                )}
 
-                <div className="relative z-10 grow grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
-                    <div className="grid grid-cols-3 items-end bg-[#FFFAE7] pt-32 pb-10">
-                        {navigation.map((n) => (
-                            <NavLink
-                                key={n.path}
-                                to={n.path}
-                                end
-                                className={({ isActive }) =>
-                                    cn(
-                                        'text-center py-2 transition-all duration-300 font-semibold white rounded-t-xl',
-                                        {
-                                            'bg-[#57BEFF] pt-3': isActive,
-                                            'bg-[#C3B6A0]': !isActive,
-                                            'pointer-events-none bg-gray-500': n.disabled,
-                                        },
-                                    )
-                                }
-                            >
-                                {n.label}
-                            </NavLink>
-                        ))}
+                        <WithTransition key={location.pathname}>
+                            <Outlet />
+                        </WithTransition>
                     </div>
-
-                    <WithTransition key={location.pathname}>
-                        <Outlet />
-                    </WithTransition>
                 </div>
-            </div>
-        </ChatContextProvider>
+            </ChatContextProvider>
+        </ProfilesContextProvider>
     )
 }

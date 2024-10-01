@@ -1,50 +1,30 @@
-// import { api } from "@/services/api";
-// import { useEffect, useState } from "react"
-// import { io, Socket } from "socket.io-client";
-
-import { IUser } from '@/context/auth/AuthContext'
-import { api } from '@/services/api'
-import { useEffect, useState } from 'react'
+import { useProfiles } from '@/context/profiles'
+import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
 export const HomeScreen = () => {
-    const [users, setUsers] = useState<IUser['user'][]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
-    console.log(error)
-    const loadUsers = async (signal?: AbortSignal) => {
-        try {
-            setIsLoading(true)
-            const response = await api<IUser['user'][]>('/users', { signal })
-            if (response.success) {
-                setUsers(response.data)
-            } else {
-                setError(response.error)
-            }
-        } catch (e) {
-            console.error(e)
-            setError('Something went wrong')
-        } finally {
-            setIsLoading(false)
-        }
-    }
+    const profiles = useProfiles()
 
     useEffect(() => {
+        if (profiles.profiles.length !== 0) return
+
         const abortController = new AbortController()
-        loadUsers(abortController.signal)
+        profiles.searchProfiles(abortController.signal)
 
         return () => {
             abortController.abort()
         }
     }, [])
 
-    if (isLoading) {
+    if (profiles.loading.is) {
         return <>Loading...</>
+    } else if (profiles.loading.error) {
+        return <>Failed to load: {profiles.loading.error}</>
     }
 
     return (
         <div className="h-full overflow-auto p-1 shadow-inner space-y-2">
-            {users.map((u) => (
+            {profiles.profiles.map((u) => (
                 <div
                     key={u._id}
                     className="bg-[#FFFAE7] p-2 flex gap-3 items-center rounded-xl border-[4px] border-[#D2AA6C]"
