@@ -8,7 +8,7 @@ export interface IPrivateChatCreate {
     peerId: ID
 }
 
-export type IMyPrivateChatDTO = Omit<IChatDTO, 'members'> & {
+export type IPrivateChatWithMetadataDTO = Omit<IChatDTO, 'members'> & {
     peer: IUserDTO
     lastMessage: IChatMessageDTO | null
 }
@@ -19,8 +19,8 @@ export type IPrivateChatPatch = {
 
 export interface IPrivateChatRepository {
     get(id: ID): Promise<IPrivateChatDTO | null>
-    listMyChats(userId: ID): Promise<IMyPrivateChatDTO[]>
-    findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatDTO | null>
+    list(userId: ID): Promise<IPrivateChatWithMetadataDTO[]>
+    findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatWithMetadataDTO | null>
     hasMember(chatId: ID, memberId: ID): Promise<boolean>
     create(payload: IPrivateChatCreate): Promise<IPrivateChatDTO>
     patch(id: ID, payload: IPrivateChatPatch): Promise<IPrivateChatDTO | null>

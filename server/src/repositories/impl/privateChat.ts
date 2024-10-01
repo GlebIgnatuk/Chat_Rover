@@ -1,9 +1,9 @@
 import { ChatModel, ChatType, IPrivateChatDTO } from '@/models/chat'
 import {
-    IMyPrivateChatDTO,
     IPrivateChatCreate,
     IPrivateChatPatch,
     IPrivateChatRepository,
+    IPrivateChatWithMetadataDTO,
 } from '../privateChat'
 import { ID } from '../types'
 import { Types } from 'mongoose'
@@ -32,9 +32,9 @@ export class PrivateChatRepository implements IPrivateChatRepository {
         return chats[0] ?? null
     }
 
-    async listMyChats(userId: ID): Promise<IMyPrivateChatDTO[]> {
+    async list(userId: ID): Promise<IPrivateChatWithMetadataDTO[]> {
         const chats = await ChatModel.getCollection()
-            .aggregate<IMyPrivateChatDTO>([
+            .aggregate<IPrivateChatWithMetadataDTO>([
                 { $match: { members: new Types.ObjectId(userId) } },
                 {
                     $project: {
@@ -43,7 +43,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
                             $filter: {
                                 input: '$members',
                                 as: 'member',
-                                cond: { $ne: ['$$member', userId] },
+                                cond: { $ne: ['$$member', new Types.ObjectId(userId)] },
                                 limit: 1,
                             },
                         },
@@ -96,25 +96,67 @@ export class PrivateChatRepository implements IPrivateChatRepository {
         return chats
     }
 
-    async findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatDTO | null> {
+    async findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatWithMetadataDTO | null> {
         const chats = await ChatModel.getCollection()
-            .aggregate<IPrivateChatDTO>([
+            .aggregate<IPrivateChatWithMetadataDTO>([
                 {
                     $match: {
                         members: { $all: [userId, peerId].map((id) => new Types.ObjectId(id)) },
                     },
                 },
-                { $limit: 1 },
+                {
+                    $limit: 1,
+                },
+                {
+                    $project: {
+                        members: {
+                            $filter: {
+                                input: '$members',
+                                as: 'member',
+                                cond: { $ne: ['$$member', new Types.ObjectId(userId)] },
+                                limit: 1,
+                            },
+                        },
+                    },
+                },
                 {
                     $lookup: {
                         from: UserModel.getCollection().name,
                         localField: 'members',
                         foreignField: '_id',
-                        as: 'members',
+                        as: 'peer',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$peer',
+                        // @todo display missing/deleted chats?
+                        // preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup: {
+                        from: ChatMessageModel.getCollection().name,
+                        localField: '_id',
+                        foreignField: 'chatId',
+                        as: 'lastMessage',
+                        pipeline: [{ $sort: { createdAt: -1 } }, { $limit: 1 }],
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$lastMessage',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        members: 0,
                     },
                 },
             ])
             .toArray()
+        console.log(chats)
 
         return chats[0] ?? null
     }

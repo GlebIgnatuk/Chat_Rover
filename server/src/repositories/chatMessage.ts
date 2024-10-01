@@ -1,5 +1,5 @@
-import { ID, PaginationOptions } from "./types"
-import { IChatMessageDTO } from "@/models/chatMessage"
+import { ID, PaginationOptions } from './types'
+import { IChatMessageDTO } from '@/models/chatMessage'
 
 export interface IChatMessageCreate {
     userId: ID

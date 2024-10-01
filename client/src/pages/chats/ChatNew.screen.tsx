@@ -1,54 +1,21 @@
-import { PrivateChat } from '@/context/chat/useChats'
-import { api } from '@/services/api'
+import { usePeer } from '@/context/chat/usePeer'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export const ChatNewScreen = () => {
     const navigate = useNavigate()
     const [params] = useSearchParams()
-
-    const load = async (signal?: AbortSignal) => {
-        try {
-            const peerId = params.get('peerId')
-
-            const response = await api<PrivateChat[]>(`/privateChats?peerId=${peerId}`, { signal })
-            if (response.success) {
-                const chat = response.data[0]
-                if (chat) {
-                    return navigate(`/home/chats/${chat._id}`, { replace: true })
-                } else {
-                    const response = await api<PrivateChat>('/privateChats', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            peerId: peerId,
-                        }),
-                        signal,
-                    })
-                    if (response.success) {
-                        const chat = response.data
-                        return navigate(`/home/chats/${chat._id}`, { replace: true })
-                    }
-                }
-            }
-
-            navigate('/home')
-        } catch (e) {
-            if (e instanceof Error && e.name === 'AbortError') {
-                return
-            }
-
-            navigate('/home')
-        }
-    }
+    const { chat, loading } = usePeer(params.get('peerId') ?? '')
 
     useEffect(() => {
-        const abortController = new AbortController()
-        load(abortController.signal)
-
-        return () => {
-            abortController.abort()
+        if (chat) {
+            navigate(`/home/chats/${chat._id}`, { replace: true })
+        } else if (loading) {
+            if (loading.is === false && loading.error) {
+                navigate('/home')
+            }
         }
-    }, [])
+    }, [chat, loading])
 
     return (
         <div className="h-full flex items-center justify-center bg-black/75">

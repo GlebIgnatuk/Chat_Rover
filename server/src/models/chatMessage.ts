@@ -1,6 +1,6 @@
-import mongoose, { mongo, Types } from "mongoose"
-import { IUserDTO } from "./user"
-import { IBaseModel } from "./base"
+import mongoose, { mongo, Types } from 'mongoose'
+import { IUserDTO } from './user'
+import { IBaseModel } from './base'
 
 export interface IChatMessageModel extends IBaseModel {
     chatId: Types.ObjectId
@@ -10,12 +10,12 @@ export interface IChatMessageModel extends IBaseModel {
 }
 
 export const MESSAGE_TYPES = ['text'] as const
-export type MessageType = typeof MESSAGE_TYPES[number]
+export type MessageType = (typeof MESSAGE_TYPES)[number]
 
 export type IChatMessageDTO = mongo.WithId<IChatMessageModel> & {
-    createdBy?: IUserDTO
+    createdBy: IUserDTO
 }
 
 export const ChatMessageModel = {
-    getCollection: () => mongoose.connection.collection<IChatMessageModel>('chat_messages')
+    getCollection: () => mongoose.connection.collection<IChatMessageModel>('chat_messages'),
 }

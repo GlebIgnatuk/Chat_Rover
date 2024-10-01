@@ -17,7 +17,7 @@ export const listMyChats: IAuthorizedRequestHandler = async (req, res, next) => 
             const chat = await repositories.privateChat.findByPeer(user._id, peerId)
             return res.json({ success: true, data: chat ? [chat] : [] })
         } else {
-            const chats = await repositories.privateChat.listMyChats(user._id)
+            const chats = await repositories.privateChat.list(user._id)
             return res.json({ success: true, data: chats })
         }
     } catch (e) {

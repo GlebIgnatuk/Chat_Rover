@@ -2,9 +2,9 @@ import { useChats } from '@/context/chat'
 import { NavLink } from 'react-router-dom'
 
 export const ChatsScreen = () => {
-    const { chats, isLoading } = useChats()
+    const { chats, loading } = useChats()
 
-    if (isLoading && chats.length === 0) {
+    if (loading.is && chats.length === 0) {
         return <>Loading...</>
     }
 

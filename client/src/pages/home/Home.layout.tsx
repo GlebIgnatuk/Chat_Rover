@@ -1,5 +1,5 @@
 import { useUser } from '@/context/auth/useUser'
-import { CounterContextProvider } from '@/context/counter/CounterContextProvider'
+import { ChatContextProvider } from '@/context/chat'
 import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -47,7 +47,7 @@ export const HomeLayout = () => {
     }, [navigate])
 
     return (
-        <CounterContextProvider>
+        <ChatContextProvider>
             <div className="relative h-full bg-[#C3B6A0] flex flex-col">
                 {import.meta.env.DEV && (
                     <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
@@ -96,6 +96,6 @@ export const HomeLayout = () => {
                     </WithTransition>
                 </div>
             </div>
-        </CounterContextProvider>
+        </ChatContextProvider>
     )
 }
