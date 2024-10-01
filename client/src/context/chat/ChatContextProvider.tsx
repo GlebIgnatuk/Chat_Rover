@@ -277,6 +277,13 @@ export const ChatContextProvider = ({ children }: Props) => {
                 type: '@chat/messages/put',
                 payload: { chatId: message.chatId, item: { message, status: 'sent', error: null } },
             })
+
+            if (user.user._id !== message.createdBy._id) {
+                dispatch({
+                    type: '@chats/set_last_received_message',
+                    payload: message,
+                })
+            }
         })
 
         socket.on('connect_error', () => {

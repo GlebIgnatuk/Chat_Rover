@@ -12,6 +12,7 @@ export const usePeer = (peerId: string) => {
     const loading = state.p2p.itemLoading[peerId]
 
     useEffect(() => {
+        console.log('effect')
         if (chat) return
 
         const abortController = new AbortController()

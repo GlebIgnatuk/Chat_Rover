@@ -45,6 +45,7 @@ export interface IState {
         loading: ILoading
     }
     chatsMessages: {
+        lastReceivedMessage: Message | null
         items: { [chatId: string]: MessageWithStatus[] }
         itemLoading: { [chatId: string]: ILoading }
     }
@@ -60,6 +61,10 @@ export type IAction =
     | {
           type: '@chats/set_loading'
           payload: ILoading
+      }
+    | {
+          type: '@chats/set_last_received_message'
+          payload: Message
       }
     | { type: '@p2p/set_loading'; payload: { peerId: string; loading: ILoading } }
     | { type: '@p2p/add'; payload: { peerId: string; value: IPrivateChatWithMetadata } }
@@ -86,6 +91,7 @@ export const initialState: IState = {
         loading: { is: false, error: null },
     },
     chatsMessages: {
+        lastReceivedMessage: null,
         items: {},
         itemLoading: {},
     },
@@ -158,6 +164,16 @@ export const reducer: Reducer<IState, IAction> = (state, action) => {
                         ...state.p2p.items,
                         [action.payload.peer._id]: action.payload,
                     },
+                },
+            }
+        }
+
+        case '@chats/set_last_received_message': {
+            return {
+                ...state,
+                chatsMessages: {
+                    ...state.chatsMessages,
+                    lastReceivedMessage: action.payload,
                 },
             }
         }

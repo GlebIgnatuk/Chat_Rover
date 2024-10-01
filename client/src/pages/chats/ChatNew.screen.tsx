@@ -12,7 +12,9 @@ export const ChatNewScreen = () => {
             navigate(`/home/chats/${chat._id}`, { replace: true })
         } else if (loading) {
             if (loading.is === false && loading.error) {
-                navigate('/home')
+                if (loading.error.includes('AbortError') === false) {
+                    navigate('/home')
+                }
             }
         }
     }, [chat, loading])

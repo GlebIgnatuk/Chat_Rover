@@ -6,8 +6,8 @@ import { AuthContext, IAuthContext, IUser } from './AuthContext'
 export const AuthContextProvider = () => {
     const [user, setUser] = useState<IUser | null>(null)
 
-    const signIn = async () => {
-        const response = await api<IUser>('/users/me')
+    const signIn = async (signal?: AbortSignal) => {
+        const response = await api<IUser>('/users/me', { signal })
         if (response.success) {
             setUser(response.data)
         }
@@ -15,10 +15,11 @@ export const AuthContextProvider = () => {
         return response
     }
 
-    const signUp = async (nickname: string) => {
+    const signUp = async (nickname: string, signal?: AbortSignal) => {
         const response = await api<IUser>('/users', {
             method: 'POST',
             body: JSON.stringify({ nickname }),
+            signal,
         })
         if (response.success) {
             setUser(response.data)

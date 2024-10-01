@@ -26,6 +26,13 @@ export const ChatScreen = () => {
         }, {})
     }, [messages])
 
+    const submit = () => {
+        if (ref.current && ref.current.value.trim() !== '') {
+            sendMessage(ref.current.value)
+            ref.current.value = ''
+        }
+    }
+
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTo({
@@ -34,6 +41,20 @@ export const ChatScreen = () => {
             })
         }
     }, [messages])
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key !== 'Enter') return
+
+            submit()
+        }
+
+        window.addEventListener('keypress', handler)
+
+        return () => {
+            window.removeEventListener('keypress', handler)
+        }
+    }, [])
 
     if (!chat.chat || chat.loading.is) {
         return <>Loading...</>
@@ -113,11 +134,10 @@ export const ChatScreen = () => {
                 <button
                     className="shrink-0 px-3 py-2 bg-[#E79B46] text-[#FFFAE7] font-medium disabled:bg-gray-500"
                     disabled={messages.messages[messages.messages.length - 1]?.status === 'pending'}
-                    onClick={() => {
-                        if (ref.current && ref.current.value.trim() !== '') {
-                            sendMessage(ref.current.value)
-                            ref.current.value = ''
-                        }
+                    onClick={(e) => {
+                        e.preventDefault()
+                        ref.current?.focus()
+                        submit()
                     }}
                 >
                     Send

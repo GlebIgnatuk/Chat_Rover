@@ -20,8 +20,8 @@ export interface IUser {
 
 export interface IAuthContext {
     user: IUser | null
-    signIn: () => Promise<APIResponse<IUser>>
-    signUp: (nickname: string) => Promise<APIResponse<IUser>>
+    signIn: (signal?: AbortSignal) => Promise<APIResponse<IUser>>
+    signUp: (nickname: string, signal?: AbortSignal) => Promise<APIResponse<IUser>>
     logout: () => void
 }
 

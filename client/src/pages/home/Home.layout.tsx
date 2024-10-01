@@ -4,6 +4,7 @@ import { ProfilesContextProvider } from '@/context/profiles'
 import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
+import { Toast } from './Toast'
 // import { LeftNavigation, RightNavigation } from './Navigation'
 // import { TopRibbon } from './TopRibbon'
 
@@ -50,6 +51,7 @@ export const HomeLayout = () => {
     return (
         <ProfilesContextProvider>
             <ChatContextProvider>
+                <Toast />
                 <div className="relative h-full bg-[#C3B6A0] flex flex-col">
                     {import.meta.env.DEV && (
                         <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">

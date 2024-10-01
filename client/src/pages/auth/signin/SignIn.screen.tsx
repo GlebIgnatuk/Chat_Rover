@@ -14,22 +14,31 @@ export const SignInScreen = () => {
 
     const auth = useAuth()
 
-    const signIn = async () => {
+    const signIn = async (signal?: AbortSignal) => {
         try {
             setError('')
             setIsLoading(true)
 
-            const response = await auth.signIn()
+            const response = await auth.signIn(signal)
+            setIsLoading(false)
             if (!response.success) {
                 setError(response.error)
             }
-        } finally {
+        } catch (e) {
+            if (e instanceof Error && e.name !== 'AbortError') {
+                setError('Something went wrong')
+            }
             setIsLoading(false)
         }
     }
 
     useEffect(() => {
-        signIn()
+        const abortController = new AbortController()
+        signIn(abortController.signal)
+
+        return () => {
+            abortController.abort()
+        }
     }, [])
 
     if (isLoading) {
@@ -65,7 +74,7 @@ export const SignInScreen = () => {
                     <span className="text-lg">Error: {error}</span>
                     <button
                         className="bg-primary-100 text-gray-700 font-medium px-4 py-2 rounded-md cursor-pointer active:bg-primary-100/90"
-                        onClick={signIn}
+                        onClick={() => signIn()}
                     >
                         Try again
                     </button>
