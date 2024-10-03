@@ -4,7 +4,7 @@ import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpScreen } from '@/pages/auth/signup/SignUp.screen'
 import { HomeLayout } from '@/pages/home/Home.layout'
 import { buildUrl } from '@/utils/url'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { AuthContextProvider } from './context/auth/AuthContextProvider'
 import { ProtectedRoute } from './context/auth/ProtectedRoute'
 import { ChatsScreen } from './pages/chats/Chats.screen'
@@ -13,6 +13,9 @@ import { HomeScreen } from './pages/home/Home.screen'
 import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 import { ProfilesScreen } from './pages/profiles/Profiles.screen'
 import { ProfileScreen } from './pages/profiles/Profile.screen'
+import { ProfilesContextProvider } from './context/profiles'
+import { ChatContextProvider } from './context/chat'
+import { AccountContextProvider } from './context/account'
 
 const router = createBrowserRouter([
     {
@@ -39,7 +42,17 @@ const router = createBrowserRouter([
             },
             {
                 path: '*',
-                element: <ProtectedRoute />,
+                element: (
+                    <ProtectedRoute>
+                        <ProfilesContextProvider>
+                            <ChatContextProvider>
+                                <AccountContextProvider>
+                                    <Outlet />
+                                </AccountContextProvider>
+                            </ChatContextProvider>
+                        </ProfilesContextProvider>
+                    </ProtectedRoute>
+                ),
                 children: [
                     {
                         path: 'home',
@@ -48,18 +61,6 @@ const router = createBrowserRouter([
                             {
                                 path: '',
                                 element: <HomeScreen />,
-                            },
-                            // {
-                            //     path: 'account',
-                            //     element: <AccountScreen />,
-                            // },
-                            {
-                                path: 'profiles',
-                                element: <ProfilesScreen />,
-                            },
-                            {
-                                path: 'profiles/:id',
-                                element: <ProfileScreen />,
                             },
                             {
                                 path: 'chats',
@@ -72,6 +73,20 @@ const router = createBrowserRouter([
                             {
                                 path: 'chats/:id',
                                 element: <ChatScreen />,
+                            },
+                        ],
+                    },
+                    {
+                        path: 'account',
+                        element: <Outlet />,
+                        children: [
+                            {
+                                path: 'profiles',
+                                element: <ProfilesScreen />,
+                            },
+                            {
+                                path: 'profiles/:id',
+                                element: <ProfileScreen />,
                             },
                         ],
                     },

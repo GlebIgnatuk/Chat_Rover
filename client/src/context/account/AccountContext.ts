@@ -9,11 +9,11 @@ export interface IProfile {
     usesVoice: boolean
     languages: string[]
     worldLevel: number
-    team: {
+    team: Array<{
         characterId: string
         level: number
         rank: number
-    }[]
+    } | null>
 }
 
 export interface IAccountContext {

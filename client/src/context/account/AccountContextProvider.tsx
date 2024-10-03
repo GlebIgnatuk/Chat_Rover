@@ -27,7 +27,7 @@ export const AccountContextProvider = ({ children }: Props) => {
                         _id: '1',
                         about: 'Hey',
                         languages: ['en', 'jp'],
-                        nickname: 'heyehey',
+                        nickname: '3 characters',
                         server: 'europe',
                         team: [
                             {
@@ -45,6 +45,48 @@ export const AccountContextProvider = ({ children }: Props) => {
                                 level: 80,
                                 rank: 3,
                             },
+                        ],
+                        uid: 123456789,
+                        usesVoice: true,
+                        worldLevel: 213,
+                    },
+                    {
+                        _id: '2',
+                        about: 'Hey',
+                        languages: ['en', 'jp'],
+                        nickname: '2 characters',
+                        server: 'europe',
+                        team: [
+                            {
+                                characterId: '2',
+                                level: 77,
+                                rank: 4,
+                            },
+                            null,
+                            {
+                                characterId: '3',
+                                level: 80,
+                                rank: 3,
+                            },
+                        ],
+                        uid: 123456789,
+                        usesVoice: true,
+                        worldLevel: 213,
+                    },
+                    {
+                        _id: '3',
+                        about: 'Hey',
+                        languages: ['en', 'jp'],
+                        nickname: '1 characters',
+                        server: 'europe',
+                        team: [
+                            null,
+                            {
+                                characterId: '2',
+                                level: 77,
+                                rank: 4,
+                            },
+                            null,
                         ],
                         uid: 123456789,
                         usesVoice: true,

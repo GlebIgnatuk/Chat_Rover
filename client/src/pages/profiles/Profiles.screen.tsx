@@ -15,7 +15,7 @@ export const ProfilesScreen = () => {
             {profiles.map((profile) => (
                 <NavLink
                     key={profile._id}
-                    to={`/home/profiles/${profile._id}`}
+                    to={`/account/profiles/${profile._id}`}
                     className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold"
                 >
                     {profile.nickname} | {profile.server}

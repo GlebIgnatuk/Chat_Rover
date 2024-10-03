@@ -1,4 +1,4 @@
-import loadingScreenImage from '@/assets/loading-screen.jpg'
+import loadingScreenImage from '@/assets/loading-screen.webp'
 import { useAuth } from '@/context/auth/useAuth'
 
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -49,7 +49,11 @@ export const SignUpScreen = () => {
                         disabled={isLoading || name.length < 3}
                         className="bg-primary-100 px-8 py-2 text-gray-700 flex items-center justify-center font-medium text-2xl rounded-md mt-8 mx-auto active:bg-primary-100/90 disabled:bg-primary-100/50"
                     >
-                        {isLoading ? <FontAwesomeIcon icon={faSpinner} className="w-6 h-6 animate-spin" /> : 'Start'}
+                        {isLoading ? (
+                            <FontAwesomeIcon icon={faSpinner} className="w-6 h-6 animate-spin" />
+                        ) : (
+                            'Start'
+                        )}
                     </button>
                 </div>
             </div>

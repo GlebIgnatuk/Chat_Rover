@@ -1,4 +1,4 @@
-import loadingScreenImage from '@/assets/loading-screen.jpg'
+import loadingScreenImage from '@/assets/loading-screen.webp'
 import { FAKE_PROFILES } from '@/config/config'
 
 import { useAuth } from '@/context/auth/useAuth'

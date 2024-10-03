@@ -1,17 +1,12 @@
 import { useUser } from '@/context/auth/useUser'
-import { ChatContextProvider } from '@/context/chat'
-import { ProfilesContextProvider } from '@/context/profiles'
 import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 import { Toast } from './Toast'
-import { AccountContextProvider } from '@/context/account'
-// import { LeftNavigation, RightNavigation } from './Navigation'
-// import { TopRibbon } from './TopRibbon'
 
 const navigation = [
     { path: '/home', label: 'Profiles' },
-    { path: '/home/profiles', label: 'Account' },
+    { path: '/account/profiles', label: 'Account' },
     { path: '/home/chats', label: 'Chats' },
     { path: '/home/public-chats', label: 'Public Chats', disabled: true },
 ]
@@ -51,65 +46,61 @@ export const HomeLayout = () => {
     }, [navigate])
 
     return (
-        <ProfilesContextProvider>
-            <ChatContextProvider>
-                <AccountContextProvider>
-                    <Toast />
-                    <div className="relative h-full bg-[#C3B6A0] flex flex-col">
-                        {import.meta.env.DEV && (
-                            <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
-                                <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                                    {user.user.nickname} | {location.pathname}
-                                </div>
-                                <div className="flex justify-end">
-                                    <button
-                                        className="p-1 rounded-md bg-red-900"
-                                        onClick={() => {
-                                            sessionStorage.removeItem('__telegram__initParams')
-                                            window.location.reload()
-                                        }}
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="relative z-10 grow grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
-                            <div
-                                className="grid items-end bg-[#FFFAE7] pb-10 pt-10"
-                                style={{
-                                    gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))`,
+        <>
+            <Toast />
+            <div className="relative h-full bg-[#C3B6A0] flex flex-col">
+                {import.meta.env.DEV && (
+                    <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
+                        <div className="text-ellipsis overflow-hidden whitespace-nowrap">
+                            {user.user.nickname} | {location.pathname}
+                        </div>
+                        <div className="flex justify-end">
+                            <button
+                                className="p-1 rounded-md bg-red-900"
+                                onClick={() => {
+                                    sessionStorage.removeItem('__telegram__initParams')
+                                    window.location.reload()
                                 }}
                             >
-                                {navigation.map((n) => (
-                                    <NavLink
-                                        key={n.path}
-                                        to={n.path}
-                                        end
-                                        className={({ isActive }) =>
-                                            cn(
-                                                'text-center py-2 transition-all duration-300 font-semibold white rounded-t-xl',
-                                                {
-                                                    'bg-[#57BEFF] pt-3': isActive,
-                                                    'bg-[#C3B6A0]': !isActive,
-                                                    'pointer-events-none bg-gray-500': n.disabled,
-                                                },
-                                            )
-                                        }
-                                    >
-                                        {n.label}
-                                    </NavLink>
-                                ))}
-                            </div>
-
-                            <WithTransition key={location.pathname}>
-                                <Outlet />
-                            </WithTransition>
+                                Logout
+                            </button>
                         </div>
                     </div>
-                </AccountContextProvider>
-            </ChatContextProvider>
-        </ProfilesContextProvider>
+                )}
+
+                <div className="relative z-10 grow grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
+                    <div
+                        className="grid items-end bg-[#FFFAE7] pb-10 pt-10"
+                        style={{
+                            gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))`,
+                        }}
+                    >
+                        {navigation.map((n) => (
+                            <NavLink
+                                key={n.path}
+                                to={n.path}
+                                end
+                                className={({ isActive }) =>
+                                    cn(
+                                        'text-center py-2 transition-all duration-300 font-semibold white rounded-t-xl',
+                                        {
+                                            'bg-[#57BEFF] pt-3': isActive,
+                                            'bg-[#C3B6A0]': !isActive,
+                                            'pointer-events-none bg-gray-500': n.disabled,
+                                        },
+                                    )
+                                }
+                            >
+                                {n.label}
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    <WithTransition key={location.pathname}>
+                        <Outlet />
+                    </WithTransition>
+                </div>
+            </div>
+        </>
     )
 }
