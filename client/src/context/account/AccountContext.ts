@@ -1,0 +1,24 @@
+import { createContext } from 'react'
+
+export interface IProfile {
+    _id: string
+    uid: number
+    about: string
+    nickname: string
+    server: string
+    usesVoice: boolean
+    languages: string[]
+    worldLevel: number
+    team: {
+        characterId: string
+        level: number
+        rank: number
+    }[]
+}
+
+export interface IAccountContext {
+    profiles: IProfile[]
+    loading: { is: true } | { is: false; error: string | null }
+}
+
+export const AccountContext = createContext<IAccountContext | undefined>(undefined)

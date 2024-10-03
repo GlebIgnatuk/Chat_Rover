@@ -1,4 +1,4 @@
-import { AccountScreen } from '@/pages/account/Account.screen'
+// import { AccountScreen } from '@/pages/account/Account.screen'
 import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpScreen } from '@/pages/auth/signup/SignUp.screen'
@@ -11,6 +11,8 @@ import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { HomeScreen } from './pages/home/Home.screen'
 import { ChatNewScreen } from './pages/chats/ChatNew.screen'
+import { ProfilesScreen } from './pages/profiles/Profiles.screen'
+import { ProfileScreen } from './pages/profiles/Profile.screen'
 
 const router = createBrowserRouter([
     {
@@ -47,9 +49,17 @@ const router = createBrowserRouter([
                                 path: '',
                                 element: <HomeScreen />,
                             },
+                            // {
+                            //     path: 'account',
+                            //     element: <AccountScreen />,
+                            // },
                             {
-                                path: 'account',
-                                element: <AccountScreen />,
+                                path: 'profiles',
+                                element: <ProfilesScreen />,
+                            },
+                            {
+                                path: 'profiles/:id',
+                                element: <ProfileScreen />,
                             },
                             {
                                 path: 'chats',
