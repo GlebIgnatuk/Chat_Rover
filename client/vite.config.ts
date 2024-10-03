@@ -21,12 +21,12 @@ export default defineConfig({
         host: '0.0.0.0',
         proxy: {
             '/api': {
-                target: 'http://192.168.100.4:4000',
+                target: 'http://127.0.0.1:4000',
                 changeOrigin: true,
                 secure: false,
             },
             '/socket.io': {
-                target: 'ws://192.168.100.4:4000',
+                target: 'ws://127.0.0.1:4000',
                 ws: true,
                 rewriteWsOrigin: true,
                 secure: false,
