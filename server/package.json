@@ -10,7 +10,7 @@
     "start": "node ./dist/src/handler.local.js",
     "dev": "nodemon",
     "build": "yarn build:dev",
-    "build:dev": "swc ./src --config-file dev.swcrc -d dist --copy-files"
+    "build:dev": "swc ./src ./scripts --config-file dev.swcrc -d dist --copy-files"
   },
   "devDependencies": {
     "@swc/cli": "^0.4.0",

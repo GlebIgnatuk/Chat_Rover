@@ -7,6 +7,7 @@ import { Toast } from './Toast'
 const navigation = [
     { path: '/home', label: 'Profiles' },
     { path: '/account/profiles', label: 'Account' },
+    { path: '/home/characters', label: 'Characters' },
     { path: '/home/chats', label: 'Chats' },
     { path: '/home/public-chats', label: 'Public Chats', disabled: true },
 ]

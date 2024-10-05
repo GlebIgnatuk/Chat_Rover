@@ -11,16 +11,28 @@ export const ProfilesScreen = () => {
     }
 
     return (
-        <div className="flex flex-col gap-3">
-            {profiles.map((profile) => (
+        <>
+            <NavLink to="/home" className="p-2 bg-red-400 mb-2 block text-center">
+                Back
+            </NavLink>
+
+            <div className="flex flex-col gap-3">
+                {profiles.map((profile) => (
+                    <NavLink
+                        key={profile._id}
+                        to={`/account/profiles/${profile._id}`}
+                        className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold"
+                    >
+                        {profile.nickname} | {profile.server}
+                    </NavLink>
+                ))}
                 <NavLink
-                    key={profile._id}
-                    to={`/account/profiles/${profile._id}`}
-                    className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold"
+                    to={`/account/profiles/new`}
+                    className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold text-center"
                 >
-                    {profile.nickname} | {profile.server}
+                    (+) Create
                 </NavLink>
-            ))}
-        </div>
+            </div>
+        </>
     )
 }

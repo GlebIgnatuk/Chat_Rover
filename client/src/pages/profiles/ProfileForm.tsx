@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
-import Changli from '@/assets/Changli.png'
+import { useCharacters } from '@/context/characters'
 
 export interface FormState {
     uid: number
@@ -13,7 +13,7 @@ export interface FormState {
     team: Array<{
         characterId: string
         level: number
-        rank: number
+        constellation: number
     } | null>
 }
 
@@ -30,29 +30,78 @@ const initialState: FormState = {
     usesVoice: true,
     languages: [],
     worldLevel: 0,
-    team: [],
-}
-
-const images: Record<string, string> = {
-    '1': Changli,
-    '2': Changli,
-    '3': Changli,
+    team: [null, null, null],
 }
 
 export const ProfileForm = (props: Props) => {
     const [state, setState] = useState<FormState>(props.initialState ?? initialState)
+    const cardRef = useRef<HTMLDivElement | null>(null)
+
+    const { loading, characters: charactersList, indexed: characters } = useCharacters()
 
     const onSubmit = () => {
         props.onSubmit(state)
+    }
+
+    const increaseConstellation = (of: number) => {
+        setState((prev) => {
+            return {
+                ...prev,
+                team: prev.team.map((m, idx) =>
+                    idx === of && m ? { ...m, constellation: Math.min(m.constellation + 1, 6) } : m,
+                ),
+            }
+        })
+    }
+
+    const decreaseConstellation = (of: number) => {
+        setState((prev) => {
+            return {
+                ...prev,
+                team: prev.team.map((m, idx) =>
+                    idx === of && m ? { ...m, constellation: Math.max(m.constellation - 1, 0) } : m,
+                ),
+            }
+        })
+    }
+
+    const selectCharacter = (of: number, characterId: string) => {
+        setState((prev) => {
+            return {
+                ...prev,
+                team: prev.team.map((m, idx) =>
+                    idx === of ? { characterId, constellation: 0, level: 0 } : m,
+                ),
+            }
+        })
+    }
+
+    const setNickname = (nickname: string) => {
+        setState((prev) => ({ ...prev, nickname }))
+    }
+
+    const setUid = (uid: string) => {
+        if (/^\d*$/.test(uid) === false) return
+
+        setState((prev) => ({ ...prev, uid: Number(uid) }))
     }
 
     useEffect(() => {
         setState(props.initialState ?? initialState)
     }, [props.initialState])
 
+    if (loading.is) {
+        return <>Loading...</>
+    } else if (loading.is === false && loading.error) {
+        return <>Failed to load: {loading.error}</>
+    }
+
     return (
         <form onSubmit={onSubmit} className="w-full h-full">
-            <div className="mx-auto relative w-full max-w-[370px] text-white text-sm rounded-xl overflow-hidden">
+            <div
+                className="mx-auto relative w-full max-w-[370px] text-white text-sm rounded-xl overflow-hidden"
+                ref={cardRef}
+            >
                 <div className="relative z-10">
                     <div className="bg-gradient-to-r from-[#ffc960]/25 to-[#5d3d0c]/75 py-3 flex justify-between items-center gap-1">
                         <div className="tracking-tighter pl-1 overflow-hidden text-ellipsis whitespace-nowrap grow font-medium">
@@ -65,8 +114,27 @@ export const ProfileForm = (props: Props) => {
                     </div>
 
                     <div className="px-2 pt-1">
-                        <div className="text-base">{state.nickname}</div>
-                        <div className="text-xs">UID: {state.uid}</div>
+                        <div className="text-base">
+                            <input
+                                type="text"
+                                className="text-white bg-transparent outline-none w-full"
+                                placeholder="Your nickname..."
+                                value={state.nickname}
+                                maxLength={55}
+                                onChange={(e) => setNickname(e.target.value)}
+                            />
+                        </div>
+                        <div className="text-xs flex gap-1">
+                            <span className="shrink-0">UID:</span>
+                            <input
+                                type="text"
+                                className="text-white bg-transparent outline-none grow"
+                                placeholder="123456789"
+                                value={state.uid}
+                                maxLength={9}
+                                onChange={(e) => setUid(e.target.value)}
+                            />
+                        </div>
                     </div>
 
                     <div className="mt-2 grid grid-cols-3 gap-1 px-1">
@@ -79,18 +147,49 @@ export const ProfileForm = (props: Props) => {
 
                                     {state.team[idx] ? (
                                         <img
-                                            src={images[state.team[idx].characterId]}
+                                            src={characters[state.team[idx].characterId]?.photoUrl}
                                             className="w-full h-full object-cover object-bottom"
+                                            style={{
+                                                backgroundColor:
+                                                    characters[state.team[idx].characterId]
+                                                        ?.accentColor ?? '#000000',
+                                            }}
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-t from-gray-500 to-gray-700 text-8xl flex items-center justify-center">
+                                        <div
+                                            className="w-full h-full bg-gradient-to-t from-gray-500 to-gray-700 text-8xl flex items-center justify-center"
+                                            onClick={() =>
+                                                selectCharacter(
+                                                    idx,
+                                                    charactersList[
+                                                        Math.floor(
+                                                            Math.random() * charactersList.length,
+                                                        )
+                                                    ]!._id,
+                                                )
+                                            }
+                                        >
                                             <span className="rotate-45">×</span>
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="text-lg flex items-center justify-center absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-8 w-8 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg">
-                                    {state.team[idx]?.rank ?? 0}
+                                    <div
+                                        className="absolute top-1/2 -left-3 -translate-y-1/2 text-sm leading-none font-bold text-white bg-[#EBC920] border border-r-0 border-[#A17DA8] rounded-full pb-[2px] px-[2px]"
+                                        onClick={() => decreaseConstellation(idx)}
+                                    >
+                                        &lt;
+                                    </div>
+
+                                    {state.team[idx]?.constellation ?? 0}
+
+                                    <div
+                                        className="absolute top-1/2 -right-3 -translate-y-1/2 text-sm leading-none font-bold text-white bg-[#EBC920] border border-l-0 border-[#A17DA8] rounded-full pb-[2px] px-[2px]"
+                                        onClick={() => increaseConstellation(idx)}
+                                    >
+                                        &gt;
+                                    </div>
                                 </div>
                             </div>
                         ))}

@@ -1,7 +1,7 @@
 import { FormState, ProfileForm } from './ProfileForm'
 import { useMemo } from 'react'
 import { useAccount } from '@/context/account'
-import { Navigate, useParams } from 'react-router-dom'
+import { Navigate, NavLink, useParams } from 'react-router-dom'
 
 export const ProfileScreen = () => {
     const { id: profileId } = useParams()
@@ -14,7 +14,12 @@ export const ProfileScreen = () => {
     }
 
     return profile ? (
-        <ProfileForm initialState={profile} onSubmit={onSubmit} />
+        <>
+            <NavLink to="/account/profiles" className="bg-red-400 p-2 block mb-2">
+                Back
+            </NavLink>
+            <ProfileForm initialState={profile} onSubmit={onSubmit} />
+        </>
     ) : (
         <Navigate to="/profiles" />
     )

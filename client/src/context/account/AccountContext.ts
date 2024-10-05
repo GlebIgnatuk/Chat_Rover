@@ -12,7 +12,7 @@ export interface IProfile {
     team: Array<{
         characterId: string
         level: number
-        rank: number
+        constellation: number
     } | null>
 }
 

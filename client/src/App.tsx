@@ -16,6 +16,9 @@ import { ProfileScreen } from './pages/profiles/Profile.screen'
 import { ProfilesContextProvider } from './context/profiles'
 import { ChatContextProvider } from './context/chat'
 import { AccountContextProvider } from './context/account'
+import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
+import { CharactersScreen } from './pages/characters/Characters.screen'
+import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 
 const router = createBrowserRouter([
     {
@@ -46,9 +49,11 @@ const router = createBrowserRouter([
                     <ProtectedRoute>
                         <ProfilesContextProvider>
                             <ChatContextProvider>
-                                <AccountContextProvider>
-                                    <Outlet />
-                                </AccountContextProvider>
+                                <CharactersContextProvider>
+                                    <AccountContextProvider>
+                                        <Outlet />
+                                    </AccountContextProvider>
+                                </CharactersContextProvider>
                             </ChatContextProvider>
                         </ProfilesContextProvider>
                     </ProtectedRoute>
@@ -67,6 +72,10 @@ const router = createBrowserRouter([
                                 element: <ChatsScreen />,
                             },
                             {
+                                path: 'characters',
+                                element: <CharactersScreen />,
+                            },
+                            {
                                 path: 'chats/new',
                                 element: <ChatNewScreen />,
                             },
@@ -83,6 +92,10 @@ const router = createBrowserRouter([
                             {
                                 path: 'profiles',
                                 element: <ProfilesScreen />,
+                            },
+                            {
+                                path: 'profiles/new',
+                                element: <ProfileNewScreen />,
                             },
                             {
                                 path: 'profiles/:id',

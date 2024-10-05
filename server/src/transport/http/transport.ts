@@ -1,6 +1,7 @@
 import * as UsersController from './users/users.controller'
 import * as PrivateChatsController from './privateChats/privateChats.controller'
 import * as ChatMessagesController from './chatMessages/chatMessages.controller'
+import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import { Router } from 'express'
 import {
     ValidatedUserPayload,
@@ -100,6 +101,9 @@ export const setupHttpRouter = (
     authorized.post('/chats/:chatId/messages', ChatMessagesController.create)
     authorized.patch('/chats/:chatId/messages/:messageId', ChatMessagesController.patch)
     authorized.delete('/chats/:chatId/messages/:messageId', ChatMessagesController.remove)
+
+    // Wuwa characters
+    authorized.get('/wuwaCharacters', WuwaCharactersController.list)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))
