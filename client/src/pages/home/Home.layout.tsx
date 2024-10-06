@@ -131,7 +131,6 @@ export const HomeLayout = () => {
                             <NavLink
                                 key={n.path}
                                 to={n.path}
-                                replace
                                 end={n.end}
                                 className={({ isActive }) =>
                                     cn('py-2 flex flex-col items-center justify-end relative', {
