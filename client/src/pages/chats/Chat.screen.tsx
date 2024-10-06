@@ -2,12 +2,13 @@ import { useUser } from '@/context/auth/useUser'
 import { useChat } from '@/context/chat'
 import { MessageWithStatus } from '@/context/chat/reducer'
 import { useEffect, useMemo, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
 export const ChatScreen = () => {
     const { user } = useUser()
     const { id: chatId } = useParams()
+    const navigate = useNavigate()
     const ref = useRef<HTMLInputElement | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -64,7 +65,11 @@ export const ChatScreen = () => {
 
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
-            <div className=""></div>
+            <div className="bg-[#FFFAE7] text-black px-1 py-2">
+                <div className="inline-block" onClick={() => navigate(-1)}>
+                    &lt; Back
+                </div>
+            </div>
 
             <div className="grow overflow-hidden pb-1">
                 <div className="h-full overflow-auto" ref={scrollRef}>

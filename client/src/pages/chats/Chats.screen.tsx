@@ -14,7 +14,7 @@ export const ChatsScreen = () => {
                 {chats.map((chat) => (
                     <NavLink
                         key={chat._id}
-                        to={`/home/chats/${chat._id}`}
+                        to={`/chats/${chat._id}`}
                         className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 bg-[#FFFAE7]"
                     >
                         {chat.peer.avatarUrl ? (
