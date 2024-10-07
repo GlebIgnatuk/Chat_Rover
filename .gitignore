@@ -2,3 +2,6 @@ node_modules
 
 .env.development
 .env.local
+
+full_codebase.txt
+get_codebase_web.py

@@ -39,7 +39,7 @@ export const Toast = () => {
             )}
             onClick={() => {
                 if (lastMessageLocal) {
-                    navigate(`/home/chats/${lastMessageLocal.chatId}`)
+                    navigate(`/chats/${lastMessageLocal.chatId}`)
                     setLastMessage(null)
                 }
             }}

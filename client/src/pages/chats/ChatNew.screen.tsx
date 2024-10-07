@@ -9,7 +9,7 @@ export const ChatNewScreen = () => {
 
     useEffect(() => {
         if (chat) {
-            navigate(`/home/chats/${chat._id}`, { replace: true })
+            navigate(`/chats/${chat._id}`, { replace: true })
         } else if (loading) {
             if (loading.is === false && loading.error) {
                 if (loading.error.includes('AbortError') === false) {
