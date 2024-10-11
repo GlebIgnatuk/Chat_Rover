@@ -8,8 +8,8 @@ export class ProfileRepository implements IProfileRepository {
     return ProfileModel.getCollection().findOne({ _id: new Types.ObjectId(id) });
   }
 
-  async getByUserId(userId: ID): Promise<IProfileDTO | null> {
-    return ProfileModel.getCollection().findOne({ userId: new Types.ObjectId(userId) });
+  async getByUserId(userId: ID): Promise<IProfileDTO[] | null> {
+    return ProfileModel.getCollection().find({ userId: new Types.ObjectId(userId) }).toArray();
   }
 
   async create(payload: IProfileCreate): Promise<IProfileDTO> {

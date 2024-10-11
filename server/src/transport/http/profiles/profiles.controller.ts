@@ -1,6 +1,5 @@
 import { IAuthorizedRequestHandler } from '../types';
 import { profileSchema, searchQuerySchema } from '../../../validators/profileValidator';
-import Joi from 'joi';
 import qs from 'qs';
 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
@@ -69,6 +68,26 @@ export const update: IAuthorizedRequestHandler<{ id: string }> = async (req, res
     next(e);
   }
 };
+
+export const getMine: IAuthorizedRequestHandler = async (req, res, next) => {
+  try {
+    const { repositories, identity } = res.locals;
+
+    const user = await repositories.user.getByExternalId(identity.user.id);
+    if (!user) {
+      return res.status(403).json({ success: false, error: 'Forbidden' });
+    }
+
+    const profiles = await repositories.profile.getByUserId(user._id);
+    if (!profiles) {
+      return res.status(404).json({ success: false, error: 'Profile not found' });
+    }
+
+    res.json({ success: true, data: profiles});
+  } catch (e) {
+    next(e);
+  }
+}
 
 export const search: IAuthorizedRequestHandler = async (req, res, next) => {
     try {

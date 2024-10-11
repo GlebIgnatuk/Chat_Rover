@@ -18,7 +18,7 @@ export interface IProfileUpdate extends Partial<IProfileCreate> {}
 
 export interface IProfileRepository {
   get(id: ID): Promise<IProfileDTO | null>;
-  getByUserId(userId: ID): Promise<IProfileDTO | null>;
+  getByUserId(userId: ID): Promise<IProfileDTO[] | null>;
   search(params: IProfileSearchParams): Promise<IProfileDTO[]>;
   create(payload: IProfileCreate): Promise<IProfileDTO>;
   update(id: ID, payload: IProfileUpdate): Promise<IProfileDTO | null>;

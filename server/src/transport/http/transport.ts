@@ -96,6 +96,7 @@ export const setupHttpRouter = (
     authorized.post('/profiles', ProfilesController.create)
     authorized.put('/profiles/:id', ProfilesController.update)
     authorized.get('/profiles', ProfilesController.search)
+    authorized.get('/me/profiles', ProfilesController.getMine)
 
     // Private chat
     authorized.get('/privateChats', PrivateChatsController.listMyChats)
