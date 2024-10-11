@@ -15,6 +15,7 @@ import { Server } from 'socket.io'
 import { IServices } from './core/types'
 import { ChatService } from './core/chatService'
 import { WuwaCharacterRepository } from './repositories/impl/wuwaCharacter'
+import { ProfileRepository } from './repositories/impl/profile'
 
 const app = express()
 let server: http.Server | https.Server
@@ -40,6 +41,7 @@ const handler = async () => {
         privateChat: privateChat,
         user: new UserRepository(),
         wuwaCharacter: new WuwaCharacterRepository(),
+        profile: new ProfileRepository(),
     }
     const services: IServices = {
         chat: new ChatService(

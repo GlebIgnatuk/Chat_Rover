@@ -19,7 +19,7 @@ export const AccountContextProvider = ({ children }: Props) => {
     const loadProfiles = async (signal?: AbortSignal) => {
         try {
             setLoading({ is: true })
-            const response = await api<IProfile[]>(`/me/profiles`, { signal })
+            const response = await api<IProfile[]>(`/profiles`, { signal })
             if (response.success) {
                 setProfiles(response.data)
                 setLoading({ is: false, error: null })

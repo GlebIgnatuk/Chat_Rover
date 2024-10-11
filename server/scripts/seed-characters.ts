@@ -192,7 +192,7 @@ async function main() {
 
     const mapped = characters.map<IWuwaCharacterModel>((c) => ({
         ...c,
-        photoUrl: `https://localhost:3000${c.photoUrl}`,
+        photoUrl: `https://127.0.0.1:3000${c.photoUrl}`,
         createdAt: now,
         updatedAt: now,
     }))
