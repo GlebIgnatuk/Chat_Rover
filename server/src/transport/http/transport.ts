@@ -2,6 +2,7 @@ import * as UsersController from './users/users.controller'
 import * as PrivateChatsController from './privateChats/privateChats.controller'
 import * as ChatMessagesController from './chatMessages/chatMessages.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
+import * as ProfilesController from './profiles/profiles.controller';
 import { Router } from 'express'
 import {
     ValidatedUserPayload,
@@ -90,6 +91,11 @@ export const setupHttpRouter = (
     authorized.get('/users/me', UsersController.getAuthenticated)
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)
+
+    // Profiles
+    authorized.post('/profiles', ProfilesController.create)
+    authorized.put('/profiles/:id', ProfilesController.update)
+    authorized.get('/profiles', ProfilesController.search)
 
     // Private chat
     authorized.get('/privateChats', PrivateChatsController.listMyChats)
