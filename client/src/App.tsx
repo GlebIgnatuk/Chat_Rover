@@ -20,6 +20,8 @@ import { CharactersContextProvider } from './context/characters/CharactersContex
 import { CharactersScreen } from './pages/characters/Characters.screen'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
+import { useEffect } from 'react'
+import { api } from './services/api'
 
 const router = createBrowserRouter([
     {
@@ -119,6 +121,16 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+    useEffect(() => {
+        api('/me/activities', { method: 'post' })
+        
+        const intervalId = setInterval(() => {
+            api('/me/activities', { method: 'post' })
+        }, 60 * 1000)
+
+        return () => { clearInterval(intervalId) }
+    }, [])
+
     return <RouterProvider router={router} />
 }
 

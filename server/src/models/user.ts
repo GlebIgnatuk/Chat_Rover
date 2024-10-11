@@ -5,21 +5,7 @@ export interface IUserModel extends IBaseModel {
     externalId: number
     nickname: string
     language: string
-    
-    profile: null | {
-        uid: number
-        about: string
-        nickname: string
-        server: string
-        usesVoice: boolean
-        languages: string[]
-        worldLevel: number
-        team: {
-            characterId: Types.ObjectId
-            level: number
-            rank: number
-        }[]
-    }
+    lastActivityAt: Date
 }
 
 export type IUserDTO = mongo.WithId<IUserModel>
