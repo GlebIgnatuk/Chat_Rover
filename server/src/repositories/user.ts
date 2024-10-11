@@ -14,4 +14,5 @@ export interface IUserRepository {
     create(payload: IUserCreate): Promise<IUserDTO>
     delete(id: ID): Promise<void>
     deleteByExternalId(id: number): Promise<void>
+    trackActivity(id: ID): Promise<void>
 }

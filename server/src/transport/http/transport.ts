@@ -91,6 +91,7 @@ export const setupHttpRouter = (
     authorized.get('/users/me', UsersController.getAuthenticated)
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)
+    authorized.post('/me/activities', UsersController.trackActivity)
 
     // Profiles
     authorized.post('/profiles', ProfilesController.create)

@@ -70,3 +70,19 @@ export const deleteAuthenticated: IAuthorizedRequestHandler = async (_, res, nex
         next(e)
     }
 }
+
+export const trackActivity: IAuthorizedRequestHandler = async (_, res, next) => {
+    try {
+        const { identity, repositories } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(403).json({ success: false, error: 'FORBIDDEN' })
+        }
+
+        repositories.user.trackActivity(user?._id)
+        res.json({ success: true })
+    } catch (e) {
+        next(e)
+    }
+}

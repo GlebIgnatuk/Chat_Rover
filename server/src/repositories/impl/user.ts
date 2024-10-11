@@ -27,9 +27,9 @@ export class UserRepository implements IUserRepository {
             externalId: payload.externalId,
             language: payload.language,
             nickname: payload.nickname,
-            profile: null,
             createdAt: now,
             updatedAt: now,
+            lastActivityAt: now,
         })
 
         const user = await this.get(result.insertedId)
@@ -39,6 +39,16 @@ export class UserRepository implements IUserRepository {
 
         return user
     }
+
+    async trackActivity(id: ID): Promise<void> {
+        const now = new Date()
+
+        const result = await UserModel.getCollection().findOneAndUpdate({ _id: new Types.ObjectId(id) }, { $set: { lastActivityAt: now } })
+
+        if (!result) {
+            throw new Error('Failed to update the last activity time.')
+        }
+    } 
 
     async delete(id: ID): Promise<void> {
         await UserModel.getCollection().deleteOne({ _id: new Types.ObjectId(id) })
