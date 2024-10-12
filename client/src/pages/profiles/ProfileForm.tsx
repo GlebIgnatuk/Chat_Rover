@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
 import { useCharacters } from '@/context/characters'
-import { ScrollableNumericInput } from './ScrollableNumericInput'
-import { cn } from 'tailwind-cn'
+import { LevelDropdown } from './LevelDropdown'
+import { ConstellationDropdown } from './ConstellationDropdown'
 
 export interface FormState {
     uid: number
@@ -142,28 +142,16 @@ export const ProfileForm = (props: Props) => {
                             <div key={idx} className="relative">
                                 <div className="relative overflow-hidden rounded-xl bg-red-400 h-60">
                                     {state.team[idx] && (
-                                        <ScrollableNumericInput
-                                            min={0}
-                                            max={90}
-                                            step={1}
-                                            defaultValue={state.team[idx].level}
-                                            onChange={(value) => setLevel(idx, value)}
-                                            className="absolute left-0 top-3 bg-[#EBC920] pl-1 pr-2 py-1 rounded-r-xl"
-                                            itemClassName={(active) =>
-                                                cn(
-                                                    'text-center text-xs leading-none py-[1px] select-none',
-                                                    {
-                                                        'font-bold': active,
-                                                    },
-                                                )
-                                            }
+                                        <LevelDropdown
+                                            level={state.team[idx].level}
+                                            onChange={(level) => setLevel(idx, level)}
                                         />
                                     )}
 
                                     {state.team[idx] ? (
                                         <img
                                             src={characters[state.team[idx].characterId]?.photoUrl}
-                                            className="w-full h-full object-cover object-bottom"
+                                            className="w-full h-full object-cover object-bottom select-none"
                                             style={{
                                                 backgroundColor:
                                                     characters[state.team[idx].characterId]
@@ -190,17 +178,10 @@ export const ProfileForm = (props: Props) => {
                                 </div>
 
                                 {state.team[idx] && (
-                                    <ScrollableNumericInput
-                                        min={0}
-                                        max={6}
-                                        step={1}
-                                        defaultValue={state.team[idx].constellation}
-                                        onChange={(value) => setConstellation(idx, value)}
-                                        className="text-lg absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-10 w-10 py-3 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg"
-                                        itemClassName={(active) =>
-                                            cn('text-center text-sm leading-1 select-none', {
-                                                'font-bold': active,
-                                            })
+                                    <ConstellationDropdown
+                                        constellation={state.team[idx].constellation}
+                                        onChange={(constellation) =>
+                                            setConstellation(idx, constellation)
                                         }
                                     />
                                 )}
