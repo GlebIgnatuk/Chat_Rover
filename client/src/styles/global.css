@@ -18,8 +18,12 @@ body,
   @apply w-full h-full
 }
 
+body {
+  @apply md:bg-slate-900;
+}
+
 #root {
-  @apply overflow-hidden text-primary-100 bg-gray-700;
+  @apply overflow-hidden text-primary-100 bg-gray-700 md:max-w-[460px] md:mx-auto;
 }
 
 @keyframes pulse-25-50 {
