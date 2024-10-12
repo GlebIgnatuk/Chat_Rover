@@ -19,7 +19,7 @@ export const LevelDropdown = ({ level }: Props) => {
         <div
             ref={dropdown.ref}
             className={cn(
-                'absolute left-0 top-3 shadow-lg bg-[#EBC920] p-1 rounded-r-xl w-9 transition-all',
+                'absolute left-0 top-3 shadow-xl bg-[#EBC920] p-1 rounded-r-xl w-9 transition-all z-10',
                 {
                     'w-4/5': dropdown.isOpen,
                 },

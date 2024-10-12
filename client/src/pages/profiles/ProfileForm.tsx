@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
-import { useCharacters } from '@/context/characters'
 import { LevelDropdown } from './LevelDropdown'
 import { ConstellationDropdown } from './ConstellationDropdown'
+import { CharacterPicker } from './CharacterPicker'
+import { useCharacters } from '@/context/characters'
 
 export interface FormState {
     uid: number
@@ -39,7 +40,20 @@ export const ProfileForm = (props: Props) => {
     const [state, setState] = useState<FormState>(props.initialState ?? initialState)
     const cardRef = useRef<HTMLDivElement | null>(null)
 
-    const { loading, characters: charactersList, indexed: characters } = useCharacters()
+    const { loading, characters: charactersList, indexed: charactersMap } = useCharacters()
+    const filteredCharactersList = useMemo(() => {
+        return charactersList.filter((c) => {
+            const hasSelected = state.team.some((t) => t?.characterId === c._id)
+            if (hasSelected) return false
+
+            const rovers = charactersList
+                .filter((c) => c.name.toLowerCase() === 'rover')
+                .map((c) => c._id)
+
+            const hasRover = state.team.some((t) => t && rovers.includes(t.characterId))
+            return !hasRover || !rovers.includes(c._id)
+        })
+    }, [state.team, charactersList])
 
     const onSubmit = () => {
         props.onSubmit(state)
@@ -65,12 +79,16 @@ export const ProfileForm = (props: Props) => {
         })
     }
 
-    const selectCharacter = (of: number, characterId: string) => {
+    const selectCharacter = (of: number, characterId: string | null) => {
         setState((prev) => {
             return {
                 ...prev,
                 team: prev.team.map((m, idx) =>
-                    idx === of ? { characterId, constellation: 0, level: 0 } : m,
+                    idx === of
+                        ? characterId
+                            ? { characterId, constellation: 0, level: 0 }
+                            : null
+                        : m,
                 ),
             }
         })
@@ -92,7 +110,7 @@ export const ProfileForm = (props: Props) => {
 
     if (loading.is) {
         return <>Loading...</>
-    } else if (loading.is === false && loading.error) {
+    } else if (loading.error) {
         return <>Failed to load: {loading.error}</>
     }
 
@@ -148,33 +166,12 @@ export const ProfileForm = (props: Props) => {
                                         />
                                     )}
 
-                                    {state.team[idx] ? (
-                                        <img
-                                            src={characters[state.team[idx].characterId]?.photoUrl}
-                                            className="w-full h-full object-cover object-bottom select-none"
-                                            style={{
-                                                backgroundColor:
-                                                    characters[state.team[idx].characterId]
-                                                        ?.accentColor ?? '#000000',
-                                            }}
-                                        />
-                                    ) : (
-                                        <div
-                                            className="w-full h-full bg-gradient-to-t from-gray-500 to-gray-700 text-8xl flex items-center justify-center"
-                                            onClick={() =>
-                                                selectCharacter(
-                                                    idx,
-                                                    charactersList[
-                                                        Math.floor(
-                                                            Math.random() * charactersList.length,
-                                                        )
-                                                    ]!._id,
-                                                )
-                                            }
-                                        >
-                                            <span className="rotate-45 select-none">×</span>
-                                        </div>
-                                    )}
+                                    <CharacterPicker
+                                        charactersPool={filteredCharactersList}
+                                        allCharacters={charactersMap}
+                                        selected={state.team[idx]?.characterId}
+                                        onSelect={(id) => selectCharacter(idx, id)}
+                                    />
                                 </div>
 
                                 {state.team[idx] && (

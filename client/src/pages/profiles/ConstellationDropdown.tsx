@@ -19,7 +19,7 @@ export const ConstellationDropdown = ({ constellation }: Props) => {
         <div
             ref={dropdown.ref}
             className={cn(
-                'text-lg absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-10 w-10 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg transition-all',
+                'text-lg absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-10 w-10 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg transition-all z-10',
                 {
                     'w-10': dropdown.isOpen,
                 },

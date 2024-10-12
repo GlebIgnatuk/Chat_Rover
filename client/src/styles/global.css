@@ -23,7 +23,12 @@ body {
 }
 
 #root {
-  @apply overflow-hidden text-primary-100 bg-gray-700 md:max-w-[460px] md:mx-auto;
+  @apply text-primary-100 bg-gray-700;
+}
+
+#root,
+.Mui-Modal {
+  @apply md:max-w-[460px] md:mx-auto md:overflow-hidden;
 }
 
 .scrollbar-none {
