@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
 import { useCharacters } from '@/context/characters'
+import { ScrollableNumericInput } from './ScrollableNumericInput'
+import { cn } from 'tailwind-cn'
 
 export interface FormState {
     uid: number
@@ -43,24 +45,22 @@ export const ProfileForm = (props: Props) => {
         props.onSubmit(state)
     }
 
-    const increaseConstellation = (of: number) => {
+    const setConstellation = (of: number, value: number) => {
         setState((prev) => {
             return {
                 ...prev,
                 team: prev.team.map((m, idx) =>
-                    idx === of && m ? { ...m, constellation: Math.min(m.constellation + 1, 6) } : m,
+                    idx === of && m ? { ...m, constellation: value } : m,
                 ),
             }
         })
     }
 
-    const decreaseConstellation = (of: number) => {
+    const setLevel = (of: number, value: number) => {
         setState((prev) => {
             return {
                 ...prev,
-                team: prev.team.map((m, idx) =>
-                    idx === of && m ? { ...m, constellation: Math.max(m.constellation - 1, 0) } : m,
-                ),
+                team: prev.team.map((m, idx) => (idx === of && m ? { ...m, level: value } : m)),
             }
         })
     }
@@ -141,9 +141,24 @@ export const ProfileForm = (props: Props) => {
                         {Array.from({ length: 3 }, (_, idx) => (
                             <div key={idx} className="relative">
                                 <div className="relative overflow-hidden rounded-xl bg-red-400 h-60">
-                                    <div className="absolute left-0 top-3 bg-[#EBC920] pl-1 pr-2 rounded-r-xl">
-                                        {state.team[idx]?.level ?? 0}
-                                    </div>
+                                    {state.team[idx] && (
+                                        <ScrollableNumericInput
+                                            min={0}
+                                            max={90}
+                                            step={1}
+                                            defaultValue={state.team[idx].level}
+                                            onChange={(value) => setLevel(idx, value)}
+                                            className="absolute left-0 top-3 bg-[#EBC920] pl-1 pr-2 py-1 rounded-r-xl"
+                                            itemClassName={(active) =>
+                                                cn(
+                                                    'text-center text-xs leading-none py-[1px] select-none',
+                                                    {
+                                                        'font-bold': active,
+                                                    },
+                                                )
+                                            }
+                                        />
+                                    )}
 
                                     {state.team[idx] ? (
                                         <img
@@ -169,28 +184,26 @@ export const ProfileForm = (props: Props) => {
                                                 )
                                             }
                                         >
-                                            <span className="rotate-45">×</span>
+                                            <span className="rotate-45 select-none">×</span>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="text-lg flex items-center justify-center absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-8 w-8 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg">
-                                    <div
-                                        className="absolute top-1/2 -left-3 -translate-y-1/2 text-sm leading-none font-bold text-white bg-[#EBC920] border border-r-0 border-[#A17DA8] rounded-full pb-[2px] px-[2px]"
-                                        onClick={() => decreaseConstellation(idx)}
-                                    >
-                                        &lt;
-                                    </div>
-
-                                    {state.team[idx]?.constellation ?? 0}
-
-                                    <div
-                                        className="absolute top-1/2 -right-3 -translate-y-1/2 text-sm leading-none font-bold text-white bg-[#EBC920] border border-l-0 border-[#A17DA8] rounded-full pb-[2px] px-[2px]"
-                                        onClick={() => increaseConstellation(idx)}
-                                    >
-                                        &gt;
-                                    </div>
-                                </div>
+                                {state.team[idx] && (
+                                    <ScrollableNumericInput
+                                        min={0}
+                                        max={6}
+                                        step={1}
+                                        defaultValue={state.team[idx].constellation}
+                                        onChange={(value) => setConstellation(idx, value)}
+                                        className="text-lg absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-10 w-10 py-3 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg"
+                                        itemClassName={(active) =>
+                                            cn('text-center text-sm leading-1 select-none', {
+                                                'font-bold': active,
+                                            })
+                                        }
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>
