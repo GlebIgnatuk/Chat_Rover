@@ -4,6 +4,21 @@ import { LevelDropdown } from './LevelDropdown'
 import { ConstellationDropdown } from './ConstellationDropdown'
 import { CharacterPicker } from './CharacterPicker'
 import { useCharacters } from '@/context/characters'
+import { ServerDropdown } from './ServerDropdown'
+import { cn } from 'tailwind-cn'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
+import { WorldLevelDropdown } from './WorldLevelDropdown'
+import {
+    CnFlagIcon,
+    DeFlagIcon,
+    EsFlagIcon,
+    FrFlagIcon,
+    JpFlagIcon,
+    KrFlagIcon,
+    UsFlagIcon,
+} from '@/icons'
+import { LanguageDropdown } from './LanguageDropdown'
 
 export interface FormState {
     uid: number
@@ -23,6 +38,20 @@ export interface FormState {
 interface Props {
     initialState?: FormState
     onSubmit: (data: FormState) => unknown
+}
+
+const langsMap: Record<string, { icon: JSX.Element; label: string }> = {
+    en: { icon: <UsFlagIcon className="rounded-full w-4 h-4" />, label: 'English' },
+    cn_sm: { icon: <CnFlagIcon className="rounded-full w-4 h-4" />, label: 'Chinise (simplified)' },
+    cn_td: {
+        icon: <CnFlagIcon className="rounded-full w-4 h-4" />,
+        label: 'Chinise (traditional)',
+    },
+    jp: { icon: <JpFlagIcon className="rounded-full w-4 h-4" />, label: 'Japanese' },
+    kr: { icon: <KrFlagIcon className="rounded-full w-4 h-4" />, label: 'Korean' },
+    fr: { icon: <FrFlagIcon className="rounded-full w-4 h-4" />, label: 'French' },
+    de: { icon: <DeFlagIcon className="rounded-full w-4 h-4" />, label: 'German' },
+    es: { icon: <EsFlagIcon className="rounded-full w-4 h-4" />, label: 'Spanish' },
 }
 
 const initialState: FormState = {
@@ -54,6 +83,12 @@ export const ProfileForm = (props: Props) => {
             return !hasRover || !rovers.includes(c._id)
         })
     }, [state.team, charactersList])
+
+    const filteredLanguages = useMemo(() => {
+        return Object.keys(langsMap)
+            .filter((l) => state.languages.includes(l) === false)
+            .map((l) => ({ key: l, value: langsMap[l]?.label ?? '-' }))
+    }, [state.languages])
 
     const onSubmit = () => {
         props.onSubmit(state)
@@ -98,6 +133,26 @@ export const ProfileForm = (props: Props) => {
         setState((prev) => ({ ...prev, nickname }))
     }
 
+    const setServer = (server: string) => {
+        setState((prev) => ({ ...prev, server }))
+    }
+
+    const setWorldLevel = (worldLevel: number) => {
+        setState((prev) => ({ ...prev, worldLevel }))
+    }
+
+    const toggleVoice = () => {
+        setState((prev) => ({ ...prev, usesVoice: !prev.usesVoice }))
+    }
+
+    const addLanguage = (lang: string) => {
+        setState((prev) => ({ ...prev, languages: [...prev.languages, lang] }))
+    }
+
+    const removeLanguage = (lang: string) => {
+        setState((prev) => ({ ...prev, languages: prev.languages.filter((l) => l !== lang) }))
+    }
+
     const setUid = (uid: string) => {
         if (/^\d*$/.test(uid) === false) return
 
@@ -126,9 +181,10 @@ export const ProfileForm = (props: Props) => {
                             Wuthering Waves ⟡ Покои Чанли
                         </div>
 
-                        <div className="capitalize bg-[#EDDAB8] text-[#776868] rounded-l-xl px-2 shrink-0 font-medium">
-                            {state.server}
-                        </div>
+                        <ServerDropdown
+                            selected={state.server}
+                            onSelect={(server) => setServer(server)}
+                        />
                     </div>
 
                     <div className="px-2 pt-1">
@@ -186,26 +242,113 @@ export const ProfileForm = (props: Props) => {
                         ))}
                     </div>
 
-                    <div className="bg-[#FFFAE7] mx-1 mb-1 mt-2 p-2 pt-3 border-[#D8C9AD] rounded-xl overflow-hidden">
+                    <div className="relative bg-[#FFFAE7] mx-1 mb-1 mt-4 p-2 pt-6 border-[#D8C9AD] rounded-xl overflow-hidden">
                         <textarea
-                            className="text-[#7D7881] bg-[#FFFAE7] outline-none w-full h-16 block text-xs"
-                            placeholder="About..."
+                            className="text-[#7D7881] bg-[#FFFAE7] outline-none w-full h-24 block text-xs resize-none"
+                            placeholder="Looking for rovers to play together..."
                             value={state.about}
+                            maxLength={255}
                             onChange={(e) =>
                                 setState((prev) => ({ ...prev, about: e.target.value }))
                             }
                         ></textarea>
+
+                        <div className="flex absolute top-0 left-0 pointer-events-none bg-[#656169] rounded-br-xl">
+                            <span
+                                className={cn(
+                                    'p-1 px-4 text-center bg-[#7D7881] text-[#FFFAE7] text-xs leading-none rounded-br-xl',
+                                )}
+                            >
+                                About
+                            </span>
+
+                            <span
+                                className={cn(
+                                    'p-1 text-center w-16 text-[#FFFAE7] text-xs leading-none rounded-bl-xl',
+                                    {
+                                        'text-amber-500': 255 - state.about.length <= 30,
+                                        'text-red-500': 255 === state.about.length,
+                                    },
+                                )}
+                            >
+                                {state.about.length} / {255}
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="bg-[#FFFAE7] mx-1 mb-1 mt-2 p-2 pt-3 border-[#D8C9AD] rounded-xl overflow-hidden">
-                        <div className="text-[#7D7881] mb-6">TODO</div>
+                    <div className="relative bg-[#FFFAE7] mx-1 mb-1 mt-2 p-2 pt-5 border-[#D8C9AD] rounded-xl overflow-hidden">
+                        <div className="text-[#7D7881] mb-10">TODO</div>
 
                         <div className="h-[1px] bg-[#D8C9AD] relative my-2">
                             <div className="w-1 h-1 bg-inherit rotate-45 absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2"></div>
                             <div className="w-1 h-1 bg-inherit rotate-45 absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2"></div>
                         </div>
 
-                        <div className="text-[#7D7881] mt-14">TODO</div>
+                        <div className="text-gray-500 space-y-1">
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="col-span-1 font-semibold content-center">
+                                    World level
+                                </div>
+                                <div className="col-span-2 content-center">
+                                    <WorldLevelDropdown
+                                        level={state.worldLevel}
+                                        onChange={(level) => setWorldLevel(level)}
+                                    />
+                                </div>
+                            </div>
+
+                            <hr className="text-gray-300" />
+
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="col-span-1 font-semibold content-center">Voice</div>
+                                <div className="col-span-2 content-center">
+                                    <FontAwesomeIcon
+                                        icon={state.usesVoice ? faMicrophone : faMicrophoneSlash}
+                                        className="block w-20 bg-[#90D8FF] rounded-xl py-1"
+                                        onClick={() => toggleVoice()}
+                                    />
+                                </div>
+                            </div>
+
+                            <hr className="text-gray-300" />
+
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="col-span-1 font-semibold content-center">
+                                    Languages
+                                </div>
+                                <div className="col-span-2 content-center flex gap-1">
+                                    {state.languages.map((lang) => (
+                                        <div
+                                            key={lang}
+                                            className="relative flex gap-[2px] items-center p-1 px-2 rounded-2xl bg-[#C3B6A0]"
+                                            onClick={() => removeLanguage(lang)}
+                                        >
+                                            {langsMap[lang]?.icon}
+                                            <span className="text-white text-xs select-none">
+                                                {lang.substring(0, 2).toUpperCase()}
+                                            </span>
+                                        </div>
+                                    ))}
+
+                                    {state.languages.length < 4 && (
+                                        <LanguageDropdown
+                                            languages={filteredLanguages}
+                                            onSelect={(lang) => addLanguage(lang)}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex absolute top-0 left-0 pointer-events-none bg-[#656169] rounded-br-xl">
+                            <span
+                                className={cn(
+                                    'p-1 px-4 text-center bg-[#7D7881] text-[#FFFAE7] text-xs leading-none rounded-br-xl',
+                                )}
+                            >
+                                Info
+                            </span>
+                        </div>
                     </div>
                 </div>
 

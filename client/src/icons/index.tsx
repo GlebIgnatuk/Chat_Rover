@@ -1,0 +1,7 @@
+export { UsFlagIcon } from './UsFlagIcon'
+export { KrFlagIcon } from './KrFlagIcon'
+export { DeFlagIcon } from './DeFlagIcon'
+export { EsFlagIcon } from './EsFlagIcon'
+export { FrFlagIcon } from './FrFlagIcon'
+export { JpFlagIcon } from './JpFlagIcon'
+export { CnFlagIcon } from './CnFlagIcon'

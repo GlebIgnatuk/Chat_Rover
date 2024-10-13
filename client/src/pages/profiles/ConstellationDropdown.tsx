@@ -26,7 +26,7 @@ export const ConstellationDropdown = ({ constellation }: Props) => {
             )}
         >
             <div
-                className="h-full flex flex-col items-center justify-center"
+                className="h-full flex flex-col items-center justify-end pb-1"
                 onClick={() => (dropdown.isOpen ? dropdown.close() : dropdown.open())}
             >
                 <span className="select-none leading-none">{dropdown.selected?.value ?? '-'}</span>
