@@ -10,8 +10,6 @@ import ChatIcon from '@material-ui/icons/Chat'
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
-import PeopleIcon from '@material-ui/icons/People'
-import PeopleOutlinedIcon from '@material-ui/icons/PeopleOutlined'
 
 const navigation = [
     {
@@ -22,12 +20,6 @@ const navigation = [
         IconInactive: HomeOutlinedIcon,
     },
     { path: '/home/chats', label: 'Chats', IconActive: ChatIcon, IconInactive: ChatOutlinedIcon },
-    {
-        path: '/home/characters',
-        label: 'Characters',
-        IconActive: PeopleIcon,
-        IconInactive: PeopleOutlinedIcon,
-    },
     {
         path: '/home/account/profiles',
         label: 'Account',

@@ -17,7 +17,6 @@ import { ProfilesContextProvider } from './context/profiles'
 import { ChatContextProvider } from './context/chat'
 import { AccountContextProvider } from './context/account'
 import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
-import { CharactersScreen } from './pages/characters/Characters.screen'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
 import { useEffect } from 'react'
@@ -75,10 +74,6 @@ const router = createBrowserRouter([
                                 element: <ChatsScreen />,
                             },
                             {
-                                path: 'characters',
-                                element: <CharactersScreen />,
-                            },
-                            {
                                 path: 'account',
                                 element: <AccountScreen />,
                             },
@@ -123,12 +118,14 @@ const router = createBrowserRouter([
 function App() {
     useEffect(() => {
         api('/me/activities', { method: 'post' })
-        
+
         const intervalId = setInterval(() => {
             api('/me/activities', { method: 'post' })
         }, 60 * 1000)
 
-        return () => { clearInterval(intervalId) }
+        return () => {
+            clearInterval(intervalId)
+        }
     }, [])
 
     return <RouterProvider router={router} />
