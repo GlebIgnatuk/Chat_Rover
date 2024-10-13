@@ -8,12 +8,17 @@ interface Props {
     onChange?: (level: number) => void
 }
 
-export const LevelDropdown = ({ level }: Props) => {
+export const LevelDropdown = ({ level, ...props }: Props) => {
     const dropdown = useDropdown<number>({
         options: Array.from({ length: 91 }, (_, idx) => ({ key: idx.toString(), value: idx })),
         selected: level?.toString(),
         closeOnClickOutside: true,
     })
+
+    const select = (level: string) => {
+        dropdown.select(level.toString())
+        props.onChange?.(Number(level))
+    }
 
     return (
         <div
@@ -53,7 +58,7 @@ export const LevelDropdown = ({ level }: Props) => {
                             'bg-[#EBC920]': option.key === dropdown.selected?.key,
                         })}
                         onClick={() => {
-                            dropdown.select(option.key)
+                            select(option.key)
                             dropdown.close()
                         }}
                     >

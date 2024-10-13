@@ -8,12 +8,17 @@ interface Props {
     onChange?: (level: number) => void
 }
 
-export const ConstellationDropdown = ({ constellation }: Props) => {
+export const ConstellationDropdown = ({ constellation, ...props }: Props) => {
     const dropdown = useDropdown<number>({
         options: Array.from({ length: 7 }, (_, idx) => ({ key: idx.toString(), value: idx })),
         selected: constellation?.toString(),
         closeOnClickOutside: true,
     })
+
+    const select = (constellation: string) => {
+        dropdown.select(constellation.toString())
+        props.onChange?.(Number(constellation))
+    }
 
     return (
         <div
@@ -53,7 +58,7 @@ export const ConstellationDropdown = ({ constellation }: Props) => {
                             'bg-[#EBC920]': option.key === dropdown.selected?.key,
                         })}
                         onClick={() => {
-                            dropdown.select(option.key)
+                            select(option.key)
                             dropdown.close()
                         }}
                     >

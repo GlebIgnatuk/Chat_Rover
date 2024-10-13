@@ -11,11 +11,11 @@ interface Props {
 export const ServerDropdown = (props: Props) => {
     const dropdown = useDropdown({
         options: [
-            { key: 'sea', value: 'SEA' },
-            { key: 'asia', value: 'Asia' },
-            { key: 'europe', value: 'Europe' },
-            { key: 'hmt', value: 'HMT' },
-            { key: 'america', value: 'America' },
+            { key: 'SEA', value: 'SEA' },
+            { key: 'Asia', value: 'Asia' },
+            { key: 'Europe', value: 'Europe' },
+            { key: 'HMT', value: 'HMT' },
+            { key: 'America', value: 'America' },
         ],
         closeOnClickOutside: true,
         selected: props.selected,

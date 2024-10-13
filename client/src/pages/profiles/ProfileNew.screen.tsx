@@ -1,8 +1,12 @@
+import { api } from '@/services/api'
 import { FormState, ProfileForm } from './ProfileForm'
 
 export const ProfileNewScreen = () => {
     const onSubmit = async (data: FormState) => {
-        console.log(data)
+        await api('/profiles', {
+            method: 'post',
+            body: JSON.stringify(data),
+        })
     }
 
     return (

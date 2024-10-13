@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
 import { LevelDropdown } from './LevelDropdown'
 import { ConstellationDropdown } from './ConstellationDropdown'
@@ -90,7 +90,8 @@ export const ProfileForm = (props: Props) => {
             .map((l) => ({ key: l, value: langsMap[l]?.label ?? '-' }))
     }, [state.languages])
 
-    const onSubmit = () => {
+    const onSubmit = (e: FormEvent) => {
+        e.preventDefault()
         props.onSubmit(state)
     }
 
@@ -170,9 +171,15 @@ export const ProfileForm = (props: Props) => {
     }
 
     return (
-        <form onSubmit={onSubmit} className="w-full h-full">
+        <form onSubmit={onSubmit} className="relative w-full h-full">
+            <input
+                type="submit"
+                value="Save"
+                className="sticky top-0 left-0 bg-[#90D8FF] text-[#131313] px-6 py-1 w-full z-20"
+            />
+
             <div
-                className="mx-auto relative w-full max-w-[370px] text-white text-sm rounded-xl overflow-hidden"
+                className="mx-auto my-3 relative w-full max-w-[370px] text-white text-sm rounded-xl overflow-hidden"
                 ref={cardRef}
             >
                 <div className="relative z-10">
