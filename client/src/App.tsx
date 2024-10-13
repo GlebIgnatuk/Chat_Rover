@@ -1,4 +1,3 @@
-// import { AccountScreen } from '@/pages/account/Account.screen'
 import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpScreen } from '@/pages/auth/signup/SignUp.screen'
@@ -19,8 +18,6 @@ import { AccountContextProvider } from './context/account'
 import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
-import { useEffect } from 'react'
-import { api } from './services/api'
 
 const router = createBrowserRouter([
     {
@@ -116,18 +113,6 @@ const router = createBrowserRouter([
 ])
 
 function App() {
-    useEffect(() => {
-        api('/me/activities', { method: 'post' })
-
-        const intervalId = setInterval(() => {
-            api('/me/activities', { method: 'post' })
-        }, 60 * 1000)
-
-        return () => {
-            clearInterval(intervalId)
-        }
-    }, [])
-
     return <RouterProvider router={router} />
 }
 

@@ -1,12 +1,19 @@
 import { api } from '@/services/api'
 import { FormState, ProfileForm } from './ProfileForm'
+import { useNavigate } from 'react-router-dom'
 
 export const ProfileNewScreen = () => {
+    const navigate = useNavigate()
+
     const onSubmit = async (data: FormState) => {
-        await api('/profiles', {
+        const response = await api('/profiles', {
             method: 'post',
             body: JSON.stringify(data),
         })
+
+        if (response.success) {
+            navigate('/home/account/profiles', { replace: true })
+        }
     }
 
     return (

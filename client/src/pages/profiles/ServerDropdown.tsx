@@ -22,7 +22,6 @@ export const ServerDropdown = (props: Props) => {
     })
 
     const select = (server: string) => {
-        console.log(server)
         dropdown.select(server)
         props.onSelect?.(server)
     }

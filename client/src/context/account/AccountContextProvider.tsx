@@ -19,84 +19,12 @@ export const AccountContextProvider = ({ children }: Props) => {
     const loadProfiles = async (signal?: AbortSignal) => {
         try {
             setLoading({ is: true })
-            const response = await api<IProfile[]>(`/profiles`, { signal })
+            const response = await api<IProfile[]>(`/me/profiles`, { signal })
             if (response.success) {
                 setProfiles(response.data)
                 setLoading({ is: false, error: null })
             } else {
-                // setLoading({ is: false, error: response.error })
-                setProfiles([
-                    {
-                        _id: '1',
-                        about: 'Hey',
-                        languages: ['en', 'jp'],
-                        nickname: '3 characters',
-                        server: 'europe',
-                        team: [
-                            {
-                                characterId: characters.characters[0]!._id,
-                                level: 77,
-                                constellation: 4,
-                            },
-                            {
-                                characterId: characters.characters[6]!._id,
-                                level: 65,
-                                constellation: 0,
-                            },
-                            {
-                                characterId: characters.characters[14]!._id,
-                                level: 80,
-                                constellation: 3,
-                            },
-                        ],
-                        uid: 123456789,
-                        usesVoice: true,
-                        worldLevel: 213,
-                    },
-                    {
-                        _id: '2',
-                        about: 'Hey',
-                        languages: ['en', 'jp'],
-                        nickname: '2 characters',
-                        server: 'europe',
-                        team: [
-                            {
-                                characterId: characters.characters[8]!._id,
-                                level: 77,
-                                constellation: 4,
-                            },
-                            null,
-                            {
-                                characterId: characters.characters[18]!._id,
-                                level: 80,
-                                constellation: 3,
-                            },
-                        ],
-                        uid: 123456789,
-                        usesVoice: true,
-                        worldLevel: 213,
-                    },
-                    {
-                        _id: '3',
-                        about: 'Hey',
-                        languages: ['en', 'jp'],
-                        nickname: '1 characters',
-                        server: 'europe',
-                        team: [
-                            null,
-                            {
-                                characterId: characters.characters[17]!._id,
-                                level: 77,
-                                constellation: 4,
-                            },
-                            null,
-                        ],
-                        uid: 123456789,
-                        usesVoice: true,
-                        worldLevel: 213,
-                    },
-                ])
-                setLoading({ is: false, error: null })
+                setLoading({ is: false, error: response.error })
             }
         } catch (e) {
             console.error(e)

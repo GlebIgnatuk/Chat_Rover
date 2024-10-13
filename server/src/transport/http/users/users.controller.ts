@@ -80,7 +80,7 @@ export const trackActivity: IAuthorizedRequestHandler = async (_, res, next) => 
             return res.status(403).json({ success: false, error: 'FORBIDDEN' })
         }
 
-        repositories.user.trackActivity(user?._id)
+        await repositories.user.trackActivity(user._id)
         res.json({ success: true })
     } catch (e) {
         next(e)

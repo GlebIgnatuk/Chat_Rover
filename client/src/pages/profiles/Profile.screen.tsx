@@ -1,25 +1,37 @@
 import { FormState, ProfileForm } from './ProfileForm'
 import { useMemo } from 'react'
 import { useAccount } from '@/context/account'
-import { Navigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { api } from '@/services/api'
 
 export const ProfileScreen = () => {
     const { id: profileId } = useParams()
+    const navigate = useNavigate()
 
     const { profiles } = useAccount()
     const profile = useMemo(() => profiles.find((p) => p._id === profileId), [profiles, profileId])
 
     const onSubmit = async (data: FormState) => {
         console.log(data)
+        const response = await api(`/profiles/${profileId}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        })
+        if (response.success) {
+            navigate('/home/account/profiles')
+        }
     }
 
-    return profile ? (
+    if (!profile) return <Navigate to="/profiles" />
+
+    const { _id, ...initialState } = profile
+    void _id
+
+    return (
         <div className="h-full overflow-y-auto">
             <div className="py-2">
-                <ProfileForm initialState={profile} onSubmit={onSubmit} />
+                <ProfileForm initialState={initialState} onSubmit={onSubmit} />
             </div>
         </div>
-    ) : (
-        <Navigate to="/profiles" />
     )
 }
