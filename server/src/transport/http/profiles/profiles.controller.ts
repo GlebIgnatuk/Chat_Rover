@@ -1,6 +1,6 @@
 import { IAuthorizedRequestHandler } from '../types'
-import { profileSchema, searchQuerySchema } from '../../../validators/profileValidator'
 import qs from 'qs'
+import { postSchema, putSchema, searchSchema } from './profiles.validator'
 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -15,7 +15,7 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
         payload.userId = user._id
 
         // Validate payload with imported Joi schema
-        const { error, value } = profileSchema.validate(payload, { abortEarly: false })
+        const { error, value } = postSchema.validate(payload, { abortEarly: false })
         if (error) {
             return res.status(400).json({
                 success: false,
@@ -52,7 +52,7 @@ export const update: IAuthorizedRequestHandler<{ id: string }> = async (req, res
         const payload = req.body
 
         // Validate payload with Joi schema
-        const { error, value } = profileSchema.validate(payload, { abortEarly: false })
+        const { error, value } = putSchema.validate(payload, { abortEarly: false })
         if (error) {
             return res.status(400).json({
                 success: false,
@@ -104,7 +104,7 @@ export const search: IAuthorizedRequestHandler = async (req, res, next) => {
         const query = qs.parse(req.query)
 
         // Validate query parameters with Joi schema
-        const { error, value } = searchQuerySchema.validate(query, { abortEarly: false })
+        const { error, value } = searchSchema.validate(query, { abortEarly: false })
         if (error) {
             return res.status(400).json({
                 success: false,
@@ -113,7 +113,8 @@ export const search: IAuthorizedRequestHandler = async (req, res, next) => {
             })
         }
 
-        const searchParams: any = {}
+        // @todo add strict type
+        const searchParams: Record<string, any> = {}
 
         if (Object.keys(value).length === 0 || value.page || value.limit) {
             // No significant query parameters provided, return profiles for the authorized user

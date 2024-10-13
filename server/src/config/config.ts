@@ -16,3 +16,9 @@ export const config = keys.reduce<Partial<Config>>((acc, n) => {
 
     return acc
 }, {}) as Config
+
+export const SUPPORTED_SERVERS = ['SEA', 'Asia', 'Europe', 'HMT', 'America'] as const
+export type IServerKey = (typeof SUPPORTED_SERVERS)[number]
+
+export const SUPPORTED_LANGUAGES = ['en', 'zh-CN', 'zh-HK', 'ja', 'ko', 'fr', 'de', 'es'] as const
+export type ILanguageKey = (typeof SUPPORTED_LANGUAGES)[number]

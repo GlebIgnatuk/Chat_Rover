@@ -42,13 +42,16 @@ interface Props {
 
 const langsMap: Record<string, { icon: JSX.Element; label: string }> = {
     en: { icon: <UsFlagIcon className="rounded-full w-4 h-4" />, label: 'English' },
-    cn_sm: { icon: <CnFlagIcon className="rounded-full w-4 h-4" />, label: 'Chinise (simplified)' },
-    cn_td: {
+    'zh-CN': {
+        icon: <CnFlagIcon className="rounded-full w-4 h-4" />,
+        label: 'Chinise (simplified)',
+    },
+    'zh-HK': {
         icon: <CnFlagIcon className="rounded-full w-4 h-4" />,
         label: 'Chinise (traditional)',
     },
-    jp: { icon: <JpFlagIcon className="rounded-full w-4 h-4" />, label: 'Japanese' },
-    kr: { icon: <KrFlagIcon className="rounded-full w-4 h-4" />, label: 'Korean' },
+    ja: { icon: <JpFlagIcon className="rounded-full w-4 h-4" />, label: 'Japanese' },
+    ko: { icon: <KrFlagIcon className="rounded-full w-4 h-4" />, label: 'Korean' },
     fr: { icon: <FrFlagIcon className="rounded-full w-4 h-4" />, label: 'French' },
     de: { icon: <DeFlagIcon className="rounded-full w-4 h-4" />, label: 'German' },
     es: { icon: <EsFlagIcon className="rounded-full w-4 h-4" />, label: 'Spanish' },
