@@ -16,6 +16,7 @@ import { IServices } from './core/types'
 import { ChatService } from './core/chatService'
 import { WuwaCharacterRepository } from './repositories/impl/wuwaCharacter'
 import { ProfileRepository } from './repositories/impl/profile'
+import { OnlineService } from './core/onlineService'
 
 const app = express()
 let server: http.Server | https.Server
@@ -50,6 +51,10 @@ const handler = async () => {
             repositories.user,
             repositories.chatMessage,
         ),
+        online: new OnlineService(
+            wss,
+            repositories.user,
+        )
     }
 
     // API routes

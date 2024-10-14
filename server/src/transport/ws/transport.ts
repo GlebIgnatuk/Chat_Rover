@@ -53,4 +53,57 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
             console.log(`${user._id} disconnected`)
         })
     })
+
+    const activities = wss.of('/ws/users/activities')
+
+    activities.on('connection', async (socket) => {
+        let identity: ValidatedUserPayload
+        try {
+            const initData = socket.handshake.query['x-telegram-init-data']
+
+            if (config.ALLOW_FAKE_PROFILES === 'true') {
+                identity = validateUserPayloadMock(
+                    initData?.toString() ?? '',
+                    config.TELEGRAM_BOT_TOKEN,
+                )
+            } else {
+                identity = validateUserPayload(
+                    initData?.toString() ?? '',
+                    config.TELEGRAM_BOT_TOKEN,
+                )
+            }
+        } catch (e) {
+            return socket.disconnect(true)
+        }
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return socket.disconnect(true)
+        }
+
+        console.log(`${user._id} connected`)
+
+        // socket.leave(socket.id)
+        socket.join(user._id.toString())
+
+        socket.on('subscribe', async (body) => {
+            console.log(body, typeof body)
+
+            socket.join(body)
+
+            // const { chatId, text } = body
+
+            // await services.chat.sendMessage(chatId, text, identity)
+        })
+
+        socket.on('unsubscribe', async (body) => {
+            console.log(body, typeof body)
+
+            socket.leave(body)
+        })
+
+        socket.on('disconnect', () => {
+            console.log(`${user._id} disconnected`)
+        })
+    })
 }
