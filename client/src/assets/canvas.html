@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            display: block;
+            -webkit-font-smoothing: none;
+            /* outline: 2px solid black; */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const WIDTH = 370
+        const HEIGHT = 677
+        const RATIO = Math.ceil(window.devicePixelRatio) * 4
+
+        const profile = {
+            server: 'America',
+            nickname: 'N0Skill',
+            uid: 823_126_898
+        }
+
+        const createCanvas = (width, height, setTransform = true) => {
+            const canvas = document.createElement('canvas')
+            const ctx = canvas?.getContext('2d', { willReadFrequently: true })
+            if (!ctx) throw new Error('No ctx')
+
+            if (width !== undefined) {
+                canvas.width = width * RATIO
+                canvas.style.width = `${width}px`
+            }
+            if (height !== undefined) {
+                canvas.height = height * RATIO
+                canvas.style.height = `${height}px`
+            }
+
+            if (setTransform) {
+                ctx.setTransform(RATIO, 0, 0, RATIO, 0, 0)
+            }
+            ctx.imageSmoothingEnabled = false
+
+            return { canvas, ctx }
+        }
+
+        const { canvas, ctx } = createCanvas(WIDTH, HEIGHT, false)
+        document.body.appendChild(canvas)
+
+        const drawing = {
+            mask: (mask, ...shapes) => {
+                const { canvas: maskBuffer, ctx: maskBufferCtx } = createCanvas(WIDTH, HEIGHT)
+                const { canvas: shapeBuffer, ctx: shapeBufferCtx } = createCanvas(WIDTH, HEIGHT)
+
+                mask(maskBufferCtx)
+                shapes.forEach(shape => shape(shapeBufferCtx))
+
+                maskBufferCtx.globalCompositeOperation = 'source-in';
+
+                maskBufferCtx.save()
+                maskBufferCtx.setTransform(1, 0, 0, 1, 0, 0)
+                maskBufferCtx.drawImage(shapeBuffer, 0, 0)
+                maskBufferCtx.restore()
+
+                return maskBuffer
+            },
+            linearGradient: (ctx, x, y, w, h, ...colors) => {
+                const gradient = ctx.createLinearGradient(0, 0, w, h)
+                colors.forEach((c, idx) => gradient.addColorStop(idx, c))
+
+                const fillStyle = ctx.fillStyle
+                ctx.fillStyle = gradient
+                ctx.fillRect(x, y, w, h)
+                ctx.fillStyle = fillStyle
+            },
+            roundedRect: (ctx, x, y, w, h, radii, color) => {
+                ctx.beginPath();
+                ctx.roundRect(x, y, w, h, radii);
+                const fillStyle = ctx.fillStyle
+                ctx.fillStyle = color
+                ctx.fill()
+                ctx.fillStyle = fillStyle
+            },
+            text: (ctx, text, x, y, font, fontSize, color, textBaseline) => {
+                const prevFont = ctx.font
+                const prevTextBaseline = ctx.font
+                const fillStyle = ctx.fillStyle
+                ctx.fillStyle = color ?? 'black'
+                ctx.font = `${fontSize ?? 16}px '${font ?? 'Arial'}'`
+                ctx.textBaseline = textBaseline
+                ctx.fillText(text, x, y)
+                ctx.font = prevFont
+                ctx.textBaseline = prevTextBaseline
+                ctx.fillStyle = fillStyle
+            }
+        }
+
+        const image = new Image()
+        image.crossOrigin = 'anonymous'
+        image.src = './profile-card-bg.webp'
+
+        image.onload = () => {
+            const root = drawing.mask(
+                (ctx) => {
+                    drawing.roundedRect(ctx, 0, 0, WIDTH, HEIGHT, [0.75 * 16], 'black')
+                },
+                (ctx) => {
+                    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, WIDTH, HEIGHT)
+
+                    // header
+                    drawing.linearGradient(ctx, 0, 0, WIDTH, 44, '#ffc96040', '#5d3d0cbf')
+
+                    drawing.text(ctx, 'Wuthering Waves ⟡ Покои Чанли', 0 + 8, (44 - 20), 'Arial', 14, '#FFFFFF', 'middle')
+
+                    drawing.roundedRect(ctx, WIDTH - 66, (44 - 20) / 2, 84, 20, [0.75 * 16, 0, 0, 0.75 * 16], '#EDDAB8')
+                    drawing.text(ctx, profile.server, WIDTH - 66 + 8, (44 - 20), 'Arial', 14, '#776868', 'middle')
+
+                    // nickname & uid
+                    let offsetTop = 44 + 0.25 * 16 + 16
+                    drawing.text(ctx, profile.nickname, 0.5 * 16, offsetTop, 'Arial', 16, '#FFFFFF', 'middle')
+                    offsetTop += 24
+                    drawing.text(ctx, `UID: ${profile.uid}`, 0.5 * 16, offsetTop, 'Arial', 14, '#FFFFFF', 'middle')
+                    offsetTop += 14 + 0.5 * 16
+
+                    // characters
+                },
+            )
+
+            ctx.drawImage(root, 0, 0)
+        }
+    </script>
+</body>
+</html>
