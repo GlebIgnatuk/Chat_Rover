@@ -63,6 +63,14 @@ const createCanvas = (width, height, ratio = 1, setTransform = true) => {
             ctx.fill()
             ctx.fillStyle = fillStyle
         },
+        rect: (x, y, w, h, options) => {
+            ctx.save()
+            ctx.fillStyle = options.color ?? 'black'
+            ctx.translate(x + w/2, y + h/2)
+            ctx.rotate(options.rotate ?? 0)
+            ctx.fillRect(-w/2, -h/2, w, h)
+            ctx.restore()
+        },
         divider: (x, y, width, color) => {
             ctx.save()
             ctx.strokeStyle = color ?? 'black'
