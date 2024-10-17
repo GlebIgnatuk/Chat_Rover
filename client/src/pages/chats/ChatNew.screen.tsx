@@ -1,4 +1,4 @@
-import { usePeer } from '@/context/chat/usePeer'
+import { usePeer } from '@/hooks/chats/usePeer'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 

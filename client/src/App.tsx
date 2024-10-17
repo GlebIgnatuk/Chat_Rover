@@ -13,7 +13,6 @@ import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 import { ProfilesScreen } from './pages/profiles/Profiles.screen'
 import { ProfileScreen } from './pages/profiles/Profile.screen'
 import { ProfilesContextProvider } from './context/profiles'
-import { ChatContextProvider } from './context/chat'
 import { AccountContextProvider } from './context/account'
 import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
@@ -47,13 +46,11 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ProfilesContextProvider>
-                            <ChatContextProvider>
-                                <CharactersContextProvider>
-                                    <AccountContextProvider>
-                                        <Outlet />
-                                    </AccountContextProvider>
-                                </CharactersContextProvider>
-                            </ChatContextProvider>
+                            <CharactersContextProvider>
+                                <AccountContextProvider>
+                                    <Outlet />
+                                </AccountContextProvider>
+                            </CharactersContextProvider>
                         </ProfilesContextProvider>
                     </ProtectedRoute>
                 ),

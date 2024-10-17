@@ -10,6 +10,8 @@ import ChatIcon from '@material-ui/icons/Chat'
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
+import { useWebsocket } from '@/hooks/chats/useWebsocket'
+import { useChatsService } from '@/hooks/chats/useChatsService'
 
 const navigation = [
     {
@@ -59,6 +61,20 @@ export const HomeLayout = () => {
     const navigate = useNavigate()
 
     const [transitioned, setTransitioned] = useState(false)
+
+    const connect = useWebsocket()
+    useEffect(() => connect(), [connect])
+
+    // @todo factor out initial fetching
+    const chatsService = useChatsService()
+    useEffect(() => {
+        const abortController = new AbortController()
+        chatsService.load(abortController.signal)
+
+        return () => {
+            abortController.abort()
+        }
+    }, [])
 
     useLayoutEffect(() => {
         const timer = setTimeout(() => {

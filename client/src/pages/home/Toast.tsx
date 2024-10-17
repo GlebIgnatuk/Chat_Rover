@@ -1,11 +1,13 @@
-import { useLastMessage } from '@/context/chat'
 import { Message } from '@/context/chat/reducer'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
 export const Toast = () => {
-    const lastMessage = useLastMessage()
+    // @todo
+    const lastMessage = null as Message | null
+    // const lastMessage = useLastMessage()
+
     const [lastMessageLocal, setLastMessage] = useState<Message | null>(lastMessage)
     const { id: chatId } = useParams()
     const navigate = useNavigate()

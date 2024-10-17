@@ -1,6 +1,6 @@
 import { useUser } from '@/context/auth/useUser'
-import { useChat } from '@/context/chat'
 import { MessageWithStatus } from '@/context/chat/reducer'
+import { useChat } from '@/hooks/chats/useChat'
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -79,7 +79,7 @@ export const ChatScreen = () => {
                             <>Failed to load: {messages.loading.error}</>
                         )}
                         {messages.loading.is === false &&
-                            messages.loading.error === null &&
+                            messages.loading.error === undefined &&
                             Object.entries(groupped).map(([date, messages]) => (
                                 <div className="relative flex flex-col gap-2" key={date}>
                                     {

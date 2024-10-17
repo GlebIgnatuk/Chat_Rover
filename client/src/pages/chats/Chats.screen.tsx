@@ -1,4 +1,4 @@
-import { useChats } from '@/context/chat'
+import { useChats } from '@/hooks/chats/useChats'
 import { NavLink } from 'react-router-dom'
 
 export const ChatsScreen = () => {
