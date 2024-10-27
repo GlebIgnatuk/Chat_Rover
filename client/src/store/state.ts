@@ -28,6 +28,7 @@ export type IChatsState = {
 
         lastReceivedMessage: IMessage | null
         setLastReceivedMessage: (item: IMessage) => void
+        resetLastReceivedMessage: () => void
     }
 }
 

@@ -9,7 +9,7 @@ export const useChatsService = () => {
     const chats = useStore((state) => state.chats)
     const p2p = useStore((state) => state.p2p)
     const chatsMessages = useStore((state) => state.chatsMessages)
-    console.log(chats, p2p)
+
     const load = useCallback(
         async (signal?: AbortSignal) => {
             if (chats.loading.items['$']?.is) return

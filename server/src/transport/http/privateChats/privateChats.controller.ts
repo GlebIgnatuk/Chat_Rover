@@ -1,5 +1,46 @@
 import { IAuthorizedRequestHandler } from '../types'
 
+export const get: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { id: chatId } = req.params
+        const { identity, repositories } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                error: 'User not found',
+            })
+        }
+
+        const chat = await repositories.privateChat.get(chatId)
+        if (!chat) {
+            return res.status(404).json({
+                success: false,
+                error: 'Chat not found',
+            })
+        }
+        if (chat.members.some((c) => c._id.equals(user._id)) === false) {
+            return res.status(403).json({
+                success: false,
+                error: "You don't have access to this chat",
+            })
+        }
+
+        const chatWithMetadata = await repositories.privateChat.getWithMetadata(chatId, user._id)
+        if (!chatWithMetadata) {
+            return res.status(404).json({
+                success: false,
+                error: 'Chat not found',
+            })
+        }
+
+        return res.json({ success: true, data: chatWithMetadata })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export const listMyChats: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
         const { peerId } = req.query

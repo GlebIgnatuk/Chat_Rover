@@ -32,6 +32,68 @@ export class PrivateChatRepository implements IPrivateChatRepository {
         return chats[0] ?? null
     }
 
+    async getWithMetadata(id: ID, userId: ID): Promise<IPrivateChatWithMetadataDTO | null> {
+        const chats = await ChatModel.getCollection()
+            .aggregate<IPrivateChatWithMetadataDTO>([
+                {
+                    $match: { _id: new Types.ObjectId(id) },
+                },
+                {
+                    $limit: 1,
+                },
+                {
+                    $project: {
+                        members: {
+                            $filter: {
+                                input: '$members',
+                                as: 'member',
+                                cond: { $ne: ['$$member', new Types.ObjectId(userId)] },
+                                limit: 1,
+                            },
+                        },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'members',
+                        foreignField: '_id',
+                        as: 'peer',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$peer',
+                        // @todo display missing/deleted chats?
+                        // preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup: {
+                        from: ChatMessageModel.getCollection().name,
+                        localField: '_id',
+                        foreignField: 'chatId',
+                        as: 'lastMessage',
+                        pipeline: [{ $sort: { createdAt: -1 } }, { $limit: 1 }],
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$lastMessage',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        members: 0,
+                    },
+                },
+            ])
+            .toArray()
+
+        return chats[0] ?? null
+    }
+
     async list(userId: ID): Promise<IPrivateChatWithMetadataDTO[]> {
         const chats = await ChatModel.getCollection()
             .aggregate<IPrivateChatWithMetadataDTO>([

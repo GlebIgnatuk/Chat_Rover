@@ -19,6 +19,7 @@ export type IPrivateChatPatch = {
 
 export interface IPrivateChatRepository {
     get(id: ID): Promise<IPrivateChatDTO | null>
+    getWithMetadata(id: ID, userId: ID): Promise<IPrivateChatWithMetadataDTO | null>
     list(userId: ID): Promise<IPrivateChatWithMetadataDTO[]>
     findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatWithMetadataDTO | null>
     hasMember(chatId: ID, memberId: ID): Promise<boolean>

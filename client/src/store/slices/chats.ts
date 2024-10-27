@@ -160,6 +160,11 @@ export const createChatsSlice: StateCreator<IState, [], [], IChatsState> = (set,
                 return R.assocPath(['chatsMessages', 'lastReceivedMessage'], item, state)
             })
         },
+        resetLastReceivedMessage: () => {
+            set((state) => {
+                return R.assocPath(['chatsMessages', 'lastReceivedMessage'], null, state)
+            })
+        },
 
         loading: {
             items: {},
