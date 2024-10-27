@@ -1,3 +1,7 @@
+export type IPrivateChat = {
+    _id: string
+}
+
 export type IPrivateChatWithMetadata = {
     _id: string
     peer: {

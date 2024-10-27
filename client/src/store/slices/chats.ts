@@ -110,7 +110,9 @@ export const createChatsSlice: StateCreator<IState, [], [], IChatsState> = (set,
                         status: 'sent',
                     }
 
-                    const indexOfSent = messages.findIndex((m) => m.message._id === item._id)
+                    const indexOfSent = messages.findIndex(
+                        (m, idx) => m.message._id === item._id && idx !== indexOfPending,
+                    )
                     if (indexOfSent >= 0) {
                         messages.splice(indexOfSent, 1)
                     }

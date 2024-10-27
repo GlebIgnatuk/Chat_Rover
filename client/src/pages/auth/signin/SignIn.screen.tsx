@@ -81,13 +81,16 @@ export const SignInScreen = () => {
 
                     {import.meta.env.VITE_ALLOW_FAKE_PROFILES === 'true' && (
                         <div className="grid grid-cols-2 gap-2">
-                            {FAKE_PROFILES.map((p) => (
+                            {FAKE_PROFILES.map((p, idx) => (
                                 <a
                                     key={p.user.username}
                                     href={`/#tgWebAppData=${encodeURIComponent(p.encoded)}`}
-                                    className="bg-slate-600 p-2 rounded-md cursor-pointer"
+                                    className="p-2 rounded-md cursor-pointer"
+                                    style={{
+                                        backgroundColor: `hsl(${(idx / FAKE_PROFILES.length) * 360}deg, 60%, 50%)`,
+                                    }}
                                 >
-                                    {p.user.username}
+                                    {p.user.id}. {p.user.first_name} {p.user.last_name}
                                 </a>
                             ))}
                         </div>

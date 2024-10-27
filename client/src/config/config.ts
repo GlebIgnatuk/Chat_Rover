@@ -1,17 +1,21 @@
 export const pathPrefix = ''
 
 const names = [
-    'Andrew Boston',
-    'John Doe',
-    'Jeff The Killer',
-    'Jason Momoa',
-    'Antony Ray',
-    'Bryan Caps',
+    'Whitney Luna',
+    'Mehmet Carpenter',
+    'Ciaran Mckee',
+    'Leona Jacobs',
+    'Bonnie Bentley',
+    'Millicent Hendricks',
+    'Jaden Sparks',
+    'Rajan Shannon',
+    'Tamsin Leach',
+    'Fahad Paul',
 ]
 
 export const FAKE_PROFILES = names
     .map((name, idx) => ({
-        id: idx,
+        id: idx + 1,
         first_name: name.split(' ')[0],
         last_name: name.split(' ')[1] || null,
         username: name.toLowerCase().trim().replace(/[^\w]/g, '_'),

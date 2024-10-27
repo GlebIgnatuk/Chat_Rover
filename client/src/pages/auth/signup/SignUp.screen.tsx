@@ -5,8 +5,17 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 
+const getInitialUsername = () => {
+    // @ts-expect-error add types
+    const data = window.Telegram.WebApp.initData
+    const params = new URLSearchParams(data)
+    const user = params.get('user')
+
+    return user ? JSON.parse(user).username : ''
+}
+
 export const SignUpScreen = () => {
-    const [name, setName] = useState('')
+    const [name, setName] = useState(getInitialUsername())
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
 

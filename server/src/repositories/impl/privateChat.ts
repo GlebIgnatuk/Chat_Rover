@@ -156,7 +156,6 @@ export class PrivateChatRepository implements IPrivateChatRepository {
                 },
             ])
             .toArray()
-        console.log(chats)
 
         return chats[0] ?? null
     }

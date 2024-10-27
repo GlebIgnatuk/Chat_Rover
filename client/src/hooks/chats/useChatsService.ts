@@ -1,6 +1,6 @@
 import { useStore } from '@/store/store'
 import { api } from '@/services/api'
-import { IMessage, IPrivateChatWithMetadata } from '@/store/types'
+import { IMessage, IPrivateChat, IPrivateChatWithMetadata } from '@/store/types'
 import { useCallback, useMemo } from 'react'
 import { useUser } from '@/context/auth/useUser'
 
@@ -9,7 +9,7 @@ export const useChatsService = () => {
     const chats = useStore((state) => state.chats)
     const p2p = useStore((state) => state.p2p)
     const chatsMessages = useStore((state) => state.chatsMessages)
-    console.log(chatsMessages)
+    console.log(chats, p2p)
     const load = useCallback(
         async (signal?: AbortSignal) => {
             if (chats.loading.items['$']?.is) return
@@ -72,11 +72,11 @@ export const useChatsService = () => {
                 if (response.success) {
                     const chat = response.data[0]
                     if (chat) {
-                        p2p.add(chat)
+                        chats.add(chat)
                         p2p.loading.stop(peerId)
                         return
                     } else {
-                        const response = await api<IPrivateChatWithMetadata>('/privateChats', {
+                        const response = await api<IPrivateChat>('/privateChats', {
                             method: 'POST',
                             body: JSON.stringify({
                                 peerId: peerId,
@@ -85,9 +85,21 @@ export const useChatsService = () => {
                         })
 
                         if (response.success) {
-                            p2p.add(response.data)
-                            p2p.loading.stop(peerId)
-                            return
+                            const response = await api<IPrivateChatWithMetadata[]>(
+                                `/privateChats?peerId=${peerId}`,
+                                { signal },
+                            )
+                            if (response.success) {
+                                const chat = response.data[0]
+                                if (chat) {
+                                    chats.add(chat)
+                                    p2p.loading.stop(peerId)
+                                } else {
+                                    p2p.loading.stopWithError('Failed to load chat', peerId)
+                                }
+                            } else {
+                                p2p.loading.stopWithError(response.error, peerId)
+                            }
                         } else {
                             p2p.loading.stopWithError(response.error, peerId)
                         }
