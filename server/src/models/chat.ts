@@ -15,10 +15,10 @@ export const CHAT_TYPES = ['private', 'global'] as const
 export type ChatType = (typeof CHAT_TYPES)[number]
 
 export type IChatDTO = mongo.WithId<IChatModel>
-export type IPrivateChatDTO = mongo.WithId<IPrivateChatModel> & {
+export type IPrivateChatDTO = Omit<mongo.WithId<IPrivateChatModel>, 'members'> & {
     members: IUserDTO[]
 }
-export type IGlobalChatDTO = mongo.WithId<IGlobalChatModel> & {
+export type IGlobalChatDTO = Omit<mongo.WithId<IGlobalChatModel>, 'members'> & {
     members: IUserDTO[]
 }
 
