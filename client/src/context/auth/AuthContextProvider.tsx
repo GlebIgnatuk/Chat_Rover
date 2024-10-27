@@ -1,13 +1,13 @@
 import { api } from '@/services/api'
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { AuthContext, IAuthContext, IUser } from './AuthContext'
+import { AuthContext, IAuthContext, IIdentity } from './AuthContext'
 
 export const AuthContextProvider = () => {
-    const [user, setUser] = useState<IUser | null>(null)
+    const [user, setUser] = useState<IIdentity | null>(null)
 
     const signIn = async (signal?: AbortSignal) => {
-        const response = await api<IUser>('/users/me', { signal })
+        const response = await api<IIdentity>('/users/me', { signal })
         if (response.success) {
             setUser(response.data)
         }
@@ -16,7 +16,7 @@ export const AuthContextProvider = () => {
     }
 
     const signUp = async (nickname: string, signal?: AbortSignal) => {
-        const response = await api<IUser>('/users', {
+        const response = await api<IIdentity>('/users', {
             method: 'POST',
             body: JSON.stringify({ nickname }),
             signal,

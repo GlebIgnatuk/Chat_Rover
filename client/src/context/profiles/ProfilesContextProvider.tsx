@@ -2,7 +2,7 @@ import { ReactNode, useReducer } from 'react'
 import { IProfilesContext, ProfilesContext } from './ProfilesContext'
 import { initialState, reducer } from './reducer'
 import { api } from '@/services/api'
-import { IUser } from '../auth/AuthContext'
+import { IIdentity } from '../auth/AuthContext'
 
 interface Props {
     children: ReactNode
@@ -14,7 +14,7 @@ export const ProfilesContextProvider = ({ children }: Props) => {
     const searchProfiles = async (signal?: AbortSignal) => {
         try {
             dispatch({ type: '@profiles/set_loading', payload: { is: true } })
-            const response = await api<IUser['user'][]>('/users?', { signal })
+            const response = await api<IIdentity['user'][]>('/users?', { signal })
             if (response.success) {
                 dispatch({ type: '@profiles/set', payload: response.data })
                 dispatch({ type: '@profiles/set_loading', payload: { is: false, error: null } })

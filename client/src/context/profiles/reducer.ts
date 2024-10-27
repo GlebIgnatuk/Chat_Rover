@@ -1,15 +1,15 @@
 import { Reducer } from 'react'
-import { IUser } from '../auth/AuthContext'
+import { IIdentity } from '../auth/AuthContext'
 
 export type ILoading = { is: true } | { is: false; error: string | null }
 
 export type IAction =
-    | { type: '@profiles/set'; payload: IUser['user'][] }
+    | { type: '@profiles/set'; payload: IIdentity['user'][] }
     | { type: '@profiles/set_loading'; payload: ILoading }
     | { type: '@filters/toggle_language'; payload: string }
 
 export type IState = {
-    profiles: { items: IUser['user'][]; loading: ILoading }
+    profiles: { items: IIdentity['user'][]; loading: ILoading }
     filters: {
         languages: { [lang: string]: boolean }
     }
