@@ -13,13 +13,16 @@ export const Toast = () => {
 
     useEffect(() => {
         if (lastReceivedMessage === null) return
-        if (chatId === lastReceivedMessage?.chatId) return
+        if (chatId === lastReceivedMessage?.chatId) {
+            return resetLastReceivedMessage()
+        }
 
         const timer = setTimeout(() => {
             resetLastReceivedMessage()
         }, 4000)
 
         return () => {
+            resetLastReceivedMessage()
             clearTimeout(timer)
         }
     }, [lastReceivedMessage])

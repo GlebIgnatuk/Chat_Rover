@@ -1,4 +1,5 @@
 export const pathPrefix = ''
+export const ACTIVITY_POLLING_INTERVAL = 30 * 1000
 
 const names = [
     'Whitney Luna',

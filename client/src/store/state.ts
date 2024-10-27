@@ -1,5 +1,5 @@
 import { ILoading } from './common'
-import { IMessage, IMessageWithStatus, IPrivateChatWithMetadata } from './types'
+import { IMessage, IMessageWithStatus, IPrivateChatWithMetadata, IUser } from './types'
 
 type ILoadingState = {
     items: { [key: string]: ILoading }
@@ -42,4 +42,14 @@ export type IP2PState = {
     }
 }
 
-export type IGlobalState = IChatsState & IP2PState
+export type IOnlineState = {
+    online: {
+        items: { [userId: string]: Date }
+        add: (item: IUser) => void
+        addMany: (items: IUser[]) => void
+        remove: (userId: string) => void
+        invalidate: () => void
+    }
+}
+
+export type IGlobalState = IChatsState & IP2PState & IOnlineState

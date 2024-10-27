@@ -4,14 +4,10 @@ import { Namespace, Server } from 'socket.io'
 
 export class OnlineService {
     private readonly privateNS: Namespace
-    // private readonly publicNS: Server
 
     private readonly userRepo: IUserRepository
 
-    constructor(
-        wss: Server,
-        userRepo: IUserRepository,
-    ) {
+    constructor(wss: Server, userRepo: IUserRepository) {
         this.privateNS = wss.of('/ws/users/activities')
         this.userRepo = userRepo
     }
@@ -23,6 +19,8 @@ export class OnlineService {
         }
 
         await this.userRepo.trackActivity(user._id)
-        this.privateNS.to(user._id.toString()).emit('online', user)
+
+        const updatedUser = await this.userRepo.get(user._id)
+        if (updatedUser) this.privateNS.to(user._id.toString()).emit('online', updatedUser)
     }
 }

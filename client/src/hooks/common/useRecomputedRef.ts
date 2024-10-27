@@ -7,5 +7,5 @@ export const useRecomputedRef = <T>(value: T) => {
         ref.current = value
     }, [value])
 
-    return ref.current
+    return ref
 }

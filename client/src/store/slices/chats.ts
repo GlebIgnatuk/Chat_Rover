@@ -1,21 +1,23 @@
 import { StateCreator } from 'zustand'
-import { IChatsState, IP2PState } from '../state'
+import { IChatsState, IOnlineState, IP2PState } from '../state'
 import * as R from 'ramda'
 import { ILoading } from '../common'
 import { IMessageWithStatus } from '../types'
 
-type IState = IChatsState & IP2PState
+type IState = IChatsState & IP2PState & IOnlineState
 
 export const createChatsSlice: StateCreator<IState, [], [], IChatsState> = (set, get) => ({
     chats: {
         items: {},
         add: (item) => {
             get().p2p.add(item)
+            get().online.add(item.peer)
 
             return set((state) => R.assocPath(['chats', 'items', item._id], item, state))
         },
         addMany: (items) => {
             get().p2p.addMany(items)
+            get().online.addMany(items.map((item) => item.peer))
 
             set((state) => {
                 const indexed = R.indexBy(R.prop('_id'), items)

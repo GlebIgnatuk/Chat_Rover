@@ -17,6 +17,8 @@ import { AccountContextProvider } from './context/account'
 import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
+import { OnlineContextProvider } from './context/online/OnlineContextProvider'
+import { AppAuthenticated } from './AppAuthenticated'
 
 const router = createBrowserRouter([
     {
@@ -45,13 +47,15 @@ const router = createBrowserRouter([
                 path: '*',
                 element: (
                     <ProtectedRoute>
-                        <ProfilesContextProvider>
-                            <CharactersContextProvider>
-                                <AccountContextProvider>
-                                    <Outlet />
-                                </AccountContextProvider>
-                            </CharactersContextProvider>
-                        </ProfilesContextProvider>
+                        <OnlineContextProvider>
+                            <ProfilesContextProvider>
+                                <CharactersContextProvider>
+                                    <AccountContextProvider>
+                                        <AppAuthenticated />
+                                    </AccountContextProvider>
+                                </CharactersContextProvider>
+                            </ProfilesContextProvider>
+                        </OnlineContextProvider>
                     </ProtectedRoute>
                 ),
                 children: [

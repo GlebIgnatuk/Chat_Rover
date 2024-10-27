@@ -1,6 +1,9 @@
 import { useUser } from '@/context/auth/useUser'
 import { MessageWithStatus } from '@/context/chat/reducer'
 import { useChat } from '@/hooks/chats/useChat'
+import { useStore } from '@/store/store'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -13,6 +16,7 @@ export const ChatScreen = () => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
     const { chat, messages, sendMessage } = useChat(chatId || '')
+    const onlineUsers = useStore((state) => state.online.items)
 
     const groupped = useMemo(() => {
         return messages.messages.reduce<Record<string, MessageWithStatus[]>>((acc, n) => {
@@ -55,7 +59,16 @@ export const ChatScreen = () => {
         return () => {
             window.removeEventListener('keypress', handler)
         }
-    }, [])
+    }, [chatId])
+
+    const formatLastActivity = (date: Date): string => {
+        const diff = Math.floor((Date.now() - date.getTime()) / 1000 / 60)
+
+        if (diff < 1) return `online`
+        if (diff < 60) return `${diff} minutes ago`
+        if (diff < 60 * 12) return `${Math.floor(diff / 60)} hours ago`
+        return `${Math.floor(diff / 60 / 24)} days ago`
+    }
 
     if (!chat.chat || chat.loading.is) {
         return <>Loading...</>
@@ -65,9 +78,34 @@ export const ChatScreen = () => {
 
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
-            <div className="bg-[#FFFAE7] text-black px-1 py-2">
-                <div className="inline-block" onClick={() => navigate(-1)}>
-                    &lt; Back
+            <div className="bg-[#FFFAE7] px-1 py-2 flex items-center">
+                <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    className="w-10 h-4 cursor-pointer text-black"
+                    onClick={() => navigate(-1)}
+                />
+                <div className="relative w-12 h-12 shrink-0">
+                    {chat.chat.peer.avatarUrl ? (
+                        <img
+                            src={chat.chat.peer.avatarUrl}
+                            className="w-full h-full object-cover object-center border-2 border-[#A17DA8] rounded-full"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center border-2 border-[#A17DA8] bg-gradient-to-b from-[#f0c0fb] to-[#A17DA8] rounded-full uppercase font-semibold text-md overflow-hidden">
+                            {chat.chat.peer.nickname.substring(0, 2)}
+                        </div>
+                    )}
+                </div>
+                <div className="ml-4">
+                    <div className="font-semibold text-black text-sm">
+                        {chat.chat.peer.nickname}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        {formatLastActivity(
+                            onlineUsers[chat.chat.peer._id] ??
+                                new Date(chat.chat.peer.lastActivityAt),
+                        )}
+                    </div>
                 </div>
             </div>
 

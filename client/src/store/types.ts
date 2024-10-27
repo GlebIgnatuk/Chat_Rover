@@ -2,13 +2,16 @@ export type IPrivateChat = {
     _id: string
 }
 
+export type IUser = {
+    _id: string
+    nickname: string
+    avatarUrl: string | null
+    lastActivityAt: string
+}
+
 export type IPrivateChatWithMetadata = {
     _id: string
-    peer: {
-        _id: string
-        nickname: string
-        avatarUrl: string | null
-    }
+    peer: IUser
     lastMessage: {
         chatId: string
         text: string

@@ -2,7 +2,6 @@ import { useUser } from '@/context/auth/useUser'
 import { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
-import { Toast } from './Toast'
 
 import HomeIcon from '@material-ui/icons/Home'
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
@@ -10,7 +9,6 @@ import ChatIcon from '@material-ui/icons/Chat'
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
-import { useWebsocket } from '@/hooks/chats/useWebsocket'
 import { useChatsService } from '@/hooks/chats/useChatsService'
 
 const navigation = [
@@ -62,9 +60,6 @@ export const HomeLayout = () => {
 
     const [transitioned, setTransitioned] = useState(false)
 
-    const connect = useWebsocket()
-    useEffect(() => connect(), [connect])
-
     // @todo factor out initial fetching
     const chatsService = useChatsService()
     useEffect(() => {
@@ -103,7 +98,6 @@ export const HomeLayout = () => {
 
     return (
         <>
-            <Toast />
             <div className="relative h-full bg-[#252323] flex flex-col">
                 {import.meta.env.DEV && (
                     <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">

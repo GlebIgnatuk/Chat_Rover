@@ -1,10 +1,10 @@
 import { io } from 'socket.io-client'
 import { useChatsService } from './useChatsService'
-import { useUser } from '@/context/auth/useUser'
 import { useStore } from '@/store/store'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { useCallback } from 'react'
 import { IMessage } from '@/store/types'
+import { useUser } from '@/context/auth/useUser'
 
 export const useWebsocket = () => {
     const user = useUser()
@@ -30,15 +30,15 @@ export const useWebsocket = () => {
             abortController.abort()
             abortController = new AbortController()
 
-            if (chats.items[message.chatId] !== undefined) {
-                chats.setLastMessage(message.chatId, message)
+            if (chats.current.items[message.chatId] !== undefined) {
+                chats.current.setLastMessage(message.chatId, message)
             } else {
-                await service.loadById(message.chatId, abortController.signal)
+                await service.current.loadById(message.chatId, abortController.signal)
             }
 
-            chatsMessages.put(message.chatId, { message, status: 'sent', error: null })
+            chatsMessages.current.put(message.chatId, { message, status: 'sent', error: null })
             if (user.user._id !== message.createdBy._id) {
-                chatsMessages.setLastReceivedMessage(message)
+                chatsMessages.current.setLastReceivedMessage(message)
             }
         })
 
@@ -50,7 +50,7 @@ export const useWebsocket = () => {
             abortController.abort()
             socket.disconnect()
         }
-    }, [user.user._id])
+    }, [])
 
     return connect
 }

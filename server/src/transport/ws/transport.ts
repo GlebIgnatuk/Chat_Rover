@@ -38,16 +38,7 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
 
         console.log(`${user._id} connected`)
 
-        // socket.leave(socket.id)
         socket.join(user._id.toString())
-
-        socket.on('messages:post', async (body) => {
-            console.log(body, typeof body)
-
-            // const { chatId, text } = body
-
-            // await services.chat.sendMessage(chatId, text, identity)
-        })
 
         socket.on('disconnect', () => {
             console.log(`${user._id} disconnected`)
@@ -83,17 +74,10 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
 
         console.log(`${user._id} connected`)
 
-        // socket.leave(socket.id)
-        socket.join(user._id.toString())
+        // socket.join(user._id.toString())
 
         socket.on('subscribe', async (body) => {
-            console.log(body, typeof body)
-
             socket.join(body)
-
-            // const { chatId, text } = body
-
-            // await services.chat.sendMessage(chatId, text, identity)
         })
 
         socket.on('unsubscribe', async (body) => {
@@ -103,6 +87,8 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
         })
 
         socket.on('disconnect', () => {
+            // activities.to(user._id.toString()).emit('offline', user._id.toString())
+
             console.log(`${user._id} disconnected`)
         })
     })

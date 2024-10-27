@@ -1,7 +1,8 @@
 import { APIResponse } from '@/services/api'
+import { IUser } from '@/store/types'
 import { createContext } from 'react'
 
-export interface IUser {
+export interface IIdentity {
     identity: {
         id: number
         username: string
@@ -11,17 +12,13 @@ export interface IUser {
         is_premium: boolean
         allows_write_to_pm: boolean
     }
-    user: {
-        _id: string
-        nickname: string
-        avatarUrl: string | null
-    }
+    user: IUser
 }
 
 export interface IAuthContext {
-    user: IUser | null
-    signIn: (signal?: AbortSignal) => Promise<APIResponse<IUser>>
-    signUp: (nickname: string, signal?: AbortSignal) => Promise<APIResponse<IUser>>
+    user: IIdentity | null
+    signIn: (signal?: AbortSignal) => Promise<APIResponse<IIdentity>>
+    signUp: (nickname: string, signal?: AbortSignal) => Promise<APIResponse<IIdentity>>
     logout: () => void
 }
 
