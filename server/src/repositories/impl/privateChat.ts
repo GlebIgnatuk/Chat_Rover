@@ -1,4 +1,4 @@
-import { ChatModel, ChatType, IPrivateChatDTO } from '@/models/chat'
+import { PrivateChatModel, ChatType, IPrivateChatDTO } from '@/models/chat'
 import {
     IPrivateChatCreate,
     IPrivateChatPatch,
@@ -14,7 +14,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     private static CHAT_TYPE: ChatType = 'private'
 
     async get(id: ID): Promise<IPrivateChatDTO | null> {
-        const chats = await ChatModel.getCollection()
+        const chats = await PrivateChatModel.getCollection()
             .aggregate<IPrivateChatDTO>([
                 { $match: { _id: new Types.ObjectId(id) } },
                 { $limit: 1 },
@@ -33,7 +33,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     }
 
     async getWithMetadata(id: ID, userId: ID): Promise<IPrivateChatWithMetadataDTO | null> {
-        const chats = await ChatModel.getCollection()
+        const chats = await PrivateChatModel.getCollection()
             .aggregate<IPrivateChatWithMetadataDTO>([
                 {
                     $match: { _id: new Types.ObjectId(id) },
@@ -95,7 +95,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     }
 
     async list(userId: ID): Promise<IPrivateChatWithMetadataDTO[]> {
-        const chats = await ChatModel.getCollection()
+        const chats = await PrivateChatModel.getCollection()
             .aggregate<IPrivateChatWithMetadataDTO>([
                 { $match: { members: new Types.ObjectId(userId) } },
                 {
@@ -159,7 +159,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     }
 
     async findByPeer(userId: ID, peerId: ID): Promise<IPrivateChatWithMetadataDTO | null> {
-        const chats = await ChatModel.getCollection()
+        const chats = await PrivateChatModel.getCollection()
             .aggregate<IPrivateChatWithMetadataDTO>([
                 {
                     $match: {
@@ -223,7 +223,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     }
 
     async hasMember(chatId: ID, memberId: ID): Promise<boolean> {
-        const chat = await ChatModel.getCollection().findOne(
+        const chat = await PrivateChatModel.getCollection().findOne(
             {
                 _id: new Types.ObjectId(chatId),
                 members: new Types.ObjectId(memberId),
@@ -237,7 +237,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     async create(payload: IPrivateChatCreate): Promise<IPrivateChatDTO> {
         const now = new Date()
 
-        const inserted = await ChatModel.getCollection().insertOne({
+        const inserted = await PrivateChatModel.getCollection().insertOne({
             type: PrivateChatRepository.CHAT_TYPE,
             members: [payload.userId, payload.peerId].map((id) => new Types.ObjectId(id)),
             lastMessageSentAt: now,
@@ -262,7 +262,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
         }
         update.updatedAt = now
 
-        const updated = await ChatModel.getCollection().findOneAndUpdate(
+        const updated = await PrivateChatModel.getCollection().findOneAndUpdate(
             { _id: new Types.ObjectId(id) },
             { $set: update },
             { returnDocument: 'after' },
@@ -273,7 +273,7 @@ export class PrivateChatRepository implements IPrivateChatRepository {
     }
 
     async delete(id: ID): Promise<void> {
-        const chat = await ChatModel.getCollection().findOneAndDelete({
+        const chat = await PrivateChatModel.getCollection().findOneAndDelete({
             _id: new Types.ObjectId(id),
         })
         if (!chat) {

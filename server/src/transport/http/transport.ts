@@ -1,5 +1,6 @@
 import * as UsersController from './users/users.controller'
 import * as PrivateChatsController from './privateChats/privateChats.controller'
+import * as GlobalChatsController from './globalChats/globalChats.controller'
 import * as ChatMessagesController from './chatMessages/chatMessages.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import * as ProfilesController from './profiles/profiles.controller'
@@ -104,6 +105,9 @@ export const setupHttpRouter = (
     authorized.get('/privateChats', PrivateChatsController.listMyChats)
     authorized.post('/privateChats', PrivateChatsController.create)
     authorized.delete('/privateChats/:chatId', PrivateChatsController.remove)
+
+    // Global chat
+    authorized.get('/globalChats', GlobalChatsController.list)
 
     // Chat message
     authorized.get('/chats/:chatId/messages', ChatMessagesController.list)

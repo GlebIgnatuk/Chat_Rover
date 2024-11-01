@@ -17,6 +17,8 @@ import { ChatService } from './core/chatService'
 import { WuwaCharacterRepository } from './repositories/impl/wuwaCharacter'
 import { ProfileRepository } from './repositories/impl/profile'
 import { OnlineService } from './core/onlineService'
+import { GlobalChatRepository } from './repositories/impl/globalChat'
+import { GlobalChatService } from './core/globalChatService'
 
 const app = express()
 let server: http.Server | https.Server
@@ -37,9 +39,11 @@ const handler = async () => {
     await MongoDBService.lazy(config.MONGO_URI)
 
     const privateChat = new PrivateChatRepository()
+    const globalChat = new GlobalChatRepository()
     const repositories: IRepositories = {
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
+        globalChat: globalChat,
         user: new UserRepository(),
         wuwaCharacter: new WuwaCharacterRepository(),
         profile: new ProfileRepository(),
@@ -48,6 +52,11 @@ const handler = async () => {
         chat: new ChatService(
             wss,
             repositories.privateChat,
+            repositories.user,
+            repositories.chatMessage,
+        ),
+        globalChat: new GlobalChatService(
+            wss,
             repositories.user,
             repositories.chatMessage,
         ),

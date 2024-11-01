@@ -8,21 +8,21 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
 
         const { identity, repositories } = res.locals
 
-        const user = await repositories.user.getByExternalId(identity.user.id)
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                error: 'No such user',
-            })
-        }
+        // const user = await repositories.user.getByExternalId(identity.user.id)
+        // if (!user) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'No such user',
+        //     })
+        // }
 
-        const hasAccess = await repositories.privateChat.hasMember(chatId, user._id)
-        if (!hasAccess) {
-            return res.status(403).json({
-                success: false,
-                error: "You don' have access to this chat",
-            })
-        }
+        // const hasAccess = await repositories.privateChat.hasMember(chatId, user._id)
+        // if (!hasAccess) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         error: "You don' have access to this chat",
+        //     })
+        // }
 
         const messages = await repositories.chatMessage.list(chatId, {
             page: page - 1,
@@ -51,9 +51,17 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
         const chatId = req.params.chatId
 
-        const { identity, services } = res.locals
+        const { identity, services, repositories } = res.locals
 
-        const message = await services.chat.sendMessage(chatId, req.body.text, identity)
+        const chat = await repositories.globalChat.get(chatId) || await repositories.privateChat.get(chatId)
+
+        let message = null
+        if (chat?.type == "global") {
+            message = await services.globalChat.sendMessage(chatId, req.body.text, identity)
+        } else {
+            message = await services.chat.sendMessage(chatId, req.body.text, identity)
+        }
+        
 
         return res.json({
             success: true,
