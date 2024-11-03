@@ -55,7 +55,12 @@ const handler = async () => {
             repositories.user,
             repositories.chatMessage,
         ),
-        globalChat: new GlobalChatService(wss, repositories.user, repositories.chatMessage),
+        globalChat: new GlobalChatService(
+            wss,
+            repositories.user,
+            repositories.chatMessage,
+            globalChat,
+        ),
         online: new OnlineService(wss, repositories.user),
     }
 

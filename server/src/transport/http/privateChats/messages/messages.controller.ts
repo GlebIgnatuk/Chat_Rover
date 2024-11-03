@@ -31,7 +31,7 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
 
         return res.json({
             success: true,
-            data: messages.reverse(),
+            data: messages,
             meta: {
                 pagination: {
                     page,

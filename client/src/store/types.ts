@@ -2,6 +2,11 @@ export type IPrivateChat = {
     _id: string
 }
 
+export type IGlobalChat = {
+    _id: string
+    slug: string
+}
+
 export type IUser = {
     _id: string
     nickname: string

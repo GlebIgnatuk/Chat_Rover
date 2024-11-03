@@ -19,6 +19,9 @@ import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
 import { OnlineContextProvider } from './context/online/OnlineContextProvider'
 import { AppAuthenticated } from './AppAuthenticated'
+import { GameChatScreen } from './pages/game_chat/GameChat.screen'
+import { GlobalChatScreen } from './pages/game_chat/GlobalChat.screen'
+import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
 
 const router = createBrowserRouter([
     {
@@ -66,6 +69,29 @@ const router = createBrowserRouter([
                             {
                                 path: '',
                                 element: <HomeScreen />,
+                            },
+                            {
+                                path: 'game_chat',
+                                element: <GameChatScreen />,
+                                children: [
+                                    {
+                                        path: 'global',
+                                        element: <GlobalChatScreen />,
+                                    },
+                                    {
+                                        path: 'regional',
+                                        element: <RegionalChatScreen />,
+                                    },
+                                    {
+                                        path: '*',
+                                        element: (
+                                            <Navigate
+                                                to="/home/game_chat/global"
+                                                state={{ animate: false }}
+                                            />
+                                        ),
+                                    },
+                                ],
                             },
                             {
                                 path: 'chats',

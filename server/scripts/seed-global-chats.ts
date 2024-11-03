@@ -1,3 +1,4 @@
+import { SUPPORTED_SERVERS } from '@/config/config'
 import { GlobalChatModel, IGlobalChatModel } from '@/models/chat'
 import { MongoDBService } from '@/services/database'
 
@@ -14,6 +15,12 @@ async function main() {
             type: 'global',
             description: '',
         },
+        ...SUPPORTED_SERVERS.map<Omit<IGlobalChatModel, 'createdAt' | 'updatedAt'>>((s) => ({
+            title: s,
+            slug: s.toLowerCase(),
+            type: 'global',
+            description: '',
+        })),
     ]
 
     const mapped = chats.map<IGlobalChatModel>((c) => ({

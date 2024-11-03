@@ -133,5 +133,7 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
         socket.on('disconnect', () => {
             console.log(`${user._id} disconnected`)
         })
+
+        socket.emit('init')
     })
 }

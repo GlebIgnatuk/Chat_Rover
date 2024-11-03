@@ -9,18 +9,21 @@ export class GlobalChatService {
 
     private readonly userRepo: IUserRepository
     private readonly chatMessageRepo: IChatMessageRepository
+    private readonly chatRepo: IGlobalChatRepository
 
     constructor(
         wss: Server,
         userRepo: IUserRepository,
         chatMessageRepo: IChatMessageRepository,
+        chatRepo: IGlobalChatRepository,
     ) {
         this.NS = wss.of('/ws/chats/global')
         this.userRepo = userRepo
         this.chatMessageRepo = chatMessageRepo
+        this.chatRepo = chatRepo
     }
 
-    async sendMessage(chatId: string, text: string, ctx: ValidatedUserPayload) {
+    async sendMessage(slug: string, text: string, ctx: ValidatedUserPayload) {
         if (text.length === 0) {
             throw new Error("Message can't be empty")
         }
@@ -30,14 +33,20 @@ export class GlobalChatService {
             throw new Error('No such user')
         }
 
+        const chat = await this.chatRepo.getBySlug(slug)
+        if (!chat) {
+            throw new Error('No such chat')
+        }
+
         const message = await this.chatMessageRepo.create({
-            chatId: chatId,
+            chatId: chat._id,
             userId: sender._id,
             text: text,
         })
 
-        this.NS.to(chatId).emit('messages:post', message)
+        this.NS.to(slug).emit('messages:post', message)
+        // this.NS.emit('messages:post', message)
 
         return message
-    }   
+    }
 }

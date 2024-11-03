@@ -2,13 +2,23 @@ import { IAuthorizedRequestHandler } from '@/transport/http/types'
 
 export const list: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
-        const chatId = req.params.chatId
+        const slug = req.params.chatId
         const page = Number(req.query.page || '1')
         const limit = Number(req.query.limit || '15')
 
         const { repositories } = res.locals
 
-        const messages = await repositories.chatMessage.list(chatId, {
+        const chat = await repositories.globalChat.getBySlug(slug)
+        if (!chat) {
+            return res
+                .json({
+                    success: false,
+                    error: 'No such chat',
+                })
+                .status(400)
+        }
+
+        const messages = await repositories.chatMessage.list(chat._id, {
             page: page - 1,
             limit,
         })
@@ -31,20 +41,16 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
-        const chatId = req.params.chatId
+        const slug = req.params.chatId
 
-        const { identity, services, repositories } = res.locals
+        const { identity, services } = res.locals
 
-        const chat =
-            (await repositories.globalChat.get(chatId)) ||
-            (await repositories.privateChat.get(chatId))
-
-        let message = null
-        if (chat?.type == 'global') {
-            message = await services.globalChat.sendMessage(chatId, req.body.text, identity)
-        } else {
-            message = await services.privateChat.sendMessage(chatId, req.body.text, identity)
-        }
+        const message = await services.globalChat.sendMessage(
+            // @todo migrate to chatId
+            slug,
+            req.body.text,
+            identity,
+        )
 
         return res.json({
             success: true,
