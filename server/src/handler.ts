@@ -13,10 +13,12 @@ import { PrivateChatRepository } from './repositories/impl/privateChat'
 import { ChatMessageRepository } from './repositories/impl/chatMessage'
 import { Server } from 'socket.io'
 import { IServices } from './core/types'
-import { ChatService } from './core/chatService'
+import { PrivateChatService } from './core/privateChatService'
 import { WuwaCharacterRepository } from './repositories/impl/wuwaCharacter'
 import { ProfileRepository } from './repositories/impl/profile'
 import { OnlineService } from './core/onlineService'
+import { GlobalChatRepository } from './repositories/impl/globalChat'
+import { GlobalChatService } from './core/globalChatService'
 
 const app = express()
 let server: http.Server | https.Server
@@ -37,24 +39,29 @@ const handler = async () => {
     await MongoDBService.lazy(config.MONGO_URI)
 
     const privateChat = new PrivateChatRepository()
+    const globalChat = new GlobalChatRepository()
     const repositories: IRepositories = {
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
+        globalChat: globalChat,
         user: new UserRepository(),
         wuwaCharacter: new WuwaCharacterRepository(),
         profile: new ProfileRepository(),
     }
     const services: IServices = {
-        chat: new ChatService(
+        privateChat: new PrivateChatService(
             wss,
             repositories.privateChat,
             repositories.user,
             repositories.chatMessage,
         ),
-        online: new OnlineService(
+        globalChat: new GlobalChatService(
             wss,
             repositories.user,
-        )
+            repositories.chatMessage,
+            globalChat,
+        ),
+        online: new OnlineService(wss, repositories.user),
     }
 
     // API routes

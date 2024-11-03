@@ -5,9 +5,8 @@ import { IUserRepository } from '@/repositories/user'
 import { ValidatedUserPayload } from '@/services/telegram'
 import { Namespace, Server } from 'socket.io'
 
-export class ChatService {
-    private readonly privateNS: Namespace
-    // private readonly publicNS: Server
+export class PrivateChatService {
+    private readonly NS: Namespace
 
     private readonly privateChatRepo: IPrivateChatRepository
     private readonly userRepo: IUserRepository
@@ -19,7 +18,7 @@ export class ChatService {
         userRepo: IUserRepository,
         chatMessageRepo: IChatMessageRepository,
     ) {
-        this.privateNS = wss.of('/ws/chats/private')
+        this.NS = wss.of('/ws/chats/private')
         this.privateChatRepo = privateChatRepo
         this.userRepo = userRepo
         this.chatMessageRepo = chatMessageRepo
@@ -84,7 +83,7 @@ export class ChatService {
                 }
             }
         }
-        this.privateNS.to(chat.members.map((m) => m._id.toString())).emit('messages:post', message)
+        this.NS.to(chat.members.map((m) => m._id.toString())).emit('messages:post', message)
 
         return message
     }

@@ -1,5 +1,5 @@
 import { ILoading } from './common'
-import { IMessage, IMessageWithStatus, IPrivateChatWithMetadata, IUser } from './types'
+import { IGlobalChat, IMessage, IMessageWithStatus, IPrivateChatWithMetadata, IUser } from './types'
 
 type ILoadingState = {
     items: { [key: string]: ILoading }
@@ -32,6 +32,22 @@ export type IChatsState = {
     }
 }
 
+export type IGlobalChatsState = {
+    globalChats: {
+        items: { [chatId: string]: IGlobalChat }
+    }
+    globalChatsMessages: {
+        items: { [chatId: string]: IMessageWithStatus[] }
+        put: (chatId: string, item: IMessageWithStatus) => void
+        replace: (chatId: string, uuid: string, item: IMessage) => void
+        prepend: (chatId: string, items: IMessage[]) => void
+        append: (chatId: string, items: IMessage[]) => void
+        set: (chatId: string, items: IMessage[]) => void
+
+        loading: ILoadingState
+    }
+}
+
 export type IP2PState = {
     p2p: {
         items: { [peerId: string]: IPrivateChatWithMetadata }
@@ -52,4 +68,4 @@ export type IOnlineState = {
     }
 }
 
-export type IGlobalState = IChatsState & IP2PState & IOnlineState
+export type IGlobalState = IChatsState & IGlobalChatsState & IP2PState & IOnlineState

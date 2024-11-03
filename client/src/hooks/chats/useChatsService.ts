@@ -122,7 +122,7 @@ export const useChatsService = () => {
             try {
                 chatsMessages.loading.start(chatId)
                 const response = await api<IMessage[]>(
-                    `/chats/${chatId}/messages/?page=1&limit=15`,
+                    `/privateChats/${chatId}/messages/?page=1&limit=15`,
                     {
                         signal,
                     },
@@ -167,7 +167,7 @@ export const useChatsService = () => {
                     status: 'pending',
                 })
 
-                const response = await api<IMessage>(`/chats/${chatId}/messages`, {
+                const response = await api<IMessage>(`/privateChats/${chatId}/messages`, {
                     method: 'POST',
                     body: JSON.stringify({ text }),
                     signal,

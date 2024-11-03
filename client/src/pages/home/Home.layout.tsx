@@ -3,23 +3,46 @@ import { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
-import HomeIcon from '@material-ui/icons/Home'
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
-import ChatIcon from '@material-ui/icons/Chat'
-import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
+import PlayLessonIcon from '@mui/icons-material/PlayLesson'
+import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
+import GroupIcon from '@mui/icons-material/Group'
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
+import ChatIcon from '@mui/icons-material/Chat'
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { useChatsService } from '@/hooks/chats/useChatsService'
+import wuwaIcon from '@/assets/wuwa_icon.png'
 
 const navigation = [
     {
-        path: '/home',
-        label: 'Home',
-        end: true,
-        IconActive: HomeIcon,
-        IconInactive: HomeOutlinedIcon,
+        path: '/home/game_chat',
+        label: 'Chat',
+        IconActive: () => <img src={wuwaIcon} className="w-full h-full rounded-full" />,
+        IconInactive: () => (
+            <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
+        ),
     },
-    { path: '/home/chats', label: 'Chats', IconActive: ChatIcon, IconInactive: ChatOutlinedIcon },
+    {
+        path: '/home/guides',
+        label: 'Guides',
+        IconActive: PlayLessonIcon,
+        IconInactive: PlayLessonOutlinedIcon,
+        disabled: true,
+    },
+    {
+        path: '/home',
+        label: 'Community',
+        end: true,
+        IconActive: GroupIcon,
+        IconInactive: GroupOutlinedIcon,
+    },
+    {
+        path: '/home/chats',
+        label: 'Messages',
+        IconActive: ChatIcon,
+        IconInactive: ChatOutlinedIcon,
+    },
     {
         path: '/home/account/profiles',
         label: 'Account',
@@ -35,8 +58,8 @@ const navigation = [
     // },
 ]
 
-const WithTransition = ({ children }: { children: ReactNode }) => {
-    const [isLoaded, setIsLoaded] = useState(false)
+const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: boolean }) => {
+    const [isLoaded, setIsLoaded] = useState(ignore === true)
 
     useEffect(() => {
         setIsLoaded(true)
@@ -44,7 +67,7 @@ const WithTransition = ({ children }: { children: ReactNode }) => {
 
     return (
         <div
-            className={cn('opacity-0 transition-opacity duration-500', {
+            className={cn('relative opacity-0 transition-opacity duration-500', {
                 '!opacity-100': isLoaded,
             })}
         >
@@ -119,7 +142,10 @@ export const HomeLayout = () => {
                 )}
 
                 <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden">
-                    <WithTransition key={location.pathname}>
+                    <WithTransition
+                        key={location.pathname}
+                        ignore={location.state?.animate === false}
+                    >
                         <Outlet />
                     </WithTransition>
 
@@ -137,7 +163,8 @@ export const HomeLayout = () => {
                                 className={({ isActive }) =>
                                     cn('py-2 flex flex-col items-center justify-end relative', {
                                         'text-[#F18F01]': isActive,
-                                        'text-[hsl(36,99%,43%)] s': !isActive,
+                                        'text-[hsl(36,99%,43%)]': !isActive,
+                                        'text-gray-300 pointer-events-none': n.disabled,
                                         // 'pointer-events-none text-gray-700': n.disabled,
                                     })
                                 }
