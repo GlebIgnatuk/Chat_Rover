@@ -3,25 +3,16 @@ import { MongoDBService } from '@/services/database'
 
 async function main() {
     await MongoDBService.lazy(process.env.MONGO_URI)
-    await GlobalChatModel.getCollection().deleteMany({ type: "global" })
+    await GlobalChatModel.getCollection().deleteMany({ type: 'global' })
 
     const now = new Date()
 
     const chats: Omit<IGlobalChatModel, 'createdAt' | 'updatedAt'>[] = [
         {
-            title: "Ching Chong",
-            type: "global",
-            description: "For yellow people"
-        },
-        {
-            title: "Niggers",
-            type: "global",
-            description: "For KSI people"
-        },
-        {
-            title: "Jew",
-            type: "global",
-            description: "For greedy people"
+            title: 'Global',
+            slug: 'global',
+            type: 'global',
+            description: '',
         },
     ]
 

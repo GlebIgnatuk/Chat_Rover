@@ -122,21 +122,15 @@ export const setupWsRouter = (wss: Server, repositories: IRepositories, services
 
         console.log(`${user._id} connected`)
 
-        // socket.join(user._id.toString())
-
-        socket.on('subscribe', async (body) => {
-            socket.join(body)
+        socket.on('subscribe', async (slug) => {
+            socket.join(slug)
         })
 
-        socket.on('unsubscribe', async (body) => {
-            console.log(body, typeof body)
-
-            socket.leave(body)
+        socket.on('unsubscribe', async (slug) => {
+            socket.leave(slug)
         })
 
         socket.on('disconnect', () => {
-            // activities.to(user._id.toString()).emit('offline', user._id.toString())
-
             console.log(`${user._id} disconnected`)
         })
     })

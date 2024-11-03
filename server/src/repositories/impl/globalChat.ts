@@ -1,4 +1,4 @@
-import { CHAT_TYPES, ChatType, GlobalChatModel, IGlobalChatDTO } from '@/models/chat'
+import { ChatType, GlobalChatModel, IGlobalChatDTO } from '@/models/chat'
 import { IGlobalChatCreate, IGlobalChatRepository } from '../globalChat'
 import { ID } from '../types'
 import { Types } from 'mongoose'
@@ -9,6 +9,15 @@ export class GlobalChatRepository implements IGlobalChatRepository {
     async get(id: ID): Promise<IGlobalChatDTO | null> {
         const chat = await GlobalChatModel.getCollection().findOne({
             _id: new Types.ObjectId(id),
+            type: GlobalChatRepository.CHAT_TYPE,
+        })
+
+        return chat
+    }
+
+    async getBySlug(slug: string): Promise<IGlobalChatDTO | null> {
+        const chat = await GlobalChatModel.getCollection().findOne({
+            slug,
             type: GlobalChatRepository.CHAT_TYPE,
         })
 
@@ -29,6 +38,7 @@ export class GlobalChatRepository implements IGlobalChatRepository {
         const inserted = await GlobalChatModel.getCollection().insertOne({
             type: GlobalChatRepository.CHAT_TYPE,
             title: payload.title,
+            slug: payload.slug,
             description: payload.description,
             createdAt: now,
             updatedAt: now,

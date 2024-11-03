@@ -1,15 +1,12 @@
-import { IAuthorizedRequestHandler } from '../types'
+import { IAuthorizedRequestHandler } from '@/transport/http/types'
 
 export const list: IAuthorizedRequestHandler = async (_, res, next) => {
     try {
         const { repositories } = res.locals
 
-
         const chats = await repositories.globalChat.list()
 
-        console.log("Chats from controller: ", chats)
-
-        res.json(chats)
+        res.json({ success: true, data: chats })
     } catch (e) {
         next(e)
     }

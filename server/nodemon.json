@@ -1,5 +1,5 @@
 {
-    "watch": ["./src/**"],
+    "watch": ["./src/**", "./scripts/**"],
     "ext": "ts",
     "exec": "yarn build:dev && cross-env NODE_ENV=hmr yarn start"
 }

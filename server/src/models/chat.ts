@@ -12,6 +12,7 @@ export interface IPrivateChatModel extends IChatModel {
 }
 export interface IGlobalChatModel extends IChatModel {
     title: string
+    slug: string
     description?: string
 }
 
