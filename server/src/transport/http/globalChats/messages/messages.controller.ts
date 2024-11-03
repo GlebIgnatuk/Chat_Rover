@@ -1,4 +1,4 @@
-import { IAuthorizedRequestHandler } from '../types'
+import { IAuthorizedRequestHandler } from '@/transport/http/types'
 
 export const list: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -6,34 +6,16 @@ export const list: IAuthorizedRequestHandler = async (req, res, next) => {
         const page = Number(req.query.page || '1')
         const limit = Number(req.query.limit || '15')
 
-        const { identity, repositories } = res.locals
-
-        // const user = await repositories.user.getByExternalId(identity.user.id)
-        // if (!user) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         error: 'No such user',
-        //     })
-        // }
-
-        // const hasAccess = await repositories.privateChat.hasMember(chatId, user._id)
-        // if (!hasAccess) {
-        //     return res.status(403).json({
-        //         success: false,
-        //         error: "You don' have access to this chat",
-        //     })
-        // }
+        const { repositories } = res.locals
 
         const messages = await repositories.chatMessage.list(chatId, {
             page: page - 1,
             limit,
         })
 
-        messages.reverse()
-
         return res.json({
             success: true,
-            data: messages,
+            data: messages.reverse(),
             meta: {
                 pagination: {
                     page,
@@ -53,15 +35,16 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
 
         const { identity, services, repositories } = res.locals
 
-        const chat = await repositories.globalChat.get(chatId) || await repositories.privateChat.get(chatId)
+        const chat =
+            (await repositories.globalChat.get(chatId)) ||
+            (await repositories.privateChat.get(chatId))
 
         let message = null
-        if (chat?.type == "global") {
+        if (chat?.type == 'global') {
             message = await services.globalChat.sendMessage(chatId, req.body.text, identity)
         } else {
-            message = await services.chat.sendMessage(chatId, req.body.text, identity)
+            message = await services.privateChat.sendMessage(chatId, req.body.text, identity)
         }
-        
 
         return res.json({
             success: true,

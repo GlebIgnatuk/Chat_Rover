@@ -1,9 +1,9 @@
-import { ChatService } from "./chatService";
-import { GlobalChatService } from "./globalChatService";
-import { OnlineService } from "./onlineService";
+import { PrivateChatService } from './privateChatService'
+import { GlobalChatService } from './globalChatService'
+import { OnlineService } from './onlineService'
 
 export interface IServices {
-    chat: ChatService
+    privateChat: PrivateChatService
     globalChat: GlobalChatService
     online: OnlineService
 }

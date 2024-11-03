@@ -13,7 +13,7 @@ import { PrivateChatRepository } from './repositories/impl/privateChat'
 import { ChatMessageRepository } from './repositories/impl/chatMessage'
 import { Server } from 'socket.io'
 import { IServices } from './core/types'
-import { ChatService } from './core/chatService'
+import { PrivateChatService } from './core/privateChatService'
 import { WuwaCharacterRepository } from './repositories/impl/wuwaCharacter'
 import { ProfileRepository } from './repositories/impl/profile'
 import { OnlineService } from './core/onlineService'
@@ -49,21 +49,14 @@ const handler = async () => {
         profile: new ProfileRepository(),
     }
     const services: IServices = {
-        chat: new ChatService(
+        privateChat: new PrivateChatService(
             wss,
             repositories.privateChat,
             repositories.user,
             repositories.chatMessage,
         ),
-        globalChat: new GlobalChatService(
-            wss,
-            repositories.user,
-            repositories.chatMessage,
-        ),
-        online: new OnlineService(
-            wss,
-            repositories.user,
-        )
+        globalChat: new GlobalChatService(wss, repositories.user, repositories.chatMessage),
+        online: new OnlineService(wss, repositories.user),
     }
 
     // API routes

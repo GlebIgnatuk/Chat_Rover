@@ -15,7 +15,7 @@ export interface IProfileModel extends IBaseModel {
     nickname: string
     server: IServerKey
     usesVoice: boolean
-    languages: ILanguageKey[]
+    languages: string[]
     worldLevel: number
     team: [ITeamMember | null, ITeamMember | null, ITeamMember | null]
 }

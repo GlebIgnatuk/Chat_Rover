@@ -1,7 +1,8 @@
 import * as UsersController from './users/users.controller'
 import * as PrivateChatsController from './privateChats/privateChats.controller'
 import * as GlobalChatsController from './globalChats/globalChats.controller'
-import * as ChatMessagesController from './chatMessages/chatMessages.controller'
+import * as PrivateChatMessagesController from './privateChats/messages/messages.controller'
+import * as GlobalChatMessagesController from './globalChats/messages/messages.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import * as ProfilesController from './profiles/profiles.controller'
 import { Router } from 'express'
@@ -106,14 +107,16 @@ export const setupHttpRouter = (
     authorized.post('/privateChats', PrivateChatsController.create)
     authorized.delete('/privateChats/:chatId', PrivateChatsController.remove)
 
+    // Private chat messages
+    authorized.get('/privateChats/:chatId/messages', PrivateChatMessagesController.list)
+    authorized.post('/privateChats/:chatId/messages', PrivateChatMessagesController.create)
+
     // Global chat
     authorized.get('/globalChats', GlobalChatsController.list)
 
-    // Chat message
-    authorized.get('/chats/:chatId/messages', ChatMessagesController.list)
-    authorized.post('/chats/:chatId/messages', ChatMessagesController.create)
-    authorized.patch('/chats/:chatId/messages/:messageId', ChatMessagesController.patch)
-    authorized.delete('/chats/:chatId/messages/:messageId', ChatMessagesController.remove)
+    // Global chat messages
+    authorized.get('/globalChats/:chatId/messages', GlobalChatMessagesController.list)
+    authorized.post('/globalChats/:chatId/messages', GlobalChatMessagesController.create)
 
     // Wuwa characters
     authorized.get('/wuwaCharacters', WuwaCharactersController.list)
