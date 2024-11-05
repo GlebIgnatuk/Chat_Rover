@@ -9,6 +9,9 @@ export default {
       animation: {
         'pulse-25-50': 'pulse-25-50 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
       },
+      fontFamily: {
+        tangerine: ['Tangerine', 'cursive']
+      },
       colors: {
         primary: {
           100: 'hsl(26, 81%, 94%)',

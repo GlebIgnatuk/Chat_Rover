@@ -1,4 +1,5 @@
-import loadingScreenImage from '@/assets/loading-screen.webp'
+// import loadingScreenImage from '@/assets/loading-screen.webp'
+import signupImage from '@/assets/signup.webp'
 import { FAKE_PROFILES } from '@/config/config'
 
 import { useAuth } from '@/context/auth/useAuth'
@@ -52,7 +53,7 @@ export const SignInScreen = () => {
                     <span className="text-lg">Connecting...</span>
                 </div>
                 <img
-                    src={loadingScreenImage}
+                    src={signupImage}
                     className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
                 />
             </div>
@@ -97,7 +98,7 @@ export const SignInScreen = () => {
                     )}
                 </div>
                 <img
-                    src={loadingScreenImage}
+                    src={signupImage}
                     className="absolute top-0 left-0 w-full h-full object-cover object-bottom opacity-50"
                 />
             </div>
