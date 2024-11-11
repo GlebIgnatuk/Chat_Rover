@@ -11,6 +11,7 @@ import { IRepositories } from './repositories/repositories'
 import { UserRepository } from './repositories/impl/user'
 import { PrivateChatRepository } from './repositories/impl/privateChat'
 import { ChatMessageRepository } from './repositories/impl/chatMessage'
+import { ReportRepository } from './repositories/impl/reports'
 import { Server } from 'socket.io'
 import { IServices } from './core/types'
 import { PrivateChatService } from './core/privateChatService'
@@ -40,11 +41,13 @@ const handler = async () => {
 
     const privateChat = new PrivateChatRepository()
     const globalChat = new GlobalChatRepository()
+    const user = new UserRepository()
     const repositories: IRepositories = {
+        user: user,
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
         globalChat: globalChat,
-        user: new UserRepository(),
+        report: new ReportRepository(user),
         wuwaCharacter: new WuwaCharacterRepository(),
         profile: new ProfileRepository(),
     }
