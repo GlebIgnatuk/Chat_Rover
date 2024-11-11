@@ -3,6 +3,7 @@ import * as PrivateChatsController from './privateChats/privateChats.controller'
 import * as GlobalChatsController from './globalChats/globalChats.controller'
 import * as PrivateChatMessagesController from './privateChats/messages/messages.controller'
 import * as GlobalChatMessagesController from './globalChats/messages/messages.controller'
+import * as ReportsController from './reports/reports.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import * as ProfilesController from './profiles/profiles.controller'
 import { Router } from 'express'
@@ -117,6 +118,11 @@ export const setupHttpRouter = (
     // Global chat messages
     authorized.get('/globalChats/:chatId/messages', GlobalChatMessagesController.list)
     authorized.post('/globalChats/:chatId/messages', GlobalChatMessagesController.create)
+    
+    // Reports
+    authorized.get('/reports/:id', ReportsController.get)
+    authorized.get('/reports', ReportsController.list)
+    authorized.post('/reports', ReportsController.create)
 
     // Wuwa characters
     authorized.get('/wuwaCharacters', WuwaCharactersController.list)
