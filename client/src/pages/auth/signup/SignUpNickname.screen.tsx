@@ -1,6 +1,3 @@
-// import loadingScreenImage from '@/assets/loading-screen.webp'
-import { useAuth } from '@/context/auth/useAuth'
-
 import { faPlay, faSpinner, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef, useState } from 'react'
@@ -9,6 +6,10 @@ import scrollImage from '@/assets/scroll.png'
 import handArrowImage from '@/assets/hand_arrow.png'
 import signupImage from '@/assets/signup.webp'
 import { cn } from 'tailwind-cn'
+import { useNavigate } from 'react-router-dom'
+import { buildUrl } from '@/utils/url'
+import { api } from '@/services/api'
+import { IIdentity } from '@/context/auth/AuthContext'
 
 const getInitialUsername = () => {
     // @ts-expect-error add types
@@ -21,11 +22,12 @@ const getInitialUsername = () => {
     return user ? JSON.parse(user).username : `Rover${random}`
 }
 
-export const SignUpScreen = () => {
+export const SignUpNicknameScreen = () => {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [name, setName] = useState<string>(getInitialUsername())
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     const [isScrollOpen, setIsScrollOpen] = useState(false)
 
@@ -43,8 +45,6 @@ export const SignUpScreen = () => {
         openScroll()
     }, [])
 
-    const auth = useAuth()
-
     const isValidName = name.length >= 1
 
     const createUser = async () => {
@@ -52,9 +52,20 @@ export const SignUpScreen = () => {
             setError('')
             setIsLoading(true)
 
-            const response = await auth.signUp(name)
+            const response = await api<IIdentity>('/users', {
+                method: 'POST',
+                body: JSON.stringify({ nickname: name }),
+                signal: undefined,
+            })
+
             if (response.success) {
                 setIsScrollOpen(false)
+                setTimeout(() => {
+                    navigate(buildUrl('/auth/signup/profile'), {
+                        replace: true,
+                        state: { user: response.data },
+                    })
+                }, 250)
             } else {
                 setError(response.error)
             }
@@ -79,6 +90,12 @@ export const SignUpScreen = () => {
                 src={signupImage}
                 className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
             />
+            <div
+                className={cn('h-full w-full absolute bg-black transition-all duration-500', {
+                    'animate-pulse-25-50 opacity-0': isScrollOpen,
+                    'opacity-100': !isScrollOpen,
+                })}
+            ></div>
 
             <div
                 className={cn(

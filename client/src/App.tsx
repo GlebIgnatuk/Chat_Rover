@@ -1,11 +1,10 @@
 import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
-import { SignUpScreen } from '@/pages/auth/signup/SignUp.screen'
+import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { HomeLayout } from '@/pages/home/Home.layout'
 import { buildUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { AuthContextProvider } from './context/auth/AuthContextProvider'
-import { ProtectedRoute } from './context/auth/ProtectedRoute'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { HomeScreen } from './pages/home/Home.screen'
@@ -22,15 +21,22 @@ import { AppAuthenticated } from './AppAuthenticated'
 import { GameChatScreen } from './pages/game_chat/GameChat.screen'
 import { GlobalChatScreen } from './pages/game_chat/GlobalChat.screen'
 import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
+import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
+import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
+import { ProtectedRoute } from './context/auth/ProtectedRoute'
 
 const router = createBrowserRouter([
     {
         path: buildUrl('/'),
-        element: <AuthContextProvider />,
+        element: (
+            <CharactersContextProvider>
+                <Outlet />
+            </CharactersContextProvider>
+        ),
         children: [
             {
                 path: '',
-                element: <Navigate to={buildUrl('/auth/signin')} />,
+                element: <Navigate to={buildUrl('/auth/signin')} replace />,
             },
             {
                 path: 'auth',
@@ -38,28 +44,44 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: 'signin',
-                        element: <SignInScreen />,
+                        element: (
+                            <ProfileStateRoute state="unauthenticated">
+                                <SignInScreen />
+                            </ProfileStateRoute>
+                        ),
                     },
                     {
-                        path: 'signup',
-                        element: <SignUpScreen />,
+                        path: 'signup/nickname',
+                        element: (
+                            <ProfileStateRoute state="unauthenticated">
+                                <SignUpNicknameScreen />
+                            </ProfileStateRoute>
+                        ),
+                    },
+                    {
+                        path: 'signup/profile',
+                        element: (
+                            <ProfileStateRoute state="created">
+                                <SignUpProfileScreen />
+                            </ProfileStateRoute>
+                        ),
                     },
                 ],
             },
             {
                 path: '*',
                 element: (
-                    <ProtectedRoute>
-                        <OnlineContextProvider>
-                            <ProfilesContextProvider>
-                                <CharactersContextProvider>
+                    <AuthContextProvider>
+                        <ProtectedRoute>
+                            <OnlineContextProvider>
+                                <ProfilesContextProvider>
                                     <AccountContextProvider>
                                         <AppAuthenticated />
                                     </AccountContextProvider>
-                                </CharactersContextProvider>
-                            </ProfilesContextProvider>
-                        </OnlineContextProvider>
-                    </ProtectedRoute>
+                                </ProfilesContextProvider>
+                            </OnlineContextProvider>
+                        </ProtectedRoute>
+                    </AuthContextProvider>
                 ),
                 children: [
                     {

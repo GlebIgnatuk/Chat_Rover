@@ -1,47 +1,29 @@
-import { api } from '@/services/api'
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import { AuthContext, IAuthContext, IIdentity } from './AuthContext'
+import { useLocation } from 'react-router-dom'
+import { AuthContext, IIdentity } from './AuthContext'
+import { clearTelegramData } from './auth'
 
-export const AuthContextProvider = () => {
-    const [user, setUser] = useState<IIdentity | null>(null)
+interface Props {
+    children: React.ReactNode
+}
 
-    const signIn = async (signal?: AbortSignal) => {
-        const response = await api<IIdentity>('/users/me', { signal })
-        if (response.success) {
-            setUser(response.data)
-        }
-
-        return response
-    }
-
-    const signUp = async (nickname: string, signal?: AbortSignal) => {
-        const response = await api<IIdentity>('/users', {
-            method: 'POST',
-            body: JSON.stringify({ nickname }),
-            signal,
-        })
-        if (response.success) {
-            setUser(response.data)
-        }
-
-        return response
-    }
+export const AuthContextProvider = ({ children }: Props) => {
+    const [user] = useState(useLocation().state?.user as IIdentity | null)
 
     const logout = () => {
-        setUser(null)
-    }
-
-    const context: IAuthContext = {
-        user,
-        signIn,
-        signUp,
-        logout,
+        clearTelegramData()
+        // deinit tg context
+        window.location.href = '/'
     }
 
     return (
-        <AuthContext.Provider value={context}>
-            <Outlet />
+        <AuthContext.Provider
+            value={{
+                user,
+                logout,
+            }}
+        >
+            {children}
         </AuthContext.Provider>
     )
 }

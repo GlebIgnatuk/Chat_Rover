@@ -13,6 +13,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { useChatsService } from '@/hooks/chats/useChatsService'
 import wuwaIcon from '@/assets/wuwa_icon.png'
+import { useAuth } from '@/context/auth/useAuth'
 
 const navigation = [
     {
@@ -80,6 +81,7 @@ export const HomeLayout = () => {
     const user = useUser()
     const location = useLocation()
     const navigate = useNavigate()
+    const auth = useAuth()
 
     const [transitioned, setTransitioned] = useState(false)
 
@@ -112,7 +114,7 @@ export const HomeLayout = () => {
         window.Telegram.WebView.onEvent('back_button_pressed', () => {
             navigate(-1)
 
-            if (window.history.state.idx <= 2) {
+            if (window.history.state.idx === 0) {
                 // @ts-expect-error fix ts later
                 window.Telegram.WebApp.close()
             }
@@ -131,8 +133,7 @@ export const HomeLayout = () => {
                             <button
                                 className="p-1 rounded-md bg-red-900"
                                 onClick={() => {
-                                    sessionStorage.removeItem('__telegram__initParams')
-                                    window.location.reload()
+                                    auth.logout()
                                 }}
                             >
                                 Logout

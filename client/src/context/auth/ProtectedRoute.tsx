@@ -1,14 +1,20 @@
-import { buildUrl } from '@/utils/url'
-import { Navigate } from 'react-router-dom'
+import { ReactNode, useEffect } from 'react'
+import { inferProfileState } from './auth'
 import { useAuth } from './useAuth'
-import { ReactNode } from 'react'
 
 interface Props {
     children: ReactNode
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-    const auth = useAuth()
+    const { user, logout } = useAuth()
+    const state = inferProfileState(user)
 
-    return auth.user ? children : <Navigate to={buildUrl('/auth/signin')} />
+    useEffect(() => {
+        if (state === 'complete') return
+
+        logout()
+    }, [state])
+
+    return state === 'complete' ? children : null
 }

@@ -41,15 +41,15 @@ const handler = async () => {
 
     const privateChat = new PrivateChatRepository()
     const globalChat = new GlobalChatRepository()
-    const user = new UserRepository()
+    const userRepo = new UserRepository()
     const repositories: IRepositories = {
-        user: user,
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
         globalChat: globalChat,
-        report: new ReportRepository(user),
+        report: new ReportRepository(userRepo),
+        user: userRepo,
         wuwaCharacter: new WuwaCharacterRepository(),
-        profile: new ProfileRepository(),
+        profile: new ProfileRepository(userRepo),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

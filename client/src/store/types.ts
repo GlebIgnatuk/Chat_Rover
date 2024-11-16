@@ -12,6 +12,7 @@ export type IUser = {
     nickname: string
     avatarUrl: string | null
     lastActivityAt: string
+    state: 'created' | 'complete'
 }
 
 export type IPrivateChatWithMetadata = {

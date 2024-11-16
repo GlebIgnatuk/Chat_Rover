@@ -1,34 +1,67 @@
-// import loadingScreenImage from '@/assets/loading-screen.webp'
 import signupImage from '@/assets/signup.webp'
 import { FAKE_PROFILES, generateFakeProfile } from '@/config/config'
 
-import { useAuth } from '@/context/auth/useAuth'
 import { buildUrl } from '@/utils/url'
 import { faCircleNotch, faHeartPulse } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { inferProfileState } from '../../../context/auth/auth'
+import { api } from '@/services/api'
+import { IIdentity } from '@/context/auth/AuthContext'
 
 export const SignInScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
-
-    const auth = useAuth()
+    const navigate = useNavigate()
 
     const signIn = async (signal?: AbortSignal) => {
         try {
             setError('')
             setIsLoading(true)
 
-            const response = await auth.signIn(signal)
+            const response = await api<IIdentity>('/users/me', { signal })
             setIsLoading(false)
-            if (!response.success) {
-                setError(response.error)
+
+            if (response.success) {
+                const identity = response.data
+                const state = inferProfileState(response.data)
+
+                switch (state) {
+                    case 'complete':
+                        {
+                            navigate(buildUrl('/home'), {
+                                replace: true,
+                                state: { user: identity },
+                            })
+                        }
+                        break
+
+                    case 'created':
+                        {
+                            navigate(buildUrl('/auth/signup/profile'), {
+                                replace: true,
+                                state: { user: identity },
+                            })
+                        }
+                        break
+
+                    default: {
+                        throw new Error(`Invalid state "${state}"`)
+                    }
+                }
+            } else {
+                if (response.error === 'NOT_FOUND') {
+                    navigate(buildUrl('/auth/signup/nickname'), { replace: true })
+                } else {
+                    setError(response.error)
+                }
             }
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
                 setError('Something went wrong')
             }
+
             setIsLoading(false)
         }
     }
@@ -58,10 +91,6 @@ export const SignInScreen = () => {
                 />
             </div>
         )
-    }
-
-    if (error === 'NOT_FOUND') {
-        return <Navigate to={buildUrl('/auth/signup')} replace />
     }
 
     const random = generateFakeProfile({})

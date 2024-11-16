@@ -1,4 +1,3 @@
-import { APIResponse } from '@/services/api'
 import { IUser } from '@/store/types'
 import { createContext } from 'react'
 
@@ -17,8 +16,6 @@ export interface IIdentity {
 
 export interface IAuthContext {
     user: IIdentity | null
-    signIn: (signal?: AbortSignal) => Promise<APIResponse<IIdentity>>
-    signUp: (nickname: string, signal?: AbortSignal) => Promise<APIResponse<IIdentity>>
     logout: () => void
 }
 

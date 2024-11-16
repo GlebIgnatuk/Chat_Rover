@@ -1,131 +1,171 @@
-import { IProfileDTO, ProfileModel } from '@/models/profile';
-import { ID } from '../types';
-import { IProfileCreate, IProfileRepository, IProfileUpdate, IProfileSearchParams, ITeamSearchParams } from '../profile';
-import { Types } from 'mongoose';
+import { IProfileDTO, ProfileModel } from '@/models/profile'
+import { ID } from '../types'
+import {
+    IProfileCreate,
+    IProfileRepository,
+    IProfileUpdate,
+    IProfileSearchParams,
+    ITeamSearchParams,
+} from '../profile'
+import mongoose, { ClientSession, Types } from 'mongoose'
+import { IUserRepository } from '../user'
 
 export class ProfileRepository implements IProfileRepository {
-  async get(id: ID): Promise<IProfileDTO | null> {
-    return ProfileModel.getCollection().findOne({ _id: new Types.ObjectId(id) });
-  }
+    private readonly userRepo: IUserRepository
 
-  async getByUserId(userId: ID): Promise<IProfileDTO[] | null> {
-    return ProfileModel.getCollection().find({ userId: new Types.ObjectId(userId) }).toArray();
-  }
-
-  async create(payload: IProfileCreate): Promise<IProfileDTO> {
-    const now = new Date();
-
-    const result = await ProfileModel.getCollection().insertOne({
-      ...payload,
-      userId: new Types.ObjectId(payload.userId),
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    const profile = await this.get(result.insertedId);
-    if (!profile) {
-      throw new Error('Failed to create a profile.');
+    constructor(userRepo: IUserRepository) {
+        this.userRepo = userRepo
     }
 
-    return profile;
-  }
-
-  async update(id: ID, payload: IProfileUpdate): Promise<IProfileDTO | null> {
-    const now = new Date();
-  
-    // Exclude userId from the update payload
-    const { userId, ...updatePayload } = payload;
-  
-    await ProfileModel.getCollection().updateOne(
-      { _id: new Types.ObjectId(id) },
-      {
-        $set: {
-          ...updatePayload,
-          updatedAt: now,
-        },
-      },
-    );
-  
-    return this.get(id);
-  }
-
-  async search(params: IProfileSearchParams): Promise<IProfileDTO[]> {
-    const query: any = {};
-
-    if (params.uid !== undefined) {
-      query.uid = params.uid;
+    async get(id: ID, tx?: ClientSession): Promise<IProfileDTO | null> {
+        return ProfileModel.getCollection().findOne(
+            { _id: new Types.ObjectId(id) },
+            { session: tx },
+        )
     }
 
-    if (params.nickname !== undefined) {
-      query.nickname = params.nickname;
+    async getByUserId(userId: ID): Promise<IProfileDTO[] | null> {
+        return ProfileModel.getCollection()
+            .find({ userId: new Types.ObjectId(userId) })
+            .toArray()
     }
 
-    if (params.server !== undefined) {
-      query.server = params.server;
+    async create(payload: IProfileCreate): Promise<IProfileDTO> {
+        const now = new Date()
+
+        return await mongoose.connection.withSession(async (session) => {
+            const result = await ProfileModel.getCollection().insertOne(
+                {
+                    ...payload,
+                    userId: new Types.ObjectId(payload.userId),
+                    createdAt: now,
+                    updatedAt: now,
+                },
+                { session },
+            )
+
+            const profile = await this.get(result.insertedId, session)
+            if (!profile) {
+                throw new Error('Failed to create a profile.')
+            }
+
+            const user = await this.userRepo.patch(payload.userId, {
+                state: 'complete',
+            })
+            if (!user) {
+                throw new Error("Failed to updated user's state")
+            }
+
+            return profile
+        })
     }
 
-    if (params.usesVoice !== undefined) {
-      query.usesVoice = params.usesVoice;
+    async update(id: ID, payload: IProfileUpdate): Promise<IProfileDTO | null> {
+        const now = new Date()
+
+        // Exclude userId from the update payload
+        const { userId, ...updatePayload } = payload
+
+        await ProfileModel.getCollection().updateOne(
+            { _id: new Types.ObjectId(id) },
+            {
+                $set: {
+                    ...updatePayload,
+                    updatedAt: now,
+                },
+            },
+        )
+
+        return this.get(id)
     }
 
-    if (params.languages && params.languages.length > 0) {
-      query.languages = { $all: params.languages };
-    }
+    async search(params: IProfileSearchParams): Promise<IProfileDTO[]> {
+        const query: any = {}
 
-    if (params.minWorldLevel !== undefined || params.maxWorldLevel !== undefined) {
-      query.worldLevel = {};
-      if (params.minWorldLevel !== undefined) {
-        query.worldLevel.$gte = params.minWorldLevel;
-      }
-      if (params.maxWorldLevel !== undefined) {
-        query.worldLevel.$lte = params.maxWorldLevel;
-      }
-    }
-
-    if (params.team && params.team.length > 0) {
-      params.team.forEach((teamMemberParams, index) => {
-        const teamMemberQuery: any = {};
-        const teamPath = `team.${index}`;
-
-        if (teamMemberParams.characterId) {
-          teamMemberQuery[`${teamPath}.characterId`] = new Types.ObjectId(teamMemberParams.characterId);
+        if (params.uid !== undefined) {
+            query.uid = params.uid
         }
 
-        if (teamMemberParams.minLevel !== undefined || teamMemberParams.maxLevel !== undefined) {
-          teamMemberQuery[`${teamPath}.level`] = {};
-          if (teamMemberParams.minLevel !== undefined) {
-            teamMemberQuery[`${teamPath}.level`].$gte = teamMemberParams.minLevel;
-          }
-          if (teamMemberParams.maxLevel !== undefined) {
-            teamMemberQuery[`${teamPath}.level`].$lte = teamMemberParams.maxLevel;
-          }
+        if (params.nickname !== undefined) {
+            query.nickname = params.nickname
         }
 
-        if (teamMemberParams.minConstellation !== undefined || teamMemberParams.maxConstellation !== undefined) {
-          teamMemberQuery[`${teamPath}.constellation`] = {};
-          if (teamMemberParams.minConstellation !== undefined) {
-            teamMemberQuery[`${teamPath}.constellation`].$gte = teamMemberParams.minConstellation;
-          }
-          if (teamMemberParams.maxConstellation !== undefined) {
-            teamMemberQuery[`${teamPath}.constellation`].$lte = teamMemberParams.maxConstellation;
-          }
+        if (params.server !== undefined) {
+            query.server = params.server
         }
 
-        Object.assign(query, teamMemberQuery);
-      });
+        if (params.usesVoice !== undefined) {
+            query.usesVoice = params.usesVoice
+        }
+
+        if (params.languages && params.languages.length > 0) {
+            query.languages = { $all: params.languages }
+        }
+
+        if (params.minWorldLevel !== undefined || params.maxWorldLevel !== undefined) {
+            query.worldLevel = {}
+            if (params.minWorldLevel !== undefined) {
+                query.worldLevel.$gte = params.minWorldLevel
+            }
+            if (params.maxWorldLevel !== undefined) {
+                query.worldLevel.$lte = params.maxWorldLevel
+            }
+        }
+
+        if (params.team && params.team.length > 0) {
+            params.team.forEach((teamMemberParams, index) => {
+                const teamMemberQuery: any = {}
+                const teamPath = `team.${index}`
+
+                if (teamMemberParams.characterId) {
+                    teamMemberQuery[`${teamPath}.characterId`] = new Types.ObjectId(
+                        teamMemberParams.characterId,
+                    )
+                }
+
+                if (
+                    teamMemberParams.minLevel !== undefined ||
+                    teamMemberParams.maxLevel !== undefined
+                ) {
+                    teamMemberQuery[`${teamPath}.level`] = {}
+                    if (teamMemberParams.minLevel !== undefined) {
+                        teamMemberQuery[`${teamPath}.level`].$gte = teamMemberParams.minLevel
+                    }
+                    if (teamMemberParams.maxLevel !== undefined) {
+                        teamMemberQuery[`${teamPath}.level`].$lte = teamMemberParams.maxLevel
+                    }
+                }
+
+                if (
+                    teamMemberParams.minConstellation !== undefined ||
+                    teamMemberParams.maxConstellation !== undefined
+                ) {
+                    teamMemberQuery[`${teamPath}.constellation`] = {}
+                    if (teamMemberParams.minConstellation !== undefined) {
+                        teamMemberQuery[`${teamPath}.constellation`].$gte =
+                            teamMemberParams.minConstellation
+                    }
+                    if (teamMemberParams.maxConstellation !== undefined) {
+                        teamMemberQuery[`${teamPath}.constellation`].$lte =
+                            teamMemberParams.maxConstellation
+                    }
+                }
+
+                Object.assign(query, teamMemberQuery)
+            })
+        }
+
+        if (params.userId !== undefined) {
+            query.userId = new Types.ObjectId(params.userId)
+        }
+
+        const limit = params.limit ? Math.min(params.limit, 100) : 10 // Default limit to 20, max 100
+        const page = params.page && params.page > 0 ? params.page : 1
+
+        return ProfileModel.getCollection()
+            .find(query)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .toArray()
     }
-
-    if (params.userId !== undefined) {
-      query.userId = new Types.ObjectId(params.userId);
-    }
-
-    const limit = params.limit ? Math.min(params.limit, 100) : 10; // Default limit to 20, max 100
-    const page = params.page && params.page > 0 ? params.page : 1;
-
-    return ProfileModel.getCollection()
-      .find(query)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .toArray();
-  }
 }

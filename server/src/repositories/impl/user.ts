@@ -1,7 +1,7 @@
-import { IUserDTO, UserModel } from '@/models/user'
+import { IUserDTO, IUserState, UserModel } from '@/models/user'
 import { ID } from '../types'
-import { IUserCreate, IUserRepository } from '../user'
-import { Types } from 'mongoose'
+import { IUserCreate, IUserPatch, IUserRepository } from '../user'
+import { ClientSession, Types } from 'mongoose'
 
 export class UserRepository implements IUserRepository {
     async get(id: ID): Promise<IUserDTO | null> {
@@ -23,10 +23,13 @@ export class UserRepository implements IUserRepository {
     async create(payload: IUserCreate): Promise<IUserDTO> {
         const now = new Date()
 
+        const state: IUserState = 'created'
+
         const result = await UserModel.getCollection().insertOne({
             externalId: payload.externalId,
             language: payload.language,
             nickname: payload.nickname,
+            state: state,
             createdAt: now,
             updatedAt: now,
             lastActivityAt: now,
@@ -40,15 +43,44 @@ export class UserRepository implements IUserRepository {
         return user
     }
 
+    async patch(id: ID, payload: IUserPatch, tx?: ClientSession): Promise<IUserDTO | null> {
+        const now = new Date()
+
+        const update: Partial<IUserDTO> = {}
+        if (payload.state) {
+            update.state = payload.state
+        }
+
+        const user = await UserModel.getCollection().findOneAndUpdate(
+            {
+                _id: new Types.ObjectId(id),
+            },
+            {
+                $set: {
+                    ...update,
+                    updatedAt: now,
+                },
+            },
+            {
+                session: tx,
+            },
+        )
+
+        return user
+    }
+
     async trackActivity(id: ID): Promise<void> {
         const now = new Date()
 
-        const result = await UserModel.getCollection().findOneAndUpdate({ _id: new Types.ObjectId(id) }, { $set: { lastActivityAt: now } })
+        const result = await UserModel.getCollection().findOneAndUpdate(
+            { _id: new Types.ObjectId(id) },
+            { $set: { lastActivityAt: now } },
+        )
 
         if (!result) {
             throw new Error('Failed to update the last activity time.')
         }
-    } 
+    }
 
     async delete(id: ID): Promise<void> {
         await UserModel.getCollection().deleteOne({ _id: new Types.ObjectId(id) })
