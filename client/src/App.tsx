@@ -1,13 +1,13 @@
 import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
-import { HomeLayout } from '@/pages/home/Home.layout'
+import { RootLayout } from '@/pages/Root.layout'
 import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { AuthContextProvider } from './context/auth/AuthContextProvider'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
-import { HomeScreen } from './pages/home/Home.screen'
+import { CommunityScreen } from './pages/community/Community.screen'
 import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 import { ProfilesScreen } from './pages/profiles/Profiles.screen'
 import { ProfileScreen } from './pages/profiles/Profile.screen'
@@ -87,11 +87,11 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: PROTECTED_PATH_PREFIX.substring(1),
-                        element: <HomeLayout />,
+                        element: <RootLayout />,
                         children: [
                             {
                                 path: '',
-                                element: <HomeScreen />,
+                                element: <CommunityScreen />,
                             },
                             {
                                 path: 'game_chat',

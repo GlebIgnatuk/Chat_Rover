@@ -14,7 +14,7 @@ import { useChatsService } from '@/hooks/chats/useChatsService'
 import wuwaIcon from '@/assets/wuwa_icon.png'
 import { buildProtectedUrl } from '@/utils/url'
 import { DEBUG } from '@/config/config'
-import { DebugPanel } from './Debug'
+import { DebugPanel } from '@/modules/root/Debug'
 
 const navigation = [
     {
@@ -71,7 +71,7 @@ const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: bo
     )
 }
 
-export const HomeLayout = () => {
+export const RootLayout = () => {
     const location = useLocation()
     const navigate = useNavigate()
 

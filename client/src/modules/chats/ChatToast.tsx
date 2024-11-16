@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
-export const Toast = () => {
+export const ChatToast = () => {
     const resetLastReceivedMessage = useStore(
         (state) => state.chatsMessages.resetLastReceivedMessage,
     )

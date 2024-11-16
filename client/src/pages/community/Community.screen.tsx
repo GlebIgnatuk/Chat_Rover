@@ -3,7 +3,7 @@ import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
-export const HomeScreen = () => {
+export const CommunityScreen = () => {
     const profiles = useProfiles()
 
     useEffect(() => {
