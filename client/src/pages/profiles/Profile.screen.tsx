@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useAccount } from '@/context/account'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { api } from '@/services/api'
+import { buildProtectedUrl } from '@/utils/url'
 
 export const ProfileScreen = () => {
     const { id: profileId } = useParams()
@@ -18,11 +19,11 @@ export const ProfileScreen = () => {
             body: JSON.stringify(data),
         })
         if (response.success) {
-            navigate('/home/account/profiles')
+            navigate(buildProtectedUrl('/account/profiles'))
         }
     }
 
-    if (!profile) return <Navigate to="/profiles" />
+    if (!profile) return <Navigate to={buildProtectedUrl('/account/profiles')} />
 
     const { _id, ...initialState } = profile
     void _id

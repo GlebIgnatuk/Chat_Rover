@@ -2,7 +2,7 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { HomeLayout } from '@/pages/home/Home.layout'
-import { buildUrl } from '@/utils/url'
+import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { AuthContextProvider } from './context/auth/AuthContextProvider'
 import { ChatsScreen } from './pages/chats/Chats.screen'
@@ -24,10 +24,11 @@ import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
 import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
 import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
 import { ProtectedRoute } from './context/auth/ProtectedRoute'
+import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/config'
 
 const router = createBrowserRouter([
     {
-        path: buildUrl('/'),
+        path: PATH_PREFIX.substring(1),
         element: (
             <CharactersContextProvider>
                 <Outlet />
@@ -36,10 +37,10 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <Navigate to={buildUrl('/auth/signin')} replace />,
+                element: <Navigate to={buildAuthUrl('/signin')} replace />,
             },
             {
-                path: 'auth',
+                path: AUTH_PATH_PREFIX.substring(1),
                 element: <AuthLayout />,
                 children: [
                     {
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
                 ),
                 children: [
                     {
-                        path: 'home',
+                        path: PROTECTED_PATH_PREFIX.substring(1),
                         element: <HomeLayout />,
                         children: [
                             {
@@ -108,7 +109,7 @@ const router = createBrowserRouter([
                                         path: '*',
                                         element: (
                                             <Navigate
-                                                to="/home/game_chat/global"
+                                                to={buildProtectedUrl('/game_chat/global')}
                                                 state={{ animate: false }}
                                             />
                                         ),
@@ -117,7 +118,21 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: 'chats',
-                                element: <ChatsScreen />,
+                                // element: <Outlet />,
+                                children: [
+                                    {
+                                        path: '',
+                                        element: <ChatsScreen />,
+                                    },
+                                    {
+                                        path: 'new',
+                                        element: <ChatNewScreen />,
+                                    },
+                                    {
+                                        path: ':id',
+                                        element: <ChatScreen />,
+                                    },
+                                ],
                             },
                             {
                                 path: 'account',
@@ -137,27 +152,13 @@ const router = createBrowserRouter([
                             },
                         ],
                     },
-                    {
-                        path: 'chats',
-                        element: <Outlet />,
-                        children: [
-                            {
-                                path: 'new',
-                                element: <ChatNewScreen />,
-                            },
-                            {
-                                path: ':id',
-                                element: <ChatScreen />,
-                            },
-                        ],
-                    },
                 ],
             },
         ],
     },
     {
         path: '*',
-        element: <Navigate to={buildUrl('/')} />,
+        element: <Navigate to={buildPublicUrl('/')} />,
     },
 ])
 

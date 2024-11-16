@@ -1,7 +1,7 @@
 import signupImage from '@/assets/signup.webp'
 import { FAKE_PROFILES, generateFakeProfile } from '@/config/config'
 
-import { buildUrl } from '@/utils/url'
+import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
 import { faCircleNotch, faHeartPulse } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
@@ -30,7 +30,7 @@ export const SignInScreen = () => {
                 switch (state) {
                     case 'complete':
                         {
-                            navigate(buildUrl('/home'), {
+                            navigate(buildProtectedUrl('/'), {
                                 replace: true,
                                 state: { user: identity },
                             })
@@ -39,7 +39,7 @@ export const SignInScreen = () => {
 
                     case 'created':
                         {
-                            navigate(buildUrl('/auth/signup/profile'), {
+                            navigate(buildAuthUrl('/signup/profile'), {
                                 replace: true,
                                 state: { user: identity },
                             })
@@ -52,7 +52,7 @@ export const SignInScreen = () => {
                 }
             } else {
                 if (response.error === 'NOT_FOUND') {
-                    navigate(buildUrl('/auth/signup/nickname'), { replace: true })
+                    navigate(buildAuthUrl('/signup/nickname'), { replace: true })
                 } else {
                     setError(response.error)
                 }
@@ -116,7 +116,9 @@ export const SignInScreen = () => {
                             {FAKE_PROFILES.map((p, idx) => (
                                 <a
                                     key={p.profile.username}
-                                    href={`/#tgWebAppData=${encodeURIComponent(p.encoded)}`}
+                                    href={buildPublicUrl(
+                                        `/#tgWebAppData=${encodeURIComponent(p.encoded)}`,
+                                    )}
                                     className="p-2 rounded-md cursor-pointer"
                                     style={{
                                         backgroundColor: `hsl(${(idx / FAKE_PROFILES.length) * 360}deg, 60%, 50%)`,
@@ -127,7 +129,9 @@ export const SignInScreen = () => {
                             ))}
 
                             <a
-                                href={`/#tgWebAppData=${encodeURIComponent(random.encoded)}`}
+                                href={buildPublicUrl(
+                                    `/#tgWebAppData=${encodeURIComponent(random.encoded)}`,
+                                )}
                                 className="p-2 rounded-md cursor-pointer bg-black text-white col-span-2"
                             >
                                 {random.profile.first_name} {random.profile.last_name} (random)

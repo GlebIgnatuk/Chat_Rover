@@ -1,5 +1,8 @@
-export const pathPrefix = ''
 export const ACTIVITY_POLLING_INTERVAL = 30 * 1000
+
+export const PATH_PREFIX = '/'
+export const AUTH_PATH_PREFIX = '/auth'
+export const PROTECTED_PATH_PREFIX = '/app'
 
 const names = [
     'Whitney Luna',

@@ -1,4 +1,5 @@
 import { useProfiles } from '@/context/profiles'
+import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
@@ -43,7 +44,7 @@ export const HomeScreen = () => {
                     <div className="grow font-semibold text-[#E79B46]">{u.nickname}</div>
 
                     <NavLink
-                        to={`/chats/new?peerId=${u._id}`}
+                        to={buildProtectedUrl(`/chats/new?peerId=${u._id}`)}
                         className="text-2xl w-8 h-8 text-center"
                     >
                         💬

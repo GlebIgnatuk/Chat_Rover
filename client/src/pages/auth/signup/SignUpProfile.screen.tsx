@@ -1,7 +1,7 @@
 import { IIdentity } from '@/context/auth/AuthContext'
 import { FormState, ProfileForm } from '@/pages/profiles/ProfileForm'
 import { api } from '@/services/api'
-import { buildUrl } from '@/utils/url'
+import { buildProtectedUrl } from '@/utils/url'
 import { useNavigate } from 'react-router-dom'
 
 export const SignUpProfileScreen = () => {
@@ -16,7 +16,7 @@ export const SignUpProfileScreen = () => {
         if (response.success) {
             const response = await api<IIdentity>('/users/me')
             if (response.success) {
-                navigate(buildUrl('/home'), { replace: true, state: { user: response.data } })
+                navigate(buildProtectedUrl('/'), { replace: true, state: { user: response.data } })
             } else {
                 console.error(response.error)
             }

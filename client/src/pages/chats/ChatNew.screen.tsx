@@ -1,4 +1,5 @@
 import { usePeer } from '@/hooks/chats/usePeer'
+import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -9,11 +10,11 @@ export const ChatNewScreen = () => {
 
     useEffect(() => {
         if (chat) {
-            navigate(`/chats/${chat._id}`, { replace: true })
+            navigate(buildProtectedUrl(`/chats/${chat._id}`), { replace: true })
         } else if (loading) {
             if (loading.is === false && loading.error) {
                 if (loading.error.includes('AbortError') === false) {
-                    navigate('/home')
+                    navigate(buildProtectedUrl('/'))
                 }
             }
         }

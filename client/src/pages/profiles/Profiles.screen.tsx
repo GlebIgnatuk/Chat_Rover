@@ -1,4 +1,5 @@
 import { useAccount } from '@/context/account'
+import { buildProtectedUrl } from '@/utils/url'
 import { NavLink } from 'react-router-dom'
 
 export const ProfilesScreen = () => {
@@ -12,7 +13,7 @@ export const ProfilesScreen = () => {
 
     return (
         <>
-            <NavLink to="/home" className="p-2 bg-red-400 mb-2 block text-center">
+            <NavLink to={buildProtectedUrl('/')} className="p-2 bg-red-400 mb-2 block text-center">
                 Back
             </NavLink>
 
@@ -20,14 +21,14 @@ export const ProfilesScreen = () => {
                 {profiles.map((profile) => (
                     <NavLink
                         key={profile._id}
-                        to={`/home/account/profiles/${profile._id}`}
+                        to={buildProtectedUrl(`/account/profiles/${profile._id}`)}
                         className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold"
                     >
                         {profile.nickname} | {profile.server}
                     </NavLink>
                 ))}
                 <NavLink
-                    to={`/home/account/profiles/new`}
+                    to={buildProtectedUrl(`/account/profiles/new`)}
                     className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold text-center"
                 >
                     (+) Create

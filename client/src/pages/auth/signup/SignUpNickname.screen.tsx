@@ -7,7 +7,7 @@ import handArrowImage from '@/assets/hand_arrow.png'
 import signupImage from '@/assets/signup.webp'
 import { cn } from 'tailwind-cn'
 import { useNavigate } from 'react-router-dom'
-import { buildUrl } from '@/utils/url'
+import { buildAuthUrl } from '@/utils/url'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
 
@@ -61,7 +61,7 @@ export const SignUpNicknameScreen = () => {
             if (response.success) {
                 setIsScrollOpen(false)
                 setTimeout(() => {
-                    navigate(buildUrl('/auth/signup/profile'), {
+                    navigate(buildAuthUrl('/signup/profile'), {
                         replace: true,
                         state: { user: response.data },
                     })

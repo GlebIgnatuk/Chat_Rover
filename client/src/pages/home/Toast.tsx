@@ -1,4 +1,5 @@
 import { useStore } from '@/store/store'
+import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -40,7 +41,7 @@ export const Toast = () => {
             )}
             onClick={() => {
                 if (lastReceivedMessage) {
-                    navigate(`/chats/${lastReceivedMessage.chatId}`)
+                    navigate(buildProtectedUrl(`/chats/${lastReceivedMessage.chatId}`))
                     resetLastReceivedMessage()
                 }
             }}

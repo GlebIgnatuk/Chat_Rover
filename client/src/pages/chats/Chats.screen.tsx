@@ -1,5 +1,6 @@
 import { useOnline } from '@/context/online/useOnline'
 import { useChats } from '@/hooks/chats/useChats'
+import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -26,7 +27,7 @@ export const ChatsScreen = () => {
                 {chats.map((chat) => (
                     <NavLink
                         key={chat._id}
-                        to={`/chats/${chat._id}`}
+                        to={buildProtectedUrl(`/chats/${chat._id}`)}
                         className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 bg-[#FFFAE7]"
                     >
                         <div className="relative w-14 h-14 shrink-0">

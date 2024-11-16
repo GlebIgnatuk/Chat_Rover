@@ -14,10 +14,11 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { useChatsService } from '@/hooks/chats/useChatsService'
 import wuwaIcon from '@/assets/wuwa_icon.png'
 import { useAuth } from '@/context/auth/useAuth'
+import { buildProtectedUrl } from '@/utils/url'
 
 const navigation = [
     {
-        path: '/home/game_chat',
+        path: buildProtectedUrl('/game_chat'),
         label: 'Chat',
         IconActive: () => <img src={wuwaIcon} className="w-full h-full rounded-full" />,
         IconInactive: () => (
@@ -25,38 +26,31 @@ const navigation = [
         ),
     },
     {
-        path: '/home/guides',
+        path: buildProtectedUrl('/guides'),
         label: 'Guides',
         IconActive: PlayLessonIcon,
         IconInactive: PlayLessonOutlinedIcon,
         disabled: true,
     },
     {
-        path: '/home',
+        path: buildProtectedUrl('/'),
         label: 'Community',
         end: true,
         IconActive: GroupIcon,
         IconInactive: GroupOutlinedIcon,
     },
     {
-        path: '/home/chats',
+        path: buildProtectedUrl('/chats'),
         label: 'Messages',
         IconActive: ChatIcon,
         IconInactive: ChatOutlinedIcon,
     },
     {
-        path: '/home/account/profiles',
+        path: buildProtectedUrl('/account/profiles'),
         label: 'Account',
         IconActive: AccountCircleIcon,
         IconInactive: AccountCircleOutlinedIcon,
     },
-    // {
-    //     path: '/home/public-chats',
-    //     label: 'Public Chats',
-    //     disabled: true,
-    //     IconActive: HomeIcon,
-    //     IconInactive: HomeOutlinedIcon,
-    // },
 ]
 
 const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: boolean }) => {

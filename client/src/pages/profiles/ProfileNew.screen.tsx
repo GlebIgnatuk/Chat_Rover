@@ -1,6 +1,7 @@
 import { api } from '@/services/api'
 import { FormState, ProfileForm } from './ProfileForm'
 import { useNavigate } from 'react-router-dom'
+import { buildProtectedUrl } from '@/utils/url'
 
 export const ProfileNewScreen = () => {
     const navigate = useNavigate()
@@ -12,7 +13,7 @@ export const ProfileNewScreen = () => {
         })
 
         if (response.success) {
-            navigate('/home/account/profiles', { replace: true })
+            navigate(buildProtectedUrl('/account/profiles'), { replace: true })
         }
     }
 

@@ -1,4 +1,5 @@
 import { useAccount } from '@/context/account'
+import { buildProtectedUrl } from '@/utils/url'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
@@ -17,7 +18,7 @@ export const GameChatScreen = () => {
                     onClick={() => navigate(-2)}
                 />
                 <NavLink
-                    to="/home/game_chat/global"
+                    to={buildProtectedUrl('/game_chat/global')}
                     state={{ animate: false }}
                     className={({ isActive }) =>
                         cn('text-center py-2 col-span-5', {
@@ -28,7 +29,7 @@ export const GameChatScreen = () => {
                     Global
                 </NavLink>
                 <NavLink
-                    to="/home/game_chat/regional"
+                    to={buildProtectedUrl('/game_chat/regional')}
                     state={{ animate: false, chatId: profiles[0]?.server.toLowerCase() }}
                     className={({ isActive }) =>
                         cn('text-center py-2 col-span-5', {
@@ -38,7 +39,7 @@ export const GameChatScreen = () => {
                         })
                     }
                 >
-                    Regional {profiles.length > 0 ? `(${profiles[0]?.server})` : ''}
+                    Regional {profiles[0]?.server}
                 </NavLink>
             </div>
 

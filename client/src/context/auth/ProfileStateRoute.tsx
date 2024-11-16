@@ -1,4 +1,4 @@
-import { buildUrl } from '@/utils/url'
+import { buildPublicUrl } from '@/utils/url'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ReactNode, useLayoutEffect } from 'react'
 import { clearTelegramData, inferProfileState, ProfileState } from './auth'
@@ -18,7 +18,7 @@ export const ProfileStateRoute = ({ children, ...props }: Props) => {
         if (state === props.state) return
 
         clearTelegramData()
-        navigate(buildUrl('/'), { replace: true })
+        navigate(buildPublicUrl('/'), { replace: true })
     }, [state, props.state])
 
     return state === props.state ? children : null
