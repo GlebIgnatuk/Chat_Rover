@@ -1,4 +1,3 @@
-import { useUser } from '@/context/auth/useUser'
 import { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -13,8 +12,9 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { useChatsService } from '@/hooks/chats/useChatsService'
 import wuwaIcon from '@/assets/wuwa_icon.png'
-import { useAuth } from '@/context/auth/useAuth'
 import { buildProtectedUrl } from '@/utils/url'
+import { DEBUG } from '@/config/config'
+import { DebugPanel } from './Debug'
 
 const navigation = [
     {
@@ -72,10 +72,8 @@ const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: bo
 }
 
 export const HomeLayout = () => {
-    const user = useUser()
     const location = useLocation()
     const navigate = useNavigate()
-    const auth = useAuth()
 
     const [transitioned, setTransitioned] = useState(false)
 
@@ -118,23 +116,7 @@ export const HomeLayout = () => {
     return (
         <>
             <div className="relative h-full bg-[#252323] flex flex-col">
-                {import.meta.env.DEV && (
-                    <div className="bg-black relative z-10 p-2 opacity-50 hover:opacity-100 transition-opacity shrink-0">
-                        <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                            {user.user.nickname} | {location.pathname}
-                        </div>
-                        <div className="flex justify-end">
-                            <button
-                                className="p-1 rounded-md bg-red-900"
-                                onClick={() => {
-                                    auth.logout()
-                                }}
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {DEBUG && <DebugPanel />}
 
                 <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden">
                     <WithTransition

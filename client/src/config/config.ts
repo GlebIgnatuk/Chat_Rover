@@ -4,6 +4,8 @@ export const PATH_PREFIX = '/'
 export const AUTH_PATH_PREFIX = '/auth'
 export const PROTECTED_PATH_PREFIX = '/app'
 
+export const DEBUG = import.meta.env.DEV
+
 const names = [
     'Whitney Luna',
     'Mehmet Carpenter',
