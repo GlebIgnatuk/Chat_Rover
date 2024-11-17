@@ -5,6 +5,13 @@ import { WuwaCharacterRepository } from '@/repositories/impl/wuwaCharacter'
 import { MongoDBService } from '@/services/database'
 import { Types } from 'mongoose'
 
+const randomString = (min: number, max: number) => {
+    const length = Math.floor(Math.random() * (max - min)) + min
+    const sequence = Array.from({ length }, () => Math.floor(Math.random() * (122 - 97)) + 97)
+
+    return String.fromCharCode(...sequence)
+}
+
 async function main() {
     await MongoDBService.lazy(process.env.MONGO_URI)
 
@@ -17,7 +24,7 @@ async function main() {
     const characters = await charactersRepo.list()
     if (characters.length === 0) throw new Error('No wuwa characters found')
 
-    for (let i = 0; i < 3000; i++) {
+    for (let i = 0; i < 1173; i++) {
         const languagesCount = Math.floor(Math.random() * (4 - 1)) + 1
         const languagesIndex = Math.floor(
             Math.random() * (SUPPORTED_LANGUAGES.length - languagesCount),
@@ -26,7 +33,7 @@ async function main() {
         await repo.create({
             about: `Hello from ${i + 1}`,
             languages: SUPPORTED_LANGUAGES.slice(languagesIndex, languagesIndex + languagesCount),
-            nickname: `seed_${i + 1}`,
+            nickname: randomString(4, 10),
             server: SUPPORTED_SERVERS[Math.floor(Math.random() * SUPPORTED_SERVERS.length)],
             team: Array.from({ length: 3 }, (_) => ({
                 characterId: characters[Math.floor(Math.random() * characters.length)]._id,
