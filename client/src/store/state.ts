@@ -102,6 +102,7 @@ export type ICommunityState = {
                 maxConstellation: number
             } | null)[]
             addTeamMember: (at: number, characterId: string) => void
+            removeTeamMember: (at: number) => void
             setTeamMemberMinLevel: (at: number, level: number) => void
             setTeamMemberMaxLevel: (at: number, level: number) => void
             setTeamMemberMinConstellation: (at: number, constellation: number) => void

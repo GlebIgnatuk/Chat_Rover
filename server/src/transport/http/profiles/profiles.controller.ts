@@ -110,9 +110,7 @@ export const search: IAuthorizedRequestHandler = async (req, res, next) => {
             })
         }
 
-        const { limit, page, ...searchOptions } = value
-
-        const profiles = await repositories.profile.search(searchOptions)
+        const profiles = await repositories.profile.search(value)
 
         const pagination = {
             limit: value.limit || 5,

@@ -27,7 +27,8 @@ body {
 }
 
 #root,
-.Mui-Modal {
+.Mui-Modal,
+.MuiModal-root {
   @apply md:max-w-[460px] md:mx-auto md:overflow-hidden;
 }
 

@@ -43,14 +43,26 @@ export const createCommunitySlice: StateCreator<IState, [], [], ICommunityState>
             addTeamMember: (at, characterId) => {
                 set((state) => {
                     const team = [...state.community.filters.team]
-                    team[at] = {
-                        characterId,
-                        minConstellation: 0,
-                        maxConstellation: 6,
-                        minLevel: 0,
-                        maxLevel: 90,
-                    }
+                    team[at] = team[at]
+                        ? {
+                              ...team[at],
+                              characterId,
+                          }
+                        : {
+                              characterId,
+                              minConstellation: 0,
+                              maxConstellation: 6,
+                              minLevel: 0,
+                              maxLevel: 90,
+                          }
 
+                    return R.assocPath(['community', 'filters', 'team'], team, state)
+                })
+            },
+            removeTeamMember: (at) => {
+                set((state) => {
+                    const team = [...state.community.filters.team]
+                    team[at] = null
                     return R.assocPath(['community', 'filters', 'team'], team, state)
                 })
             },

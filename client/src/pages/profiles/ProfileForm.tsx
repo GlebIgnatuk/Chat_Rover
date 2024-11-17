@@ -40,7 +40,7 @@ interface Props {
     onSubmit: (data: FormState) => unknown
 }
 
-const langsMap: Record<string, { icon: JSX.Element; label: string }> = {
+export const LANGS_MAP: Record<string, { icon: JSX.Element; label: string }> = {
     en: { icon: <UsFlagIcon className="rounded-full w-4 h-4" />, label: 'English' },
     'zh-CN': {
         icon: <CnFlagIcon className="rounded-full w-4 h-4" />,
@@ -88,9 +88,9 @@ export const ProfileForm = (props: Props) => {
     }, [state.team, charactersList])
 
     const filteredLanguages = useMemo(() => {
-        return Object.keys(langsMap)
+        return Object.keys(LANGS_MAP)
             .filter((l) => state.languages.includes(l) === false)
-            .map((l) => ({ key: l, value: langsMap[l]?.label ?? '-' }))
+            .map((l) => ({ key: l, value: LANGS_MAP[l]?.label ?? '-' }))
     }, [state.languages])
 
     const onSubmit = (e: FormEvent) => {
@@ -333,7 +333,7 @@ export const ProfileForm = (props: Props) => {
                                             className="relative flex gap-[2px] items-center p-1 px-2 rounded-2xl bg-[#C3B6A0]"
                                             onClick={() => removeLanguage(lang)}
                                         >
-                                            {langsMap[lang]?.icon}
+                                            {LANGS_MAP[lang]?.icon}
                                             <span className="text-white text-xs select-none">
                                                 {lang.substring(0, 2).toUpperCase()}
                                             </span>
