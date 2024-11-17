@@ -1,9 +1,9 @@
 import { useUser } from '@/context/auth/useUser'
-import { MessageWithStatus } from '@/context/chat/reducer'
 import { useEffect, useMemo, useRef } from 'react'
 import { cn } from 'tailwind-cn'
 import { useGlobalChat } from './useGlobalChat'
 import { useLocation } from 'react-router-dom'
+import { IMessageWithStatus } from '@/store/types'
 
 export const RegionalChatScreen = () => {
     const ref = useRef<HTMLInputElement | null>(null)
@@ -21,7 +21,7 @@ export const RegionalChatScreen = () => {
     const { messages, sendMessage } = useGlobalChat(chatId)
 
     const groupped = useMemo(() => {
-        return messages.messages.reduce<Record<string, MessageWithStatus[]>>((acc, n) => {
+        return messages.messages.reduce<Record<string, IMessageWithStatus[]>>((acc, n) => {
             const date = new Date(n.message.createdAt)
             date.setHours(0, 0, 0, 0)
 

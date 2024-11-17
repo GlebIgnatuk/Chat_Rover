@@ -1,7 +1,7 @@
 import { useUser } from '@/context/auth/useUser'
-import { MessageWithStatus } from '@/context/chat/reducer'
 import { useChat } from '@/hooks/chats/useChat'
 import { useStore } from '@/store/store'
+import { IMessageWithStatus } from '@/store/types'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useMemo, useRef } from 'react'
@@ -19,7 +19,7 @@ export const ChatScreen = () => {
     const onlineUsers = useStore((state) => state.online.items)
 
     const groupped = useMemo(() => {
-        return messages.messages.reduce<Record<string, MessageWithStatus[]>>((acc, n) => {
+        return messages.messages.reduce<Record<string, IMessageWithStatus[]>>((acc, n) => {
             const date = new Date(n.message.createdAt)
             date.setHours(0, 0, 0, 0)
 
