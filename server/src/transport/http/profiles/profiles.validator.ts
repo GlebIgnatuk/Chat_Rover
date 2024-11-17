@@ -44,13 +44,13 @@ export const searchSchema = Joi.object({
     nickname: Joi.string().min(1).max(55),
     server: Joi.string().valid(...SUPPORTED_SERVERS),
     usesVoice: Joi.boolean(),
-    language: Joi.array().items(Joi.string().valid(...SUPPORTED_LANGUAGES)),
+    languages: Joi.array().items(Joi.string().valid(...SUPPORTED_LANGUAGES)),
     minWorldLevel: Joi.number().integer().min(1).max(8),
     maxWorldLevel: Joi.number().integer().min(1).max(8),
     team: Joi.array()
         .items(
             Joi.object({
-                characterId: Joi.string(),
+                characterId: Joi.string().required(),
                 minLevel: Joi.number().integer().min(1).max(90),
                 maxLevel: Joi.number().integer().min(1).max(90),
                 minConstellation: Joi.number().integer().min(0).max(6),

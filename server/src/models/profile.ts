@@ -1,6 +1,6 @@
 import mongoose, { mongo, Types } from 'mongoose'
 import { IBaseModel } from './base'
-import { ILanguageKey, IServerKey } from '@/config/config'
+import { IServerKey } from '@/config/config'
 
 export interface ITeamMember {
     characterId: Types.ObjectId
@@ -17,7 +17,7 @@ export interface IProfileModel extends IBaseModel {
     usesVoice: boolean
     languages: string[]
     worldLevel: number
-    team: [ITeamMember | null, ITeamMember | null, ITeamMember | null]
+    team: (ITeamMember | null)[]
 }
 
 export type IProfileDTO = mongo.WithId<IProfileModel>

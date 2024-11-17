@@ -15,6 +15,21 @@ export type IUser = {
     state: 'created' | 'complete'
 }
 
+export type ISearchedProfile = {
+    _id: string
+    user: IUser
+    nickname: string
+    server: string
+    usesVoice: boolean
+    languages: string[]
+    worldLevel: number
+    team: {
+        characterId: string
+        constellation: number
+        level: number
+    }[]
+}
+
 export type IPrivateChatWithMetadata = {
     _id: string
     peer: IUser
