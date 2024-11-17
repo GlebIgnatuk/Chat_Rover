@@ -89,7 +89,19 @@ export const CommunityScreen = () => {
                         </div>
                     )}
 
-                    <div className="grow font-semibold text-[#E79B46]">{item.user.nickname}</div>
+                    <div className="grow">
+                        <div className="font-bold text-[#E79B46]">{item.user.nickname}</div>
+                        <div className="font-medium text-[#402c14]">
+                            {item.nickname} | {item.server} | {item.usesVoice ? 'Voice' : 'Muted'}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                            {item.languages.map((l) => (
+                                <span key={l} className="mr-1">
+                                    {l}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
 
                     <NavLink
                         to={buildProtectedUrl(`/chats/new?peerId=${item.user._id}`)}
