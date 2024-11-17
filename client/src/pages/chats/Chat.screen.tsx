@@ -109,8 +109,11 @@ export const ChatScreen = () => {
                 </div>
             </div>
 
-            <div className="grow overflow-hidden pb-2">
-                <div className="h-full overflow-auto" ref={scrollRef}>
+            <div className="overflow-hidden">
+                <div
+                    className="h-full overflow-auto flex flex-col-reverse gap-2 px-2 pb-2"
+                    ref={scrollRef}
+                >
                     <div className="h-full flex flex-col-reverse gap-2 px-2">
                         {messages.loading.is && <>Loading...</>}
                         {messages.loading.is === false && messages.loading.error && (
