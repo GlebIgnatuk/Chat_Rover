@@ -1,7 +1,6 @@
-import { useUser } from '@/context/auth/useUser'
+import { useStore } from '@/context/app/useStore'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { api } from '@/services/api'
-import { useStore } from '@/store/store'
 import { IMessage } from '@/store/types'
 import { useEffect } from 'react'
 import { io } from 'socket.io-client'
@@ -9,7 +8,7 @@ import { io } from 'socket.io-client'
 export const useGlobalChat = (slug: string) => {
     const chatId = slug
 
-    const { user } = useUser()
+    const user = useStore((state) => state.identity.user)
 
     const chatsMessages = useStore((state) => state.globalChatsMessages)
     const chatsMessagesRef = useRecomputedRef(chatsMessages)

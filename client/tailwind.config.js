@@ -7,16 +7,16 @@ export default {
   theme: {
     extend: {
       animation: {
-        'pulse-25-50': 'pulse-25-50 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+        'pulse-25-50': 'pulse-25-50 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       fontFamily: {
         tangerine: ['Tangerine', 'cursive']
       },
       colors: {
         primary: {
-          100: 'hsl(26, 81%, 94%)',
-          700: 'hsl(45, 65%, 62%)',
-          DEFAULT: 'hsl(45, 65%, 62%)'
+          100: '#F3BDB2',
+          700: '#F3BDB2',
+          DEFAULT: '#F3BDB2'
         },
         gray: {
           100: '',

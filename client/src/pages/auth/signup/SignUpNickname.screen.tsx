@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import scrollImage from '@/assets/scroll.png'
 import handArrowImage from '@/assets/hand_arrow.png'
-import signupImage from '@/assets/signup.webp'
+import backgroundImage from '@/assets/auth.jpeg'
 import { cn } from 'tailwind-cn'
 import { useNavigate } from 'react-router-dom'
 import { buildAuthUrl } from '@/utils/url'
@@ -82,12 +82,8 @@ export const SignUpNicknameScreen = () => {
 
     return (
         <div className="relative h-full">
-            {/* <img
-                src={loadingScreenImage}
-                className="absolute top-0 left-0 w-full h-full object-cover object-bottom opacity-50"
-            /> */}
             <img
-                src={signupImage}
+                src={backgroundImage}
                 className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
             />
             <div

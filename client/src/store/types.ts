@@ -7,6 +7,18 @@ export type IGlobalChat = {
     slug: string
 }
 
+export type IIntl = Record<string, string>
+
+export type IAppConfig = {
+    game: {
+        languages: string[]
+        servers: string[]
+    }
+    app: {
+        languages: string[]
+    }
+}
+
 export type IUser = {
     _id: string
     nickname: string

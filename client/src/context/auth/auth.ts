@@ -2,7 +2,7 @@ import { IIdentity } from '@/context/auth/AuthContext'
 
 export type ProfileState = 'unauthenticated' | 'created' | 'complete'
 
-export const inferProfileState = (user: IIdentity | null) => {
+export const inferProfileState = (user?: IIdentity | null) => {
     if (!user) {
         return 'unauthenticated'
     }

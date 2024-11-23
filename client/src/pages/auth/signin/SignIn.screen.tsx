@@ -1,4 +1,4 @@
-import signupImage from '@/assets/signup.webp'
+import backgroundImage from '@/assets/auth.jpeg'
 import { FAKE_PROFILES, generateFakeProfile } from '@/config/config'
 
 import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
@@ -9,11 +9,14 @@ import { useNavigate } from 'react-router-dom'
 import { inferProfileState } from '../../../context/auth/auth'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
+// import { useLocalize } from '@/hooks/intl/useLocalize'
 
 export const SignInScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
     const navigate = useNavigate()
+    // const localize = useLocalize()
+    const localize = (v: string) => v
 
     const signIn = async (signal?: AbortSignal) => {
         try {
@@ -83,10 +86,10 @@ export const SignInScreen = () => {
                         icon={faCircleNotch}
                         className="w-20 h-20 animate-spin duration-1000"
                     />
-                    <span className="text-lg">Connecting...</span>
+                    <span className="text-lg">{localize('general__loading')}</span>
                 </div>
                 <img
-                    src={signupImage}
+                    src={backgroundImage}
                     className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
                 />
             </div>
@@ -140,7 +143,7 @@ export const SignInScreen = () => {
                     )}
                 </div>
                 <img
-                    src={signupImage}
+                    src={backgroundImage}
                     className="absolute top-0 left-0 w-full h-full object-cover object-bottom opacity-50"
                 />
             </div>

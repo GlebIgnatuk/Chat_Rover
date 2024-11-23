@@ -1,6 +1,6 @@
-import { useStore } from '@/store/store'
 import { useEffect } from 'react'
 import { useChatsService } from './useChatsService'
+import { useStore } from '@/context/app/useStore'
 
 export const usePeer = (peerId: string) => {
     const p2p = useStore((state) => state.p2p)

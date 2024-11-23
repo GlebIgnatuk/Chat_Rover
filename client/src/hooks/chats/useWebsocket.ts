@@ -1,13 +1,12 @@
 import { io } from 'socket.io-client'
 import { useChatsService } from './useChatsService'
-import { useStore } from '@/store/store'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { useCallback } from 'react'
 import { IMessage } from '@/store/types'
-import { useUser } from '@/context/auth/useUser'
+import { useStore } from '@/context/app/useStore'
 
 export const useWebsocket = () => {
-    const user = useUser()
+    const user = useStore((state) => state.identity.user)
     const service = useRecomputedRef(useChatsService())
     const chats = useRecomputedRef(useStore((state) => state.chats))
     const chatsMessages = useRecomputedRef(useStore((state) => state.chatsMessages))
@@ -37,7 +36,7 @@ export const useWebsocket = () => {
             }
 
             chatsMessages.current.put(message.chatId, { message, status: 'sent', error: null })
-            if (user.user._id !== message.createdBy._id) {
+            if (user._id !== message.createdBy._id) {
                 chatsMessages.current.setLastReceivedMessage(message)
             }
         })

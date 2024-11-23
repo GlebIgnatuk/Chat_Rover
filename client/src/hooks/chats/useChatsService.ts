@@ -1,11 +1,10 @@
-import { useStore } from '@/store/store'
 import { api } from '@/services/api'
 import { IMessage, IPrivateChat, IPrivateChatWithMetadata } from '@/store/types'
 import { useCallback, useMemo } from 'react'
-import { useUser } from '@/context/auth/useUser'
+import { useStore } from '@/context/app/useStore'
 
 export const useChatsService = () => {
-    const user = useUser()
+    const user = useStore((state) => state.identity.user)
     const chats = useStore((state) => state.chats)
     const p2p = useStore((state) => state.p2p)
     const chatsMessages = useStore((state) => state.chatsMessages)
@@ -150,10 +149,10 @@ export const useChatsService = () => {
                 text,
                 type: 'text',
                 createdBy: {
-                    _id: user.user._id,
+                    _id: user._id,
                     externalId: -1,
                     language: 'en',
-                    nickname: user.user.nickname,
+                    nickname: user.nickname,
                     profile: null,
                 },
                 createdAt: new Date().toISOString(),
@@ -189,7 +188,7 @@ export const useChatsService = () => {
                 })
             }
         },
-        [user.user],
+        [user],
     )
 
     return useMemo(

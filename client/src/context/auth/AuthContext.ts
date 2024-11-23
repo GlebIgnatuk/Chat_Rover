@@ -1,5 +1,4 @@
 import { IUser } from '@/store/types'
-import { createContext } from 'react'
 
 export interface IIdentity {
     identity: {
@@ -13,10 +12,3 @@ export interface IIdentity {
     }
     user: IUser
 }
-
-export interface IAuthContext {
-    user: IIdentity | null
-    logout: () => void
-}
-
-export const AuthContext = createContext<IAuthContext | undefined>(undefined)

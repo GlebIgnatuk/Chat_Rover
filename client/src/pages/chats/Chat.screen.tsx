@@ -1,6 +1,5 @@
-import { useUser } from '@/context/auth/useUser'
+import { useStore } from '@/context/app/useStore'
 import { useChat } from '@/hooks/chats/useChat'
-import { useStore } from '@/store/store'
 import { IMessageWithStatus } from '@/store/types'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
 export const ChatScreen = () => {
-    const { user } = useUser()
+    const user = useStore((state) => state.identity.user)
     const { id: chatId } = useParams()
     const navigate = useNavigate()
     const ref = useRef<HTMLInputElement | null>(null)

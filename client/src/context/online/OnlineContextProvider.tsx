@@ -1,18 +1,17 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import { IOnlineContext, OnlineContext } from './OnlineContext'
-import { useUser } from '../auth/useUser'
 import { io, Socket } from 'socket.io-client'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
-import { useStore } from '@/store/store'
 import { IUser } from '@/store/types'
 import { ACTIVITY_POLLING_INTERVAL } from '@/config/config'
+import { useStore } from '../app/useStore'
 
 interface Props {
     children: ReactNode
 }
 
 export const OnlineContextProvider = ({ children }: Props) => {
-    const user = useUser()
+    const user = useStore((state) => state.identity.user)
     const socketRef = useRef<Socket | null>(null)
     const onlineUsers = useStore((state) => state.online.items)
     const online = useRecomputedRef(useStore((state) => state.online))
@@ -64,7 +63,7 @@ export const OnlineContextProvider = ({ children }: Props) => {
         return () => {
             socket.disconnect()
         }
-    }, [user.user._id])
+    }, [user._id])
 
     useEffect(() => {
         const timer = setInterval(() => {

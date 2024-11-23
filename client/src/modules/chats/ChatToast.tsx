@@ -1,4 +1,4 @@
-import { useStore } from '@/store/store'
+import { useStore } from '@/context/app/useStore'
 import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'

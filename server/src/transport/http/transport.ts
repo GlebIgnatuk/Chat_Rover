@@ -6,6 +6,7 @@ import * as GlobalChatMessagesController from './globalChats/messages/messages.c
 import * as ReportsController from './reports/reports.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import * as ProfilesController from './profiles/profiles.controller'
+import * as AppConfigController from './appConfig/appConfig.controller'
 import { Router } from 'express'
 import {
     ValidatedUserPayload,
@@ -49,7 +50,33 @@ export const setupHttpRouter = (
         next()
     })
 
+    const unauthorized = Router({ mergeParams: true })
+
+    //
+    // Public routes
+    //
+    router.use('/public', unauthorized)
+
+    router.get('/health', (req, res) => {
+        res.json({
+            sucess: true,
+            data: {
+                baseUrl: req.baseUrl,
+                originalUrl: req.originalUrl,
+                url: req.url,
+            },
+        })
+    })
+
+    // App config
+    unauthorized.get('/appConfig', AppConfigController.get)
+    unauthorized.get('/appConfig/intls/:language', AppConfigController.getIntl)
+
+    //
+    // Protected routes
+    //
     const authorized = Router({ mergeParams: true })
+    router.use('/', authorized)
 
     // Protect endpoints with telegram data hash check
     authorized.use((req, res, next) => {
@@ -73,21 +100,6 @@ export const setupHttpRouter = (
 
         next()
     })
-
-    // Public routes
-    router.get('/health', (req, res) => {
-        res.json({
-            sucess: true,
-            data: {
-                baseUrl: req.baseUrl,
-                originalUrl: req.originalUrl,
-                url: req.url,
-            },
-        })
-    })
-
-    // Protected routes
-    router.use('/', authorized)
 
     // User
     authorized.get('/users', UsersController.search)
@@ -118,7 +130,7 @@ export const setupHttpRouter = (
     // Global chat messages
     authorized.get('/globalChats/:chatId/messages', GlobalChatMessagesController.list)
     authorized.post('/globalChats/:chatId/messages', GlobalChatMessagesController.create)
-    
+
     // Reports
     authorized.get('/reports/:id', ReportsController.get)
     authorized.get('/reports', ReportsController.list)

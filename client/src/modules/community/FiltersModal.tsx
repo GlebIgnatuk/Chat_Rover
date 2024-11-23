@@ -1,7 +1,7 @@
 import { SUPPORTED_SERVERS } from '@/config/config'
+import { useStore } from '@/context/app/useStore'
 import { useCharacters } from '@/context/characters'
 import { LANGS_MAP } from '@/pages/profiles/ProfileForm'
-import { useStore } from '@/store/store'
 import { faCheck, faPlus, faPlusMinus, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'

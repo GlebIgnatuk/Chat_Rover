@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { useStore } from '@/store/store'
 import { useChatsService } from './useChatsService'
+import { useStore } from '@/context/app/useStore'
 
 export const useChat = (chatId: string) => {
     const chats = useStore((state) => state.chats)

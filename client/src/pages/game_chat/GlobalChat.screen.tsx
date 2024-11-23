@@ -1,8 +1,8 @@
-import { useUser } from '@/context/auth/useUser'
 import { useEffect, useMemo, useRef } from 'react'
 import { cn } from 'tailwind-cn'
 import { useGlobalChat } from './useGlobalChat'
 import { IMessageWithStatus } from '@/store/types'
+import { useStore } from '@/context/app/useStore'
 
 const chatId = 'global'
 
@@ -10,7 +10,7 @@ export const GlobalChatScreen = () => {
     const ref = useRef<HTMLInputElement | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
-    const { user } = useUser()
+    const user = useStore((state) => state.identity.user)
 
     const { messages, sendMessage } = useGlobalChat(chatId)
 

@@ -1,7 +1,7 @@
-import { useStore } from '@/store/store'
 import { useChatsService } from './useChatsService'
 import { useEffect, useMemo } from 'react'
 import { IPrivateChatWithMetadata } from '@/store/types'
+import { useStore } from '@/context/app/useStore'
 
 export type IPrivateChatWithLastMessage = IPrivateChatWithMetadata & {
     lastMessage: NonNullable<IPrivateChatWithMetadata['lastMessage']>

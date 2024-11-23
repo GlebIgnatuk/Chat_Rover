@@ -1,7 +1,7 @@
+import { useStore } from '@/context/app/useStore'
 import { useCharacters } from '@/context/characters'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
-import { useStore } from '@/store/store'
 import { ISearchedProfile } from '@/store/types'
 import { buildProtectedUrl } from '@/utils/url'
 import {

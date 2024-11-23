@@ -1,6 +1,9 @@
+import { IIdentity } from '@/context/auth/AuthContext'
 import { ILoading } from './common'
 import {
+    IAppConfig,
     IGlobalChat,
+    IIntl,
     IMessage,
     IMessageWithStatus,
     IPrivateChatWithMetadata,
@@ -129,9 +132,35 @@ export type ICommunityState = {
     }
 }
 
-export type IGlobalState = IChatsState &
+export type IAppConfigState = {
+    appConfig: {
+        config: IAppConfig | null
+        setConfig: (appConfig: IAppConfig) => void
+
+        intls: Record<string, Record<string, string>>
+        addIntl: (language: string, intls: IIntl) => void
+    }
+}
+
+export type ISettingsState = {
+    settings: {
+        language: string | null
+        intl: Record<string, string> | null
+        fallbackIntl: Record<string, string> | null
+        setIntl: (language: string, fallbackLanguage?: string) => void
+    }
+}
+
+export type IIdentityState = {
+    identity: IIdentity
+}
+
+export type IState = IChatsState &
     IGlobalChatsState &
     IP2PState &
     IOnlineState &
     IProfilesState &
-    ICommunityState
+    ICommunityState &
+    IAppConfigState &
+    ISettingsState &
+    IIdentityState

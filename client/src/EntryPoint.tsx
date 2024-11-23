@@ -4,27 +4,22 @@ import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
 import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
-import { AuthContextProvider } from './context/auth/AuthContextProvider'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { CommunityScreen } from './pages/community/Community.screen'
 import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 import { ProfilesScreen } from './pages/profiles/Profiles.screen'
 import { ProfileScreen } from './pages/profiles/Profile.screen'
-import { ProfilesContextProvider } from './context/profiles'
-import { AccountContextProvider } from './context/account'
 import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
-import { OnlineContextProvider } from './context/online/OnlineContextProvider'
-import { AppAuthenticated } from './AppAuthenticated'
 import { GameChatScreen } from './pages/game_chat/GameChat.screen'
 import { GlobalChatScreen } from './pages/game_chat/GlobalChat.screen'
 import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
 import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
 import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
-import { ProtectedRoute } from './context/auth/ProtectedRoute'
 import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/config'
+import { AppAuthenticated } from './AppAuthenticated'
 
 const router = createBrowserRouter([
     {
@@ -70,23 +65,11 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                path: '*',
-                element: (
-                    <AuthContextProvider>
-                        <ProtectedRoute>
-                            <OnlineContextProvider>
-                                <ProfilesContextProvider>
-                                    <AccountContextProvider>
-                                        <AppAuthenticated />
-                                    </AccountContextProvider>
-                                </ProfilesContextProvider>
-                            </OnlineContextProvider>
-                        </ProtectedRoute>
-                    </AuthContextProvider>
-                ),
+                path: PROTECTED_PATH_PREFIX.substring(1),
+                element: <AppAuthenticated />,
                 children: [
                     {
-                        path: PROTECTED_PATH_PREFIX.substring(1),
+                        path: '',
                         element: <RootLayout />,
                         children: [
                             {
@@ -162,8 +145,8 @@ const router = createBrowserRouter([
     },
 ])
 
-function App() {
+function EntryPoint() {
     return <RouterProvider router={router} />
 }
 
-export default App
+export default EntryPoint

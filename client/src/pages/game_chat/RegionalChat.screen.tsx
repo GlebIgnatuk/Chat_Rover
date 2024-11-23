@@ -1,15 +1,15 @@
-import { useUser } from '@/context/auth/useUser'
 import { useEffect, useMemo, useRef } from 'react'
 import { cn } from 'tailwind-cn'
 import { useGlobalChat } from './useGlobalChat'
 import { useLocation } from 'react-router-dom'
 import { IMessageWithStatus } from '@/store/types'
+import { useStore } from '@/context/app/useStore'
 
 export const RegionalChatScreen = () => {
     const ref = useRef<HTMLInputElement | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
-    const { user } = useUser()
+    const user = useStore((state) => state.identity.user)
 
     const location = useLocation()
     const chatId = location.state.chatId
