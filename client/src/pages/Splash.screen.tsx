@@ -1,29 +1,21 @@
-import { InitializerContext } from '@/context/initializer/InitializerContext'
+import { useAppConfig } from '@/context/initializer/useAppConfig'
+import { useSettings } from '@/context/initializer/useSettings'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
-import { createPublicStore, IPublicStore } from '@/store/store'
 import { IAppConfig, IIntl } from '@/store/types'
+import { buildAuthUrl } from '@/utils/url'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
-import { useStore } from 'zustand'
+import { useEffect, useRef, useState } from 'react'
+import { Navigate } from 'react-router-dom'
 
-interface Props {
-    children: ReactNode
-}
-
-export const InitializerPage = ({ children }: Props) => {
-    const store = useRef<IPublicStore>()
-    if (!store.current) {
-        store.current = createPublicStore()
-    }
-
+export const SplashScreen = () => {
     const abortController = useRef<AbortController>()
     if (!abortController.current) {
         abortController.current = new AbortController()
     }
 
-    const appConfig = useStore(store.current, (state) => state.appConfig)
-    const settings = useStore(store.current, (state) => state.settings)
+    const appConfig = useAppConfig()
+    const settings = useSettings()
 
     const [loaded, setLoaded] = useState(false)
 
@@ -85,26 +77,14 @@ export const InitializerPage = ({ children }: Props) => {
             settings.setIntl('en')
         } else {
             // @todo
+            return
         }
 
         setTimeout(() => setLoaded(true), 500)
     }, [loader.data])
 
-    if (
-        loaded &&
-        Object.keys(appConfig.intls).length !== 0 &&
-        appConfig.config !== null &&
-        settings.intl !== null
-    ) {
-        return (
-            <InitializerContext.Provider
-                value={{
-                    store: store.current,
-                }}
-            >
-                {children}
-            </InitializerContext.Provider>
-        )
+    if (loaded) {
+        return <Navigate to={buildAuthUrl('/signin')} />
     } else {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center">

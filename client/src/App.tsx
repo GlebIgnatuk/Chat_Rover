@@ -2,15 +2,14 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
-import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
+import { buildProtectedUrl, buildPublicUrl } from '@/utils/url'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { CommunityScreen } from './pages/community/Community.screen'
 import { ChatNewScreen } from './pages/chats/ChatNew.screen'
 import { ProfilesScreen } from './pages/profiles/Profiles.screen'
 import { ProfileScreen } from './pages/profiles/Profile.screen'
-import { CharactersContextProvider } from './context/characters/CharactersContextProvider'
 import { ProfileNewScreen } from './pages/profiles/ProfileNew.screen'
 import { AccountScreen } from './pages/account/Account.screen'
 import { GameChatScreen } from './pages/game_chat/GameChat.screen'
@@ -19,23 +18,18 @@ import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
 import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
 import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
 import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/config'
-import { AppAuthenticated } from './AppAuthenticated'
-import { InitializerPage } from './pages/Initializer.page'
+import { PublicStoreProvider } from './PublicStoreProvider'
+import { PrivateStoreProvider } from './PrivateStoreProvider'
+import { SplashScreen } from './pages/Splash.screen'
 
 const router = createBrowserRouter([
     {
         path: PATH_PREFIX.substring(1),
-        element: (
-            <InitializerPage>
-                <CharactersContextProvider>
-                    <Outlet />
-                </CharactersContextProvider>
-            </InitializerPage>
-        ),
+        element: <PublicStoreProvider />,
         children: [
             {
                 path: '',
-                element: <Navigate to={buildAuthUrl('/signin')} replace />,
+                element: <SplashScreen />,
             },
             {
                 path: AUTH_PATH_PREFIX.substring(1),
@@ -69,7 +63,7 @@ const router = createBrowserRouter([
             },
             {
                 path: PROTECTED_PATH_PREFIX.substring(1),
-                element: <AppAuthenticated />,
+                element: <PrivateStoreProvider />,
                 children: [
                     {
                         path: '',
