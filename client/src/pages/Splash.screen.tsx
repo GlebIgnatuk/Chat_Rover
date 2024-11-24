@@ -97,7 +97,7 @@ export const SplashScreen = () => {
             } else {
                 throw new Error('Failed to load localization')
             }
-            console.log(buildAuthUrl('/signin'))
+
             return (
                 <Navigate
                     to={buildAuthUrl('/signin')}
