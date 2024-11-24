@@ -51,8 +51,12 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         abortController.current = new AbortController()
     }
 
-    const loader = useBatchedLoader(promises, () => {
-        abortController.current?.abort()
+    const loader = useBatchedLoader({
+        values: promises,
+        failFast: true,
+        onCancel: () => {
+            abortController.current?.abort()
+        },
     })
 
     useEffect(() => {
@@ -82,7 +86,7 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
                         <div
                             className="bg-primary h-full transition-all duration-500 w-0"
                             style={{
-                                width: `${(loader.loaded / loader.toLoad) * 100}%`,
+                                width: `${(loader.nLoaded / loader.nLoad) * 100}%`,
                             }}
                         ></div>
                     </div>

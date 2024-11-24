@@ -1,10 +1,10 @@
 import { SUPPORTED_SERVERS } from '@/config/config'
 import { useStore } from '@/context/app/useStore'
-import { useCharacters } from '@/context/characters'
+import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 import { LANGS_MAP } from '@/pages/profiles/ProfileForm'
 import { faCheck, faPlus, faPlusMinus, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { cn } from 'tailwind-cn'
 
 interface Props {
@@ -12,13 +12,13 @@ interface Props {
     onClose: () => void
 }
 
-export const FiltersModal = ({ onClose, onSubmit }: Props) => {
-    const { characters, indexed } = useCharacters()
+export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubmit }, ref) => {
+    const characters = useWuwaCharacters((state) => state.items)
     const state = useStore((state) => state.community.filters)
     const [editingIndex, setEditingIndex] = useState(0)
 
     return (
-        <div className="h-full overflow-hidden bg-cyan-700/70">
+        <div className="h-full overflow-hidden bg-cyan-700/70" ref={ref}>
             <div className="h-full overflow-auto">
                 <div className="flex justify-end p-2 px-3">
                     <FontAwesomeIcon
@@ -41,7 +41,7 @@ export const FiltersModal = ({ onClose, onSubmit }: Props) => {
                                 )}
                                 onClick={() => setEditingIndex(idx)}
                             >
-                                <img src={indexed[t.characterId]?.photoUrl} className="" />
+                                <img src={characters[t.characterId]?.photoUrl} className="" />
                                 <div className="absolute bottom-0 left-0 w-full text-white bg-gradient-to-t from-black to-transparent py-2 text-center font-semibold text-xl">
                                     {t.minConstellation} - {t.maxConstellation}
                                 </div>
@@ -89,7 +89,7 @@ export const FiltersModal = ({ onClose, onSubmit }: Props) => {
 
                     <div className="overflow-hidden py-2">
                         <div className="h-full overflow-auto bg-black/20 rounded-xl grid grid-cols-4 justify-items-center gap-y-4 py-4">
-                            {characters.map((c) => (
+                            {Object.values(characters).map((c) => (
                                 <div key={c._id}>
                                     <img
                                         src={c.photoUrl}
@@ -291,4 +291,4 @@ export const FiltersModal = ({ onClose, onSubmit }: Props) => {
             </div>
         </div>
     )
-}
+})

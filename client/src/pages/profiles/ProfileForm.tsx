@@ -3,7 +3,6 @@ import cardBg from '@/assets/profile-card-bg.webp'
 import { LevelDropdown } from './LevelDropdown'
 import { ConstellationDropdown } from './ConstellationDropdown'
 import { CharacterPicker } from './CharacterPicker'
-import { useCharacters } from '@/context/characters'
 import { ServerDropdown } from './ServerDropdown'
 import { cn } from 'tailwind-cn'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +18,7 @@ import {
     UsFlagIcon,
 } from '@/icons'
 import { LanguageDropdown } from './LanguageDropdown'
+import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 
 export interface FormState {
     uid: number
@@ -72,20 +72,19 @@ export const ProfileForm = (props: Props) => {
     const [state, setState] = useState<FormState>(props.initialState ?? initialState)
     const cardRef = useRef<HTMLDivElement | null>(null)
 
-    const { loading, characters: charactersList, indexed: charactersMap } = useCharacters()
+    const characters = useWuwaCharacters((state) => state.items)
     const filteredCharactersList = useMemo(() => {
-        return charactersList.filter((c) => {
+        const list = Object.values(characters)
+        const rovers = list.filter((c) => c.name.toLowerCase() === 'rover').map((c) => c._id)
+
+        return list.filter((c) => {
             const hasSelected = state.team.some((t) => t?.characterId === c._id)
             if (hasSelected) return false
-
-            const rovers = charactersList
-                .filter((c) => c.name.toLowerCase() === 'rover')
-                .map((c) => c._id)
 
             const hasRover = state.team.some((t) => t && rovers.includes(t.characterId))
             return !hasRover || !rovers.includes(c._id)
         })
-    }, [state.team, charactersList])
+    }, [state.team, characters])
 
     const filteredLanguages = useMemo(() => {
         return Object.keys(LANGS_MAP)
@@ -167,12 +166,6 @@ export const ProfileForm = (props: Props) => {
         setState(props.initialState ?? initialState)
     }, [props.initialState])
 
-    if (loading.is) {
-        return <>Loading...</>
-    } else if (loading.error) {
-        return <>Failed to load: {loading.error}</>
-    }
-
     return (
         <form onSubmit={onSubmit} className="relative w-full h-full">
             <input
@@ -234,7 +227,7 @@ export const ProfileForm = (props: Props) => {
 
                                     <CharacterPicker
                                         charactersPool={filteredCharactersList}
-                                        allCharacters={charactersMap}
+                                        allCharacters={characters}
                                         selected={state.team[idx]?.characterId}
                                         onSelect={(id) => selectCharacter(idx, id)}
                                     />

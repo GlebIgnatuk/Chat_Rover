@@ -1,5 +1,5 @@
 import { useStore } from '@/context/app/useStore'
-import { useCharacters } from '@/context/characters'
+import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
 import { ISearchedProfile } from '@/store/types'
@@ -20,7 +20,8 @@ export const CommunityScreen = () => {
     const state = useStore((state) => state.community)
     const loading = state.loading.items.$ ?? { is: false }
     const [isOpen, setIsOpen] = useState(false)
-    const { indexed: indexedCharacters } = useCharacters()
+    const characters = useWuwaCharacters((state) => state.items)
+
     const pageRef = useRef(1)
 
     const searchProfiles = async (page: number, signal?: AbortSignal) => {
@@ -159,10 +160,11 @@ export const CommunityScreen = () => {
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
-                                {item.team.map((t) => (
+                                {item.team.map((t, idx) => (
                                     <img
+                                        key={idx}
                                         className="bg-white w-8 h-8 object-cover object-top rounded-full"
-                                        src={indexedCharacters[t.characterId]?.photoUrl}
+                                        src={characters[t.characterId]?.photoUrl}
                                     />
                                 ))}
                             </div>

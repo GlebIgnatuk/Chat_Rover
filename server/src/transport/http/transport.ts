@@ -70,7 +70,12 @@ export const setupHttpRouter = (
 
     // App config
     unauthorized.get('/appConfig', AppConfigController.get)
-    unauthorized.get('/appConfig/intls/:language', AppConfigController.getIntl)
+
+    // Intls
+    unauthorized.get('/intls/:language', AppConfigController.getIntl)
+
+    // Wuwa characters
+    unauthorized.get('/wuwaCharacters', WuwaCharactersController.list)
 
     //
     // Protected routes
@@ -135,9 +140,6 @@ export const setupHttpRouter = (
     authorized.get('/reports/:id', ReportsController.get)
     authorized.get('/reports', ReportsController.list)
     authorized.post('/reports', ReportsController.create)
-
-    // Wuwa characters
-    authorized.get('/wuwaCharacters', WuwaCharactersController.list)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))

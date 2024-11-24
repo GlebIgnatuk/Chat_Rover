@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { AccountContext, IAccountContext, IProfile } from './AccountContext'
 import { api } from '@/services/api'
-import { useCharacters } from '../characters'
 
 interface Props {
     children: ReactNode
@@ -13,8 +12,6 @@ export const AccountContextProvider = ({ children }: Props) => {
         is: false,
         error: null,
     })
-
-    const characters = useCharacters()
 
     const loadProfiles = async (signal?: AbortSignal) => {
         try {
@@ -33,15 +30,13 @@ export const AccountContextProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        if (characters.loading.is || characters.loading.error) return
-
         const abortController = new AbortController()
         loadProfiles(abortController.signal)
 
         return () => {
             abortController.abort()
         }
-    }, [characters])
+    }, [])
 
     const context: IAccountContext = {
         profiles,

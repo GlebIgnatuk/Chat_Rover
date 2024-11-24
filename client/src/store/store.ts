@@ -10,6 +10,8 @@ import { createAppConfigSlice } from './slices/appConfig'
 import { createSettingsSlice } from './slices/settings'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { createIdentitySlice } from './slices/identity'
+import { createWuwaCharactersSlice } from './slices/wuwaCharacters'
+import { IAppConfig, IIntl, IWuwaCharacter } from './types'
 
 export interface CreateStoreOptions {
     identity: IIdentity
@@ -26,10 +28,19 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createIdentitySlice(options.identity)(...a),
     }))
 
-export const createPublicStore = () =>
+export interface CreatePublicStoreOptions {
+    appConfig: IAppConfig
+    wuwaCharacters: IWuwaCharacter[]
+    intls: Record<string, IIntl>
+    selectedLanguage: string
+    fallbackLanguage?: string
+}
+
+export const createPublicStore = (options: CreatePublicStoreOptions) =>
     create<IPublicState>((...a) => ({
-        ...createAppConfigSlice(...a),
-        ...createSettingsSlice(...a),
+        ...createAppConfigSlice(options.appConfig, options.intls)(...a),
+        ...createSettingsSlice(options.selectedLanguage, options.fallbackLanguage)(...a),
+        ...createWuwaCharactersSlice(options.wuwaCharacters)(...a),
     }))
 
 export type IStore = ReturnType<typeof createStore>

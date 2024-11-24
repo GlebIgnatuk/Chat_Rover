@@ -24,13 +24,13 @@ import { SplashScreen } from './pages/Splash.screen'
 
 const router = createBrowserRouter([
     {
+        path: buildPublicUrl('/__splash'),
+        element: <SplashScreen />,
+    },
+    {
         path: PATH_PREFIX.substring(1),
         element: <PublicStoreProvider />,
         children: [
-            {
-                path: '',
-                element: <SplashScreen />,
-            },
             {
                 path: AUTH_PATH_PREFIX.substring(1),
                 element: <AuthLayout />,
@@ -137,7 +137,7 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <Navigate to={buildPublicUrl('/')} />,
+        element: <Navigate to={buildPublicUrl('/__splash')} replace />,
     },
 ])
 

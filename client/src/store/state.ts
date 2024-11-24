@@ -9,6 +9,7 @@ import {
     IPrivateChatWithMetadata,
     ISearchedProfile,
     IUser,
+    IWuwaCharacter,
 } from './types'
 
 type ILoadingState = {
@@ -146,8 +147,7 @@ export type IState = IChatsState &
 
 export type IAppConfigState = {
     appConfig: {
-        config: IAppConfig | null
-        setConfig: (appConfig: IAppConfig) => void
+        config: IAppConfig
 
         intls: Record<string, Record<string, string>>
         addIntl: (language: string, intls: IIntl) => void
@@ -156,11 +156,16 @@ export type IAppConfigState = {
 
 export type ISettingsState = {
     settings: {
-        language: string | null
-        intl: Record<string, string> | null
-        fallbackIntl: Record<string, string> | null
-        setIntl: (language: string, fallbackLanguage?: string) => void
+        language: string
+        fallbackLanguage: string | null
+        setLanguage: (language: string, fallbackLanguage?: string) => void
     }
 }
 
-export type IPublicState = IAppConfigState & ISettingsState
+export type IWuwaCharactersState = {
+    wuwaCharacters: {
+        items: Record<string, IWuwaCharacter>
+    }
+}
+
+export type IPublicState = IAppConfigState & ISettingsState & IWuwaCharactersState

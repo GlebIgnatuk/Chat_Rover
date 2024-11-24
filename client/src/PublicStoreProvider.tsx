@@ -1,13 +1,29 @@
 import { useRef } from 'react'
 import { createPublicStore, IPublicStore } from './store/store'
 import { InitializerContext } from './context/initializer/InitializerContext'
-import { CharactersContextProvider } from './context/characters'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
+import { useLocation } from './hooks/common/useLocation'
+import { IAppConfig, IIntl, IWuwaCharacter } from './store/types'
+import { buildPublicUrl } from './utils/url'
 
 export const PublicStoreProvider = () => {
+    const { state } = useLocation<{
+        __splash?: {
+            appConfig: IAppConfig
+            wuwaCharacters: IWuwaCharacter[]
+            intls: Record<string, IIntl>
+            selectedLanguage: string
+            fallbackLanguage: string
+        }
+    }>()
+
     const store = useRef<IPublicStore>()
     if (!store.current) {
-        store.current = createPublicStore()
+        if (state && state.__splash) {
+            store.current = createPublicStore(state.__splash)
+        } else {
+            return <Navigate to={buildPublicUrl('__splash')} replace />
+        }
     }
 
     return (
@@ -16,9 +32,7 @@ export const PublicStoreProvider = () => {
                 store: store.current,
             }}
         >
-            <CharactersContextProvider>
-                <Outlet />
-            </CharactersContextProvider>
+            <Outlet />
         </InitializerContext.Provider>
     )
 }

@@ -4,28 +4,30 @@ import * as R from 'ramda'
 
 type IState = ISettingsState & IAppConfigState
 
-export const createSettingsSlice: StateCreator<IState, [], [], ISettingsState> = (set) => ({
-    settings: {
-        language: null,
-        intl: null,
-        fallbackIntl: null,
-        setIntl: (language, fallbackLanguage) => {
-            set((state) => {
-                const intls = state.appConfig.intls
-                if (!intls) return state
-                if (language in intls === false) return state
-                if (fallbackLanguage && fallbackLanguage in intls === false) return state
+export const createSettingsSlice =
+    (language: string, fallbackLanguage?: string): StateCreator<IState, [], [], ISettingsState> =>
+    (set) => ({
+        settings: {
+            language,
+            fallbackLanguage: fallbackLanguage ?? null,
+            setLanguage: (language, fallbackLanguage) => {
+                set((state) => {
+                    const intls = state.appConfig.intls
+                    if (language in intls === false) return state
+                    if (fallbackLanguage && fallbackLanguage in intls === false) return state
 
-                const intl = intls[language]
-                let updated = R.assocPath(['settings', 'intl'], intl, state)
+                    let updated = R.assocPath(['settings', 'language'], language, state)
 
-                if (fallbackLanguage) {
-                    const intl = intls[fallbackLanguage]
-                    updated = R.assocPath(['settings', 'fallbackIntl'], intl, updated)
-                }
+                    if (fallbackLanguage) {
+                        updated = R.assocPath(
+                            ['settings', 'fallbackLanguage'],
+                            fallbackLanguage,
+                            updated,
+                        )
+                    }
 
-                return R.assocPath(['settings', 'language'], language, updated)
-            })
+                    return updated
+                })
+            },
         },
-    },
-})
+    })

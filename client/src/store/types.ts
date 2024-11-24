@@ -73,3 +73,12 @@ export type IMessageWithStatus = {
     status: 'pending' | 'sent' | 'errored'
     error: string | null
 }
+
+export type IWuwaCharacter = {
+    _id: string
+    name: string
+    element: string
+    sex: string
+    accentColor: string
+    photoUrl: string
+}
