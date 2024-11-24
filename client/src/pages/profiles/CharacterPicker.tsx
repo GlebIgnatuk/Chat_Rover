@@ -1,12 +1,12 @@
-import { ICharacter } from '@/context/characters/CharactersContext'
+import { IWuwaCharacter } from '@/store/types'
 import { faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 
 interface Props {
-    charactersPool: ICharacter[]
-    allCharacters: Record<string, ICharacter>
+    charactersPool: IWuwaCharacter[]
+    allCharacters: Record<string, IWuwaCharacter>
     selected?: string
     onSelect?: (id: string | null) => void
 }
