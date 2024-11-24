@@ -1,5 +1,6 @@
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
 import { ISearchedProfile } from '@/store/types'
@@ -21,6 +22,7 @@ export const CommunityScreen = () => {
     const loading = state.loading.items.$ ?? { is: false }
     const [isOpen, setIsOpen] = useState(false)
     const characters = useWuwaCharacters((state) => state.items)
+    const localize = useLocalize()
 
     const pageRef = useRef(1)
 
@@ -107,7 +109,7 @@ export const CommunityScreen = () => {
             <div className="grid grid-cols-2 p-2 gap-2">
                 <div className="bg-gray-500 p-2 rounded-xl flex items-center gap-2">
                     <FontAwesomeIcon icon={faPerson} />
-                    <span>Characters</span>
+                    <span>{localize('search__characters')}</span>
                 </div>
 
                 <div
@@ -115,7 +117,7 @@ export const CommunityScreen = () => {
                     onClick={() => setIsOpen(true)}
                 >
                     <FontAwesomeIcon icon={faFilter} />
-                    <span>Filters</span>
+                    <span>{localize('search__filters')}</span>
                 </div>
             </div>
 

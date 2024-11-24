@@ -25,11 +25,29 @@ export const getIntl: IRequestHandler = async (req, res) => {
             auth__greeting: 'Hello',
 
             general__loading: 'Loading',
+
+            search__filters: 'Filters',
+            search__characters: 'Characters',
+
+            nav__chat: 'Chat',
+            nav__guides: 'Guides',
+            nav__search: 'Search',
+            nav__messages: 'Messages',
+            nav__account: 'Account',
         },
         ru: {
             auth__greeting: 'Привет',
 
             general__loading: 'Загрузка',
+
+            search__filters: 'Фильтры',
+            search__characters: 'Персонажи',
+
+            nav__chat: 'Чат',
+            nav__guides: 'Билды',
+            nav__search: 'Поиск',
+            nav__messages: 'Личка',
+            nav__account: 'Аккаунт',
         },
     }
 

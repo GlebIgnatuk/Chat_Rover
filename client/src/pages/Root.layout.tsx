@@ -15,11 +15,12 @@ import wuwaIcon from '@/assets/wuwa_icon.png'
 import { buildProtectedUrl } from '@/utils/url'
 import { DEBUG } from '@/config/config'
 import { DebugPanel } from '@/modules/root/Debug'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 const navigation = [
     {
         path: buildProtectedUrl('/game_chat'),
-        label: 'Chat',
+        label: 'nav__chat',
         IconActive: () => <img src={wuwaIcon} className="w-full h-full rounded-full" />,
         IconInactive: () => (
             <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
@@ -27,27 +28,27 @@ const navigation = [
     },
     {
         path: buildProtectedUrl('/guides'),
-        label: 'Guides',
+        label: 'nav__guides',
         IconActive: PlayLessonIcon,
         IconInactive: PlayLessonOutlinedIcon,
         disabled: true,
     },
     {
         path: buildProtectedUrl('/'),
-        label: 'Community',
+        label: 'nav__search',
         end: true,
         IconActive: GroupIcon,
         IconInactive: GroupOutlinedIcon,
     },
     {
         path: buildProtectedUrl('/chats'),
-        label: 'Messages',
+        label: 'nav__messages',
         IconActive: ChatIcon,
         IconInactive: ChatOutlinedIcon,
     },
     {
         path: buildProtectedUrl('/account/profiles'),
-        label: 'Account',
+        label: 'nav__account',
         IconActive: AccountCircleIcon,
         IconInactive: AccountCircleOutlinedIcon,
     },
@@ -74,6 +75,7 @@ const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: bo
 export const RootLayout = () => {
     const location = useLocation()
     const navigate = useNavigate()
+    const localize = useLocalize()
 
     const [transitioned, setTransitioned] = useState(false)
 
@@ -165,7 +167,7 @@ export const RootLayout = () => {
                                         {/* {isActive && <n.IconInactive />} */}
                                         {!isActive && <n.IconInactive />}
 
-                                        <span className="text-xs">{n.label}</span>
+                                        <span className="text-xs">{localize(n.label)}</span>
                                     </>
                                 )}
                             </NavLink>
