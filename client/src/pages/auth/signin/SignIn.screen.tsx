@@ -9,14 +9,13 @@ import { useNavigate } from 'react-router-dom'
 import { inferProfileState } from '../../../context/auth/auth'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
-// import { useLocalize } from '@/hooks/intl/useLocalize'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 export const SignInScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
     const navigate = useNavigate()
-    // const localize = useLocalize()
-    const localize = (v: string) => v
+    const localize = useLocalize()
 
     const signIn = async (signal?: AbortSignal) => {
         try {
