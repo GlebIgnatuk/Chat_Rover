@@ -1,10 +1,10 @@
 import { useStore } from '@/context/app/useStore'
-import { api } from '@/services/api'
-import { useState } from 'react'
+// import { api } from '@/services/api'
+// import { useState } from 'react'
 
 export const AccountScreen = () => {
     const user = useStore((state) => state.identity.user)
-    const [isDeleting, setIsDeleting] = useState(false)
+    // const [isDeleting, setIsDeleting] = useState(false)
 
     const deleteAccount = async () => {
         // try {
@@ -24,7 +24,7 @@ export const AccountScreen = () => {
 
             <button
                 onClick={deleteAccount}
-                disabled={isDeleting}
+                // disabled={isDeleting}
                 className="bg-primary-100 text-black disabled:bg-gray-700 px-3 py-2 rounded-md"
             >
                 Delete account
