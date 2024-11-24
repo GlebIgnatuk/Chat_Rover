@@ -13,13 +13,13 @@ const _buildUrl = (path: string, prefix: string = '/') => {
 }
 
 export const buildPublicUrl = (path: string) => {
-    return _buildUrl(path, PATH_PREFIX)
+    return _buildUrl(path)
 }
 
 export const buildProtectedUrl = (path: string) => {
-    return _buildUrl(path, _buildUrl(PATH_PREFIX, PROTECTED_PATH_PREFIX))
+    return _buildUrl(path, _buildUrl(PROTECTED_PATH_PREFIX, PATH_PREFIX))
 }
 
 export const buildAuthUrl = (path: string) => {
-    return _buildUrl(path, _buildUrl(PATH_PREFIX, AUTH_PATH_PREFIX))
+    return _buildUrl(path, _buildUrl(AUTH_PATH_PREFIX, PATH_PREFIX))
 }

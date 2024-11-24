@@ -24,7 +24,7 @@ import { SplashScreen } from './pages/Splash.screen'
 
 const router = createBrowserRouter([
     {
-        path: buildPublicUrl('/__splash'),
+        index: true,
         element: <SplashScreen />,
     },
     {
@@ -87,10 +87,12 @@ const router = createBrowserRouter([
                                     },
                                     {
                                         path: '*',
+                                        index: true,
                                         element: (
                                             <Navigate
                                                 to={buildProtectedUrl('/game_chat/global')}
                                                 state={{ animate: false }}
+                                                replace
                                             />
                                         ),
                                     },
@@ -137,7 +139,7 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <Navigate to={buildPublicUrl('/__splash')} replace />,
+        element: <Navigate to={buildPublicUrl('/')} replace />,
     },
 ])
 

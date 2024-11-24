@@ -22,7 +22,7 @@ export const PublicStoreProvider = () => {
         if (state && state.__splash) {
             store.current = createPublicStore(state.__splash)
         } else {
-            return <Navigate to={buildPublicUrl('__splash')} replace />
+            return <Navigate to={buildPublicUrl('/')} replace />
         }
     }
 
