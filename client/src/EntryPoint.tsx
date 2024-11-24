@@ -20,14 +20,17 @@ import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
 import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
 import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/config'
 import { AppAuthenticated } from './AppAuthenticated'
+import { InitializerPage } from './pages/Initializer.page'
 
 const router = createBrowserRouter([
     {
         path: PATH_PREFIX.substring(1),
         element: (
-            <CharactersContextProvider>
-                <Outlet />
-            </CharactersContextProvider>
+            <InitializerPage>
+                <CharactersContextProvider>
+                    <Outlet />
+                </CharactersContextProvider>
+            </InitializerPage>
         ),
         children: [
             {
@@ -101,7 +104,6 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: 'chats',
-                                // element: <Outlet />,
                                 children: [
                                     {
                                         path: '',

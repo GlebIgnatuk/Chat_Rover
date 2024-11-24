@@ -1,24 +1,35 @@
-import backgroundImage from '@/assets/auth.jpeg'
-import { useStore } from '@/context/app/useStore'
+import { InitializerContext } from '@/context/initializer/InitializerContext'
+import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
+import { createPublicStore, IPublicStore } from '@/store/store'
 import { IAppConfig, IIntl } from '@/store/types'
-import { buildAuthUrl } from '@/utils/url'
 
-import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useStore } from 'zustand'
 
-export const InitializerPage = () => {
-    // const [appConfig, setAppConfig] = useState<IAppConfig | null>(null)
+interface Props {
+    children: ReactNode
+}
 
-    const appConfig = useStore((state) => state.appConfig)
-    const settings = useStore((state) => state.settings)
-    const toLoad = 3
-    const [loaded, setLoaded] = useState(0)
+export const InitializerPage = ({ children }: Props) => {
+    const store = useRef<IPublicStore>()
+    if (!store.current) {
+        store.current = createPublicStore()
+    }
+
+    const abortController = useRef<AbortController>()
+    if (!abortController.current) {
+        abortController.current = new AbortController()
+    }
+
+    const appConfig = useStore(store.current, (state) => state.appConfig)
+    const settings = useStore(store.current, (state) => state.settings)
+
+    const [loaded, setLoaded] = useState(false)
 
     const loadAppConfig = async (signal?: AbortSignal): Promise<IAppConfig> => {
         const response = await api<IAppConfig>('/public/appConfig', { signal })
         if (response.success) {
-            setLoaded((prev) => prev + 1)
             return response.data
         } else {
             console.error(response.error)
@@ -30,7 +41,6 @@ export const InitializerPage = () => {
         const response = await api<IIntl>(`/public/appConfig/intls/${language}`, { signal })
         if (response.success) {
             appConfig.addIntl(language, response.data)
-            setLoaded((prev) => prev + 1)
             return response.data
         } else {
             console.error(response.error)
@@ -38,16 +48,24 @@ export const InitializerPage = () => {
         }
     }
 
-    const loadAll = async (signal?: AbortSignal) => {
-        // @ts-expect-error add types
-        const initData = window.Telegram.WebApp.initData
-        const language = 'ru' //JSON.parse(new URLSearchParams(initData).get('user') ?? '{}').language_code
+    //// @ts-expect-error add types
+    // const initData = window.Telegram.WebApp.initData
+    const language = 'ru'
+    const loader = useBatchedLoader(
+        [
+            () => loadAppConfig(abortController.current?.signal),
+            () => loadIntl(language, abortController.current?.signal),
+            () => loadIntl('en', abortController.current?.signal),
+        ],
+        () => {
+            abortController.current?.abort()
+        },
+    )
 
-        const [config, preferredIntl, defaultIntl] = await Promise.allSettled([
-            loadAppConfig(signal),
-            loadIntl(language, signal),
-            loadIntl('en', signal),
-        ])
+    useEffect(() => {
+        if (!loader.data) return
+
+        const [config, preferredIntl, defaultIntl] = loader.data
 
         if (config.status === 'fulfilled') {
             appConfig.setConfig(config.value)
@@ -68,48 +86,34 @@ export const InitializerPage = () => {
         } else {
             // @todo
         }
-    }
 
-    useEffect(() => {
-        const abortController = new AbortController()
-        loadAll(abortController.signal)
-
-        return () => {
-            abortController.abort()ß
-        }
-    }, [])
+        setTimeout(() => setLoaded(true), 500)
+    }, [loader.data])
 
     if (
-        1 === 0 &&
-        // loaded === toLoad &&
-        appConfig.config !== null &&
+        loaded &&
         Object.keys(appConfig.intls).length !== 0 &&
+        appConfig.config !== null &&
         settings.intl !== null
     ) {
-        return <Navigate to={buildAuthUrl('/signin')} />
+        return (
+            <InitializerContext.Provider
+                value={{
+                    store: store.current,
+                }}
+            >
+                {children}
+            </InitializerContext.Provider>
+        )
     } else {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center">
-                <img
-                    src={backgroundImage}
-                    className="absolute top-0 left-0 w-full h-full object-cover object-bottom"
-                />
-
-                <div className="bg-black animate-pulse-25-50 absolute top-0 left-0 w-full h-full"></div>
-
                 <div className="relative w-full flex flex-col items-center">
-                    <div className="bg-black text-primary py-1 px-2 rounded-xl text-4xl">
+                    <div className="text-primary py-1 px-2 rounded-xl text-5xl border-primary border shadow-lg shadow-primary">
                         Rover Chat
                     </div>
 
-                    <div className="h-[2px] w-4/5 mt-3 bg-black">
-                        <div
-                            className="bg-primary h-full transition-all duration-500 w-0"
-                            style={{
-                                width: `${(loaded / toLoad) * 100}%`,
-                            }}
-                        ></div>
-                    </div>
+                    <div className="h-[2px] w-4/5 mt-3 bg-transparent"></div>
                 </div>
             </div>
         )

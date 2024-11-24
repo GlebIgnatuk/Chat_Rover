@@ -21,5 +21,6 @@ export const inferProfileState = (user?: IIdentity | null) => {
 }
 
 export const clearTelegramData = () => {
+    window.localStorage.removeItem('__telegram__initParams')
     window.sessionStorage.removeItem('__telegram__initParams')
 }

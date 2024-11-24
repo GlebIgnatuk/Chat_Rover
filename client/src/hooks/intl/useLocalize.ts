@@ -1,7 +1,7 @@
-import { useStore } from '@/context/app/useStore'
+import { useSettings } from '@/context/initializer/useSettings'
 
 export const useLocalize = () => {
-    const settings = useStore((state) => state.settings)
+    const settings = useSettings()
 
     return (path: string) => {
         if (!settings.intl) throw new Error('Intl not set')

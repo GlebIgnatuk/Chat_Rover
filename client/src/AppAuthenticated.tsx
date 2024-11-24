@@ -30,82 +30,42 @@ export const AppAuthenticated = () => {
     }, [isAuthenticated])
 
     if (isAuthenticated) {
-        return <App identity={identity} />
+        return <AppLoader identity={identity} />
     } else {
         return <Navigate to={buildPublicUrl('')} />
     }
 }
 
-interface AppProps {
+interface AppLoaderProps {
     identity: IIdentity
 }
 
-const App = ({ identity }: AppProps) => {
+const promises = Array.from(
+    { length: Math.floor(Math.random() * (10 - 5)) + 5 },
+    () => () =>
+        new Promise((res) => setTimeout(res, Math.floor(Math.random() * (6000 - 1000)) + 1000)),
+)
+
+const AppLoader = ({ identity }: AppLoaderProps) => {
+    const [loaded, setLoaded] = useState(false)
+
     const abortController = useRef<AbortController>()
     if (!abortController.current) {
         abortController.current = new AbortController()
     }
 
-    const store = useRef<IStore>()
-    if (!store.current) {
-        store.current = createStore({
-            identity,
-        })
-    }
+    const loader = useBatchedLoader(promises, () => {
+        abortController.current?.abort()
+    })
 
-    // @todo
-    // const connect = useWebsocket()
-    // useEffect(() => connect(), [connect])
-
-    // track online status
     useEffect(() => {
-        api('/me/activities', { method: 'post' })
-
-        const intervalId = setInterval(() => {
-            api('/me/activities', { method: 'post' })
-        }, ACTIVITY_POLLING_INTERVAL)
-
-        return () => {
-            clearInterval(intervalId)
+        if (loader.data) {
+            setTimeout(() => setLoaded(true), 500)
         }
-    }, [])
+    }, [loader.data])
 
-    const { data, loaded, toLoad } = useBatchedLoader(
-        [
-            new Promise((res) => setTimeout(res, 1000)),
-            new Promise((res) => setTimeout(res, 1500)),
-            new Promise((res) => setTimeout(res, 500)),
-            new Promise((res) => setTimeout(res, 3000)),
-            new Promise((res) => setTimeout(res, 5000)),
-            new Promise((res) => setTimeout(res, 6000)),
-            new Promise((res) => setTimeout(res, 4700)),
-            new Promise((res) => setTimeout(res, 3000)),
-            new Promise((res) => setTimeout(res, 3600)),
-        ],
-        () => {
-            abortController.current?.abort()
-        },
-    )
-
-    if (data) {
-        return (
-            <AppContext.Provider
-                value={{
-                    store: store.current,
-                }}
-            >
-                <OnlineContextProvider>
-                    <ProfilesContextProvider>
-                        <AccountContextProvider>
-                            <>
-                                <Outlet />
-                                <ChatToast />
-                            </>
-                        </AccountContextProvider>
-                    </ProfilesContextProvider>
-                </OnlineContextProvider>
-            </AppContext.Provider>
-        )
+    if (loader.data && loaded) {
+        return <AppWrapper identity={identity} />
     } else {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center">
@@ -125,7 +85,7 @@ const App = ({ identity }: AppProps) => {
                         <div
                             className="bg-primary h-full transition-all duration-500 w-0"
                             style={{
-                                width: `${(loaded / toLoad) * 100}%`,
+                                width: `${(loader.loaded / loader.toLoad) * 100}%`,
                             }}
                         ></div>
                     </div>
@@ -133,4 +93,58 @@ const App = ({ identity }: AppProps) => {
             </div>
         )
     }
+}
+
+interface AppWrapperProps {
+    identity: IIdentity
+}
+
+const AppWrapper = ({ identity }: AppWrapperProps) => {
+    const store = useRef<IStore>()
+    if (!store.current) {
+        store.current = createStore({
+            identity,
+        })
+    }
+
+    return (
+        <AppContext.Provider
+            value={{
+                store: store.current,
+            }}
+        >
+            <OnlineContextProvider>
+                <ProfilesContextProvider>
+                    <AccountContextProvider>
+                        <App />
+                    </AccountContextProvider>
+                </ProfilesContextProvider>
+            </OnlineContextProvider>
+        </AppContext.Provider>
+    )
+}
+
+const App = () => {
+    const connect = useWebsocket()
+    useEffect(() => connect(), [connect])
+
+    // track online status
+    useEffect(() => {
+        api('/me/activities', { method: 'post' })
+
+        const intervalId = setInterval(() => {
+            api('/me/activities', { method: 'post' })
+        }, ACTIVITY_POLLING_INTERVAL)
+
+        return () => {
+            clearInterval(intervalId)
+        }
+    }, [])
+
+    return (
+        <>
+            <Outlet />
+            <ChatToast />
+        </>
+    )
 }

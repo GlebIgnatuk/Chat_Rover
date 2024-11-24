@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { IState } from './state'
+import { IPublicState, IState } from './state'
 import { createChatsSlice } from './slices/chats'
 import { createP2PSlice } from './slices/p2p'
 import { createOnlineSlice } from './slices/online'
@@ -23,9 +23,14 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createGlobalChatsSlice(...a),
         ...createProfilesSlice(...a),
         ...createCommunitySlice(...a),
-        ...createAppConfigSlice(...a),
-        ...createSettingsSlice(...a),
         ...createIdentitySlice(options.identity)(...a),
     }))
 
+export const createPublicStore = () =>
+    create<IPublicState>((...a) => ({
+        ...createAppConfigSlice(...a),
+        ...createSettingsSlice(...a),
+    }))
+
 export type IStore = ReturnType<typeof createStore>
+export type IPublicStore = ReturnType<typeof createPublicStore>

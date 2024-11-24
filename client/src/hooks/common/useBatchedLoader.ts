@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-type Data<T extends readonly unknown[] | []> = {
-    readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>>
+type Data<T extends readonly (() => unknown)[] | []> = {
+    readonly [P in keyof T]: PromiseSettledResult<Awaited<ReturnType<T[P]>>>
 }
 
-export const useBatchedLoader = <T extends readonly unknown[] | []>(
+export const useBatchedLoader = <T extends readonly (() => unknown)[] | []>(
     values: T,
     onCancel: () => void,
     failFast: boolean = true,
@@ -15,11 +15,13 @@ export const useBatchedLoader = <T extends readonly unknown[] | []>(
 
     useEffect(() => {
         const promises = values.map((v) => {
+            const unwrapped = v()
+
             let promise: Promise<unknown>
-            if (v instanceof Promise) {
-                promise = v
+            if (unwrapped instanceof Promise) {
+                promise = unwrapped
             } else {
-                promise = Promise.resolve(v)
+                promise = Promise.resolve(unwrapped)
             }
 
             return promise.then((value) => {
@@ -37,7 +39,7 @@ export const useBatchedLoader = <T extends readonly unknown[] | []>(
                 })) as Data<T>
                 setData(transformed)
             } else {
-                const results = await Promise.allSettled(promises as T)
+                const results = (await Promise.allSettled(promises)) as Data<T>
                 setData(results)
             }
         }

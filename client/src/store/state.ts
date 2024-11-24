@@ -132,6 +132,18 @@ export type ICommunityState = {
     }
 }
 
+export type IIdentityState = {
+    identity: IIdentity
+}
+
+export type IState = IChatsState &
+    IGlobalChatsState &
+    IP2PState &
+    IOnlineState &
+    IProfilesState &
+    ICommunityState &
+    IIdentityState
+
 export type IAppConfigState = {
     appConfig: {
         config: IAppConfig | null
@@ -151,16 +163,4 @@ export type ISettingsState = {
     }
 }
 
-export type IIdentityState = {
-    identity: IIdentity
-}
-
-export type IState = IChatsState &
-    IGlobalChatsState &
-    IP2PState &
-    IOnlineState &
-    IProfilesState &
-    ICommunityState &
-    IAppConfigState &
-    ISettingsState &
-    IIdentityState
+export type IPublicState = IAppConfigState & ISettingsState
