@@ -23,8 +23,12 @@ export const getIntl: IRequestHandler = async (req, res) => {
     const intl: Record<string, any> = {
         en: {
             auth__greeting: 'Hello',
+            auth__nickname__title: 'Welcome, Rover!',
+            auth__nickname__text:
+                "We'd like to see you in our world. Let's proceed with a quick setup. Please write your name below.",
 
             general__loading: 'Loading',
+            general__continue: 'Continue',
 
             search__filters: 'Filters',
             search__characters: 'Characters',
@@ -37,8 +41,12 @@ export const getIntl: IRequestHandler = async (req, res) => {
         },
         ru: {
             auth__greeting: 'Привет',
+            auth__nickname__title: 'Привет, Ровер!',
+            auth__nickname__text:
+                'Мы бы хотели видеть тебя в нашем мире. Давай быстренько всё оформим. Пожалуйста укажи своё имя ниже.',
 
             general__loading: 'Загрузка',
+            general__continue: 'Продолжить',
 
             search__filters: 'Фильтры',
             search__characters: 'Персонажи',

@@ -1,15 +1,14 @@
-import { faPlay, faSpinner, faX } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef, useState } from 'react'
 
-import scrollImage from '@/assets/scroll.png'
-import handArrowImage from '@/assets/hand_arrow.png'
 import backgroundImage from '@/assets/auth.jpeg'
 import { cn } from 'tailwind-cn'
 import { useNavigate } from 'react-router-dom'
 import { buildAuthUrl } from '@/utils/url'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 const getInitialUsername = () => {
     // @ts-expect-error add types
@@ -28,21 +27,10 @@ export const SignUpNicknameScreen = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
     const navigate = useNavigate()
-
-    const [isScrollOpen, setIsScrollOpen] = useState(false)
-
-    const openScroll = () => {
-        setTimeout(() => {
-            setIsScrollOpen(true)
-        }, 0)
-    }
+    const localize = useLocalize()
 
     useEffect(() => {
         inputRef.current?.focus()
-    }, [])
-
-    useEffect(() => {
-        openScroll()
     }, [])
 
     const isValidName = name.length >= 1
@@ -59,13 +47,10 @@ export const SignUpNicknameScreen = () => {
             })
 
             if (response.success) {
-                setIsScrollOpen(false)
-                setTimeout(() => {
-                    navigate(buildAuthUrl('/signup/profile'), {
-                        replace: true,
-                        state: { user: response.data },
-                    })
-                }, 250)
+                navigate(buildAuthUrl('/signup/profile'), {
+                    replace: true,
+                    state: { user: response.data },
+                })
             } else {
                 setError(response.error)
             }
@@ -81,53 +66,20 @@ export const SignUpNicknameScreen = () => {
     }
 
     return (
-        <div className="relative h-full">
+        <div className="relative h-full font-vasek">
             <img
                 src={backgroundImage}
-                className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
+                className="absolute top-0 left-0 w-full h-full object-cover object-bottom"
             />
-            <div
-                className={cn('h-full w-full absolute bg-black transition-all duration-500', {
-                    'animate-pulse-25-50 opacity-0': isScrollOpen,
-                    'opacity-100': !isScrollOpen,
-                })}
-            ></div>
 
-            <div
-                className={cn(
-                    'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[375px] transition-all font-tangerine text-black overflow-hidden',
-                    {
-                        'h-[550px] duration-1000': isScrollOpen,
-                        'h-4 duration-150': !isScrollOpen,
-                    },
-                )}
-            >
-                <img
-                    src={scrollImage}
-                    className={cn('absolute w-full top-0 left-0 transition-all', {
-                        'duration-300': !isScrollOpen,
-                        'h-full duration-[0.89s]': isScrollOpen,
-                    })}
-                    // className="absolute w-full h-full top-0 left-0 transition-all"
-                />
-
-                <div
-                    // className="transition-all h-full relative w-3/5 mx-auto pt-32 opacity-80 overflow-hidden"
-                    className={cn(
-                        'transition-all relative w-3/5 mx-auto pt-32 opacity-80 overflow-hidden',
-                        {
-                            'opacity-0 duration-100': !isScrollOpen,
-                            'h-full opacity-100 duration-[1.3s]': isScrollOpen,
-                        },
-                    )}
-                >
-                    <div className="text-4xl text-center font-bold">Welcome, Rover</div>
-                    <div className="text-2xl">
-                        We'd like to see you in our world. Let's proceed with a quick setup. Please
-                        write your name below...
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full transition-all text-black">
+                <div className="transition-all w-4/5 relative mx-auto opacity-80 bg-white/50 p-4 rounded-md shadow-[0px_0px_8px_2px_rgba(255,255,255,0.3)] before:absolute before:inset-0 before:border before:border-white/70 before:rotate-12 before:rounded-md before:pointer-events-none">
+                    <div className="text-4xl text-center font-bold">
+                        {localize('auth__nickname__title')}
                     </div>
+                    <div className="text-3xl">{localize('auth__nickname__text')}</div>
 
-                    <div className="relative mt-16">
+                    <div className="relative mt-4">
                         <input
                             ref={inputRef}
                             placeholder=""
@@ -143,28 +95,23 @@ export const SignUpNicknameScreen = () => {
                             onChange={(e) => setName(e.target.value)}
                         />
 
-                        <img
-                            src={handArrowImage}
-                            className="absolute top-[calc(100%+10px)] right-16 w-20 -scale-y-100 rotate-12 opacity-80"
-                        />
-
-                        {isLoading && isScrollOpen && (
-                            <FontAwesomeIcon
-                                icon={faSpinner}
-                                className="absolute right-[11px] bottom-[-93px] w-8 h-8 text-gray-700 cursor-pointer animate-spin"
-                            />
-                        )}
-                        {!isLoading && isScrollOpen && (
-                            <FontAwesomeIcon
-                                icon={isValidName ? faPlay : faX}
-                                onClick={createUser}
-                                className={cn('absolute w-8 h-8 text-gray-700', {
-                                    'right-[9px] bottom-[-93px] hover:animate-none cursor-pointer animate-pulse':
-                                        isValidName,
-                                    'right-[11px] bottom-[-93px] opacity-70': !isValidName,
-                                })}
-                            />
-                        )}
+                        <button
+                            onClick={createUser}
+                            disabled={isLoading}
+                            className="mt-2 mx-auto flex items-center justify-center bg-black w-36 h-12 rounded-xl disabled:cursor-not-allowed disabled:bg-gray-500"
+                        >
+                            {isLoading ? (
+                                <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    onClick={createUser}
+                                    className="w-6 h-6 animate-spin text-white font-semibold"
+                                />
+                            ) : (
+                                <span className="text-3xl text-white">
+                                    {localize('general__continue')}
+                                </span>
+                            )}
+                        </button>
                     </div>
                 </div>
             </div>
