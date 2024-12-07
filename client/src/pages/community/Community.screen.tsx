@@ -35,7 +35,8 @@ export const CommunityScreen = () => {
             const filters = state.filters
 
             const query = new URLSearchParams()
-            for (let i = 0, t = filters.team[i]; i < filters.team.length; i++) {
+            for (let i = 0; i < filters.team.length; i++) {
+                const t = filters.team[i]
                 if (!t) continue
 
                 if (t.characterId) query.append(`team[${i}][characterId]`, t.characterId)
@@ -62,7 +63,7 @@ export const CommunityScreen = () => {
 
             query.append('page', page.toString())
             query.append('limit', '10')
-
+            console.log(query.toString())
             const response = await api<ISearchedProfile[]>(`/profiles?${query}`, { signal })
             if (response.success) {
                 state.setSearchedItems(response.data)
