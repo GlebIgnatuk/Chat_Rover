@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useDropdown } from './useDropdown'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { cn } from 'tailwind-cn'
+import { useDropdown } from '@/hooks/common/useDropdown'
+import { FlagIcon } from '@/components/FlagIcon'
 
 interface Props {
     languages: { key: string; value: string }[]
@@ -28,7 +29,7 @@ export const LanguageDropdown = (props: Props) => {
                 className={cn(
                     'absolute -top-1 -translate-y-full right-0 h-0 overflow-hidden flex flex-col bg-[#C3B6A0]/90 rounded-xl',
                     {
-                        'h-auto max-h-24': dropdown.isOpen,
+                        'h-auto max-h-24 max-w-36': dropdown.isOpen,
                     },
                 )}
             >
@@ -36,10 +37,14 @@ export const LanguageDropdown = (props: Props) => {
                     {dropdown.options.map((option) => (
                         <div
                             key={option.key}
-                            className="text-white px-2 py-1 whitespace-nowrap hover:bg-[#C3B6A0] select-none"
+                            title={option.value}
+                            className="flex items-center gap-1 text-white px-2 py-1 hover:bg-[#C3B6A0] select-none"
                             onClick={() => props.onSelect(option.key)}
                         >
-                            {option.value}
+                            <FlagIcon code={option.key} className="w-3 h-3 rounded-full shrink-0" />
+                            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                                {option.value}
+                            </span>
                         </div>
                     ))}
                 </div>

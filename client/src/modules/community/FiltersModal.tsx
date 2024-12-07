@@ -1,7 +1,7 @@
+import { FlagIcon, FLAGS_MAP } from '@/components/FlagIcon'
 import { SUPPORTED_SERVERS } from '@/config/config'
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
-import { LANGS_MAP } from '@/pages/profiles/ProfileForm'
 import { faCheck, faPlus, faPlusMinus, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { forwardRef, useState } from 'react'
@@ -194,7 +194,7 @@ export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubm
                 <div className="bg-white p-2 mx-2 rounded-xl mt-2 flex gap-2 items-center">
                     <div className="text-center leading-none">Languages:</div>
                     <div className="flex gap-2">
-                        {Object.keys(LANGS_MAP).map((lang) => (
+                        {Object.keys(FLAGS_MAP).map((lang) => (
                             <div
                                 key={lang}
                                 className={cn(
@@ -212,7 +212,7 @@ export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubm
                                     }
                                 }}
                             >
-                                {LANGS_MAP[lang]?.icon}
+                                <FlagIcon key={lang} className="w-4 h-4 rounded-full" />
                             </div>
                         ))}
                     </div>

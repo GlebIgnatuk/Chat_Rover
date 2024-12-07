@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useDropdown } from './useDropdown'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { cn } from 'tailwind-cn'
+import { useDropdown } from '@/hooks/common/useDropdown'
 
 interface Props {
     level?: number
@@ -51,6 +51,7 @@ export const WorldLevelDropdown = (props: Props) => {
                 <div className="h-full overflow-y-auto">
                     {dropdown.options.map((option) => (
                         <div
+                            key={option.key}
                             className="hover:bg-[#90D8FF] p-1"
                             onClick={() => {
                                 select(option.key)

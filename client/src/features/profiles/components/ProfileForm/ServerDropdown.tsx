@@ -1,22 +1,17 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useDropdown } from './useDropdown'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { cn } from 'tailwind-cn'
+import { useDropdown } from '@/hooks/common/useDropdown'
 
 interface Props {
+    options: { key: string; value: string }[]
     selected?: string
     onSelect?: (server: string) => void
 }
 
 export const ServerDropdown = (props: Props) => {
     const dropdown = useDropdown({
-        options: [
-            { key: 'SEA', value: 'SEA' },
-            { key: 'Asia', value: 'Asia' },
-            { key: 'Europe', value: 'Europe' },
-            { key: 'HMT', value: 'HMT' },
-            { key: 'America', value: 'America' },
-        ],
+        options: props.options,
         closeOnClickOutside: true,
         selected: props.selected,
     })

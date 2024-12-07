@@ -29,6 +29,14 @@ export const getIntl: IRequestHandler = async (req, res) => {
 
             general__loading: 'Loading',
             general__continue: 'Continue',
+            general__languages__en: 'English',
+            'general__languages__zh-CN': 'Chinise (simplified)',
+            'general__languages__zh-HK': 'Chinise (traditional)',
+            general__languages__ja: 'Japanese',
+            general__languages__ko: 'Korean',
+            general__languages__fr: 'French',
+            general__languages__de: 'German',
+            general__languages__es: 'Spanish',
 
             search__filters: 'Filters',
             search__characters: 'Characters',
@@ -47,6 +55,14 @@ export const getIntl: IRequestHandler = async (req, res) => {
 
             general__loading: 'Загрузка',
             general__continue: 'Продолжить',
+            general__languages__en: 'English',
+            'general__languages__zh-CN': 'Китайский (упрощенный)',
+            'general__languages__zh-HK': 'Китайский (традиционный)',
+            general__languages__ja: 'Японский',
+            general__languages__ko: 'Корейский',
+            general__languages__fr: 'Французский',
+            general__languages__de: 'Немецкий',
+            general__languages__es: 'Испанский',
 
             search__filters: 'Фильтры',
             search__characters: 'Персонажи',

@@ -13,8 +13,8 @@ export const useLocalize = () => {
     return (path: string) => {
         if (!intl) throw new Error('Intl not set')
 
-        if (path in intl) return intl[path]
-        if (fallbackIntl && path in fallbackIntl) return fallbackIntl[path]
+        if (path in intl) return intl[path]!
+        if (fallbackIntl && path in fallbackIntl) return fallbackIntl[path]!
 
         return '<?>'
     }
