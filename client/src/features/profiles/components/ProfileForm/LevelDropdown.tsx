@@ -26,7 +26,7 @@ export const LevelDropdown = ({ level, ...props }: Props) => {
             className={cn(
                 'absolute left-0 top-3 shadow-xl bg-[#EBC920] p-1 rounded-r-xl w-9 transition-all z-10',
                 {
-                    'w-4/5': dropdown.isOpen,
+                    'w-3/5': dropdown.isOpen,
                 },
             )}
         >

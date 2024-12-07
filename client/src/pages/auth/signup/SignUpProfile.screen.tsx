@@ -6,7 +6,7 @@ import { useProfileForm } from '@/features/profiles/hooks/useProfileForm'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { api } from '@/services/api'
 import { buildProtectedUrl } from '@/utils/url'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import bgImage from '@/assets/auth.jpeg'
@@ -37,31 +37,40 @@ export const SignUpProfileScreen = () => {
         servers: servers,
     })
 
-    // const onSubmit = async (data: FormState) => {
-    //     const response = await api('/profiles', {
-    //         method: 'post',
-    //         body: JSON.stringify(data),
-    //     })
+    const onSubmit = async () => {
+        const response = await api('/profiles', {
+            method: 'post',
+            body: JSON.stringify(form.state),
+        })
 
-    //     if (response.success) {
-    //         const response = await api<IIdentity>('/users/me')
-    //         if (response.success) {
-    //             navigate(buildProtectedUrl('/'), { replace: true, state: { user: response.data } })
-    //         } else {
-    //             console.error(response.error)
-    //         }
-    //     } else {
-    //         console.error(response.error)
-    //     }
-    // }
+        if (response.success) {
+            const response = await api<IIdentity>('/users/me')
+            if (response.success) {
+                setIsCardOpen(false)
+                setTimeout(() => {
+                    navigate(buildProtectedUrl('/'), {
+                        replace: true,
+                        state: { user: response.data },
+                    })
+                }, 400)
+            } else {
+                console.error(response.error)
+            }
+        } else {
+            console.error(response.error)
+        }
+    }
 
     return (
         <div className="relative h-full overflow-y-auto">
-            <img src={bgImage} className="absolute inset-0 object-cover object-center opacity-25" />
+            <img
+                src={bgImage}
+                className="absolute top-0 left-0 w-full h-full object-cover object-center opacity-25"
+            />
 
             <div className="flex flex-col items-center py-10" style={{ perspective: '1000px' }}>
                 <div
-                    className={cn('relative w-[370px] rounded-xl transition-all duration-700', {
+                    className={cn('relative w-[370px] rounded-xl transition-all duration-300', {
                         'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.75)]': isCardOpen,
                         'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.25)]': !isCardOpen,
                     })}
@@ -80,14 +89,17 @@ export const SignUpProfileScreen = () => {
                     </div>
 
                     <div
-                        className="absolute inset-0 bg-black rounded-xl overflow-hidden flex items-center justify-center cursor-pointer font-vasek"
+                        className="absolute top-0 left-0 w-full h-full bg-black rounded-xl overflow-hidden flex items-center justify-center cursor-pointer font-vasek"
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                         onClick={() => setIsCardOpen(true)}
                     >
-                        <div className="absolute text-4xl text-center">
-                            Let's create a profile!
+                        <div className="absolute text-5xl text-center">
+                            {/* Let's create a profile!
                             <br />
-                            Tap to start
+                            Tap to start */}
+                            Давай создадим профиль!
+                            <br />
+                            Нажми чтобы начать
                         </div>
 
                         <img
@@ -95,6 +107,10 @@ export const SignUpProfileScreen = () => {
                             className="absolute top-0 left-0 w-full h-full object-center object-cover animate-pulse-25-50"
                         />
                     </div>
+                </div>
+
+                <div>
+                    <button onClick={() => onSubmit()}>Create</button>
                 </div>
             </div>
         </div>

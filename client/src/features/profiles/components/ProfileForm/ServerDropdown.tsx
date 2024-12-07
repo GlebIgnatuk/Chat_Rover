@@ -41,26 +41,24 @@ export const ServerDropdown = (props: Props) => {
 
             <div
                 className={cn(
-                    'absolute top-[calc(100%+8px)] h-0 w-full rounded-l-xl bg-[#EDDAB8]/90 z-10 transition-[height] overflow-hidden',
+                    'absolute top-[calc(100%+8px)] overflow-y-auto h-0 w-full rounded-l-xl bg-[#EDDAB8]/90 z-10 transition-[height]',
                     {
                         'h-20': dropdown.isOpen,
                     },
                 )}
             >
-                <div className="overflow-y-auto h-full">
-                    {dropdown.options.map((option) => (
-                        <div
-                            key={option.key}
-                            className="text-xs text-[#776868] px-2 py-1 select-none hover:bg-[#EDDAB8]"
-                            onClick={() => {
-                                select(option.key)
-                                dropdown.close()
-                            }}
-                        >
-                            {option.value}
-                        </div>
-                    ))}
-                </div>
+                {dropdown.options.map((option) => (
+                    <div
+                        key={option.key}
+                        className="text-xs text-[#776868] px-2 py-1 select-none hover:bg-[#EDDAB8]"
+                        onClick={() => {
+                            select(option.key)
+                            dropdown.close()
+                        }}
+                    >
+                        {option.value}
+                    </div>
+                ))}
             </div>
         </div>
     )
