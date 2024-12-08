@@ -212,7 +212,7 @@ export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubm
                                     }
                                 }}
                             >
-                                <FlagIcon key={lang} className="w-4 h-4 rounded-full" />
+                                <FlagIcon code={lang} className="w-4 h-4 rounded-full" />
                             </div>
                         ))}
                     </div>

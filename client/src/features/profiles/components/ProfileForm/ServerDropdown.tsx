@@ -4,6 +4,7 @@ import { cn } from 'tailwind-cn'
 import { useDropdown } from '@/hooks/common/useDropdown'
 
 interface Props {
+    hasError: boolean
     options: { key: string; value: string }[]
     selected?: string
     onSelect?: (server: string) => void
@@ -24,7 +25,13 @@ export const ServerDropdown = (props: Props) => {
     return (
         <div className="relative shrink-0" ref={dropdown.ref}>
             <div
-                className="bg-[#EDDAB8] text-[#776868] rounded-l-xl px-2 shrink-0 font-medium space-x-1"
+                className={cn(
+                    'bg-[#EDDAB8] text-[#776868] rounded-l-xl px-2 shrink-0 font-medium space-x-1',
+                    {
+                        'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)]':
+                            props.hasError,
+                    },
+                )}
                 onClick={() => (dropdown.isOpen ? dropdown.close() : dropdown.open())}
             >
                 <div className="inline-block w-14 select-none">

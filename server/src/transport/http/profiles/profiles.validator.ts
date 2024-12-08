@@ -18,7 +18,7 @@ const teamMemberSchema = Joi.object({
 
 export const postSchema = Joi.object({
     userId: Joi.required(),
-    uid: Joi.number().integer().min(0).max(999_999_999).required(),
+    uid: Joi.number().integer().min(1).max(999_999_999).required(),
     about: Joi.string().max(255).required(),
     nickname: Joi.string().min(1).max(55).required(),
     server: Joi.string()
@@ -34,7 +34,15 @@ export const postSchema = Joi.object({
         .min(1)
         .required(),
     worldLevel: Joi.number().integer().min(1).max(8).required(),
-    team: Joi.array().items(teamMemberSchema).length(3).required(),
+    team: Joi.array()
+        .items(teamMemberSchema)
+        .length(3)
+        .custom((value, helper) => {
+            if ((value as any[]).some((v) => v !== null)) return value
+
+            return helper.message({ custom: 'At least 1 team member must be selected' })
+        })
+        .required(),
 })
 
 export const putSchema = postSchema

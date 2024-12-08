@@ -18,6 +18,7 @@ export interface IProfile {
 
 export interface IAccountContext {
     profiles: IProfile[]
+    refresh: () => void
     loading: { is: true } | { is: false; error: string | null }
 }
 

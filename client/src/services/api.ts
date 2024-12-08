@@ -3,9 +3,16 @@ export type APIResponse<T> =
           success: true
           data: T
       }
-    | { success: false; error: string }
+    | {
+          success: false
+          error: string
+          details?: { message: string; path: string[]; type: string }[]
+      }
 
-export const api = async <T = unknown>(path: string, init?: RequestInit): Promise<APIResponse<T>> => {
+export const api = async <T = unknown>(
+    path: string,
+    init?: RequestInit,
+): Promise<APIResponse<T>> => {
     const rawResponse = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
         ...init,
         headers: {

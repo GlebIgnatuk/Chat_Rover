@@ -12,8 +12,11 @@ import { useNavigate } from 'react-router-dom'
 import bgImage from '@/assets/auth.jpeg'
 import cardBgImage from '@/assets/profile-card-bg.webp'
 import { cn } from 'tailwind-cn'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 export const SignUpProfileScreen = () => {
+    const [isLoading, setIsLoading] = useState(false)
     const [isCardOpen, setIsCardOpen] = useState(false)
 
     const navigate = useNavigate()
@@ -26,7 +29,7 @@ export const SignUpProfileScreen = () => {
             key: l,
             value: localize(`general__languages__${l}`),
         }))
-    }, [gameConfig])
+    }, [gameConfig, localize])
     const servers = useMemo(() => {
         return gameConfig.servers.map((l) => ({ key: l, value: l }))
     }, [gameConfig])
@@ -38,6 +41,8 @@ export const SignUpProfileScreen = () => {
     })
 
     const onSubmit = async () => {
+        setIsLoading(true)
+
         const response = await api('/profiles', {
             method: 'post',
             body: JSON.stringify(form.state),
@@ -48,15 +53,27 @@ export const SignUpProfileScreen = () => {
             if (response.success) {
                 setIsCardOpen(false)
                 setTimeout(() => {
+                    setIsLoading(false)
                     navigate(buildProtectedUrl('/'), {
                         replace: true,
                         state: { user: response.data },
                     })
                 }, 400)
             } else {
+                setIsLoading(false)
                 console.error(response.error)
             }
         } else {
+            setIsLoading(false)
+
+            const errors = response.details?.map((d) => ({
+                key: d.path.join('.'),
+                message: d.message,
+            }))
+            if (errors) {
+                form.addErrors(...errors)
+            }
+
             console.error(response.error)
         }
     }
@@ -68,7 +85,10 @@ export const SignUpProfileScreen = () => {
                 className="absolute top-0 left-0 w-full h-full object-cover object-center opacity-25"
             />
 
-            <div className="flex flex-col items-center py-10" style={{ perspective: '1000px' }}>
+            <div
+                className="flex flex-col items-center h-full py-10 overflow-y-auto"
+                style={{ perspective: '1000px' }}
+            >
                 <div
                     className={cn('relative w-[370px] rounded-xl transition-all duration-300', {
                         'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.75)]': isCardOpen,
@@ -94,12 +114,9 @@ export const SignUpProfileScreen = () => {
                         onClick={() => setIsCardOpen(true)}
                     >
                         <div className="absolute text-5xl text-center">
-                            {/* Let's create a profile!
+                            {localize('auth__profile__info1')}
                             <br />
-                            Tap to start */}
-                            Давай создадим профиль!
-                            <br />
-                            Нажми чтобы начать
+                            {localize('auth__profile__info2')}
                         </div>
 
                         <img
@@ -108,11 +125,25 @@ export const SignUpProfileScreen = () => {
                         />
                     </div>
                 </div>
-
-                <div>
-                    <button onClick={() => onSubmit()}>Create</button>
-                </div>
             </div>
+
+            {isCardOpen && (
+                <div className="absolute bottom-0 left-0 w-full">
+                    <button
+                        onClick={() => onSubmit()}
+                        className="bg-primary text-black w-full h-8 disabled:bg-gray-300 flex items-center justify-center gap-1"
+                        disabled={isLoading}
+                    >
+                        {!isLoading && <span>{localize('general__continue')}</span>}
+                        {isLoading && (
+                            <FontAwesomeIcon
+                                icon={faCircleNotch}
+                                className="w-3 h-3 animate-spin"
+                            />
+                        )}
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

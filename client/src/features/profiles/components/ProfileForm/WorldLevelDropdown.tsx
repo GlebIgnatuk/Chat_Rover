@@ -4,6 +4,7 @@ import { cn } from 'tailwind-cn'
 import { useDropdown } from '@/hooks/common/useDropdown'
 
 interface Props {
+    hasError: boolean
     level?: number
     onChange?: (level: number) => void
 }
@@ -11,7 +12,7 @@ interface Props {
 export const WorldLevelDropdown = (props: Props) => {
     const dropdown = useDropdown({
         options: [
-            { key: '0', value: 'Rank 0' },
+            { key: '-1', value: '—' },
             { key: '1', value: 'Rank 1' },
             { key: '2', value: 'Rank 2' },
             { key: '3', value: 'Rank 3' },
@@ -31,7 +32,13 @@ export const WorldLevelDropdown = (props: Props) => {
     }
 
     return (
-        <div className="relative bg-[#90D8FF] rounded-xl px-2 py-1 w-20" ref={dropdown.ref}>
+        <div
+            className={cn('relative bg-[#90D8FF] rounded-xl px-2 py-1 w-20', {
+                'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)] rounded-xl':
+                    props.hasError,
+            })}
+            ref={dropdown.ref}
+        >
             <div
                 className="flex items-center justify-between"
                 onClick={() => (dropdown.isOpen ? dropdown.close() : dropdown.open())}

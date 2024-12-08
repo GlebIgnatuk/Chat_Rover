@@ -4,20 +4,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cn } from 'tailwind-cn'
 
 interface Props {
+    hasError: boolean
     level?: number
     onChange?: (level: number) => void
 }
 
 export const LevelDropdown = ({ level, ...props }: Props) => {
-    const dropdown = useDropdown<number>({
-        options: Array.from({ length: 91 }, (_, idx) => ({ key: idx.toString(), value: idx })),
+    const dropdown = useDropdown<number | string>({
+        options: [{ key: '-1', value: '—' }].concat(
+            Array.from({ length: 90 }, (_, idx) => ({
+                key: (idx + 1).toString(),
+                value: (idx + 1).toString(),
+            })),
+        ),
         selected: level?.toString(),
         closeOnClickOutside: true,
     })
 
-    const select = (level: string) => {
-        dropdown.select(level.toString())
-        props.onChange?.(Number(level))
+    const select = (key: string) => {
+        dropdown.select(key.toString())
+        props.onChange?.(Number(key))
     }
 
     return (
@@ -27,6 +33,7 @@ export const LevelDropdown = ({ level, ...props }: Props) => {
                 'absolute left-0 top-3 shadow-xl bg-[#EBC920] p-1 rounded-r-xl w-9 transition-all z-10',
                 {
                     'w-3/5': dropdown.isOpen,
+                    'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)]': props.hasError,
                 },
             )}
         >

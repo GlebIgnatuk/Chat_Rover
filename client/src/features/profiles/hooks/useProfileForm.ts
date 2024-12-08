@@ -1,5 +1,6 @@
 import { IWuwaCharacter } from '@/store/types'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import * as R from 'ramda'
 
 export interface ProfileFormState {
     uid: number
@@ -23,7 +24,7 @@ const defaultState: ProfileFormState = {
     server: '',
     usesVoice: true,
     languages: [],
-    worldLevel: 0,
+    worldLevel: -1,
     team: [null, null, null],
 }
 
@@ -38,6 +39,7 @@ export type UseProfileFormResult = ReturnType<typeof useProfileForm>
 
 export const useProfileForm = (props: UseProfileFormOptions) => {
     const [state, setState] = useState<ProfileFormState>(props.initialState ?? defaultState)
+    const [errors, setErrors] = useState<Record<string, string>>({})
 
     const filteredLanguages = useMemo(() => {
         return props.languages.filter((pl) => state.languages.some((sl) => sl === pl.key) === false)
@@ -55,10 +57,6 @@ export const useProfileForm = (props: UseProfileFormOptions) => {
             return !hasRover || !rovers.includes(c._id)
         })
     }, [state.team])
-
-    useEffect(() => {
-        setState(props.initialState ?? defaultState)
-    }, [props.initialState])
 
     const setConstellation = (of: number, value: number) => {
         setState((prev) => {
@@ -87,7 +85,7 @@ export const useProfileForm = (props: UseProfileFormOptions) => {
                 team: prev.team.map((m, idx) =>
                     idx === of
                         ? characterId
-                            ? { characterId, constellation: 0, level: 0 }
+                            ? { characterId, constellation: -1, level: -1 }
                             : null
                         : m,
                 ),
@@ -129,8 +127,27 @@ export const useProfileForm = (props: UseProfileFormOptions) => {
         setState((prev) => ({ ...prev, about }))
     }
 
+    const addErrors = (...errors: { key: string; message: string }[]) => {
+        setErrors((prev) => {
+            const obj = { ...prev }
+            for (const error of errors) {
+                obj[error.key] = error.message
+            }
+            return obj
+        })
+    }
+
+    const cleanError = (key: string) => {
+        setErrors((prev) => R.dissoc(key, prev))
+    }
+
+    const cleanErrors = () => {
+        setErrors({})
+    }
+
     return {
         state,
+        errors,
         allLanguages: props.languages,
         filteredLanguages,
         allCharacters: props.characters,
@@ -147,5 +164,8 @@ export const useProfileForm = (props: UseProfileFormOptions) => {
         removeLanguage,
         setUid,
         setAbout,
+        addErrors,
+        cleanError,
+        cleanErrors,
     }
 }

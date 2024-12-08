@@ -167,7 +167,7 @@ export const CommunityScreen = () => {
                                     <img
                                         key={idx}
                                         className="bg-white w-8 h-8 object-cover object-top rounded-full"
-                                        src={characters[t.characterId]?.photoUrl}
+                                        src={t ? characters[t.characterId]?.photoUrl : undefined}
                                     />
                                 ))}
                             </div>

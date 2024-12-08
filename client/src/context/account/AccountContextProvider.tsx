@@ -40,6 +40,7 @@ export const AccountContextProvider = ({ children }: Props) => {
 
     const context: IAccountContext = {
         profiles,
+        refresh: loadProfiles,
         loading,
     }
 

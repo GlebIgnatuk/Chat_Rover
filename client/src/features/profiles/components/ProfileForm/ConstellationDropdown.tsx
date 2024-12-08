@@ -4,13 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cn } from 'tailwind-cn'
 
 interface Props {
+    hasError: boolean
     constellation?: number
     onChange?: (level: number) => void
 }
 
 export const ConstellationDropdown = ({ constellation, ...props }: Props) => {
-    const dropdown = useDropdown<number>({
-        options: Array.from({ length: 7 }, (_, idx) => ({ key: idx.toString(), value: idx })),
+    const dropdown = useDropdown<number | string>({
+        options: [{ key: '-1', value: '—' }].concat(
+            Array.from({ length: 7 }, (_, idx) => ({
+                key: idx.toString(),
+                value: idx.toString(),
+            })),
+        ),
         selected: constellation?.toString(),
         closeOnClickOutside: true,
     })
@@ -27,6 +33,8 @@ export const ConstellationDropdown = ({ constellation, ...props }: Props) => {
                 'text-lg absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-10 w-10 rounded-full border-2 border-[#A17DA8] bg-[#EBC920] shadow-lg transition-all z-10',
                 {
                     'w-10': dropdown.isOpen,
+                    'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)] border-transparent':
+                        props.hasError,
                 },
             )}
         >

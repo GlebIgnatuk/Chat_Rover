@@ -5,6 +5,7 @@ import { useDropdown } from '@/hooks/common/useDropdown'
 import { FlagIcon } from '@/components/FlagIcon'
 
 interface Props {
+    hasError: boolean
     languages: { key: string; value: string }[]
     onSelect: (lang: string) => void
 }
@@ -18,7 +19,10 @@ export const LanguageDropdown = (props: Props) => {
     return (
         <div className="relative" ref={dropdown.ref}>
             <div
-                className="flex gap-1 items-center p-1 rounded-2xl bg-[#C3B6A0]"
+                className={cn('flex gap-1 items-center p-1 rounded-2xl bg-[#C3B6A0]', {
+                    'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)] rounded-xl':
+                        props.hasError,
+                })}
                 onClick={() => (dropdown.isOpen ? dropdown.close() : dropdown.open())}
                 ref={dropdown.ref}
             >
