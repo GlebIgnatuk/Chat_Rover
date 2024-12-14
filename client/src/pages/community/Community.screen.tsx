@@ -4,7 +4,7 @@ import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
 import { ISearchedProfile } from '@/store/types'
-import { buildProtectedUrl } from '@/utils/url'
+import { buildImageUrl, buildProtectedUrl } from '@/utils/url'
 import {
     faChevronLeft,
     faChevronRight,
@@ -167,7 +167,13 @@ export const CommunityScreen = () => {
                                     <img
                                         key={idx}
                                         className="bg-white w-8 h-8 object-cover object-top rounded-full"
-                                        src={t ? characters[t.characterId]?.photoUrl : undefined}
+                                        src={
+                                            t
+                                                ? buildImageUrl(
+                                                      characters[t.characterId]?.photoPath ?? '',
+                                                  )
+                                                : undefined
+                                        }
                                     />
                                 ))}
                             </div>

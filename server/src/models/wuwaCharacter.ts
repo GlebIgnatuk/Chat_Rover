@@ -3,6 +3,7 @@ import { IBaseModel } from './base'
 
 export interface IWuwaCharacterModel extends IBaseModel {
     name: string
+    photoPath: string
     photoUrl: string
     accentColor: string
     element: string

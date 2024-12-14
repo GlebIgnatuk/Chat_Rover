@@ -7,34 +7,34 @@ async function main() {
 
     const now = new Date()
 
-    const characters: Omit<IWuwaCharacterModel, 'createdAt' | 'updatedAt'>[] = [
+    const characters: Omit<IWuwaCharacterModel, 'createdAt' | 'updatedAt' | 'photoUrl'>[] = [
         {
             name: 'zhezhi',
             element: 'ice',
             sex: 'female',
             accentColor: '#93E0FF',
-            photoUrl: '/characters/zhezhi.png',
+            photoPath: '/characters/zhezhi.png',
         },
         {
             name: 'lingyang',
             element: 'ice',
             sex: 'female',
             accentColor: '#93E0FF',
-            photoUrl: '/characters/lingyang.png',
+            photoPath: '/characters/lingyang.png',
         },
         {
             name: 'sanhua',
             element: 'ice',
             sex: 'female',
             accentColor: '#93E0FF',
-            photoUrl: '/characters/sanhua.png',
+            photoPath: '/characters/sanhua.png',
         },
         {
             name: 'baizhi',
             element: 'ice',
             sex: 'female',
             accentColor: '#93E0FF',
-            photoUrl: '/characters/baizhi.png',
+            photoPath: '/characters/baizhi.png',
         },
 
         {
@@ -42,28 +42,28 @@ async function main() {
             element: 'aero',
             sex: 'female',
             accentColor: '#CBFFC8',
-            photoUrl: '/characters/jianxin.png',
+            photoPath: '/characters/jianxin.png',
         },
         {
             name: 'yangyang',
             element: 'aero',
             sex: 'female',
             accentColor: '#CBFFC8',
-            photoUrl: '/characters/yangyang.png',
+            photoPath: '/characters/yangyang.png',
         },
         {
             name: 'aalto',
             element: 'aero',
             sex: 'male',
             accentColor: '#CBFFC8',
-            photoUrl: '/characters/aalto.png',
+            photoPath: '/characters/aalto.png',
         },
         {
             name: 'jiyan',
             element: 'aero',
             sex: 'male',
             accentColor: '#CBFFC8',
-            photoUrl: '/characters/jiyan.png',
+            photoPath: '/characters/jiyan.png',
         },
 
         {
@@ -71,28 +71,28 @@ async function main() {
             element: 'electro',
             sex: 'male',
             accentColor: '#845BAE',
-            photoUrl: '/characters/calcharo.png',
+            photoPath: '/characters/calcharo.png',
         },
         {
             name: 'xiangli yao',
             element: 'electro',
             sex: 'male',
             accentColor: '#845BAE',
-            photoUrl: '/characters/xiangli_yao.png',
+            photoPath: '/characters/xiangli_yao.png',
         },
         {
             name: 'yuanwu',
             element: 'electro',
             sex: 'male',
             accentColor: '#845BAE',
-            photoUrl: '/characters/yuanwu.png',
+            photoPath: '/characters/yuanwu.png',
         },
         {
             name: 'yinlin',
             element: 'electro',
             sex: 'female',
             accentColor: '#845BAE',
-            photoUrl: '/characters/yinlin.png',
+            photoPath: '/characters/yinlin.png',
         },
 
         {
@@ -100,35 +100,35 @@ async function main() {
             element: 'spectro',
             sex: 'female',
             accentColor: '#DED062',
-            photoUrl: '/characters/verina.png',
+            photoPath: '/characters/verina.png',
         },
         {
             name: 'jinhsi',
             element: 'spectro',
             sex: 'female',
             accentColor: '#DED062',
-            photoUrl: '/characters/jinhsi.png',
+            photoPath: '/characters/jinhsi.png',
         },
         {
             name: 'shorekeeper',
             element: 'spectro',
             sex: 'female',
             accentColor: '#DED062',
-            photoUrl: '/characters/shorekeeper.png',
+            photoPath: '/characters/shorekeeper.png',
         },
         {
             name: 'rover',
             element: 'spectro',
             sex: 'male',
             accentColor: '#DED062',
-            photoUrl: '/characters/rover_male.png',
+            photoPath: '/characters/rover_male.png',
         },
         {
             name: 'rover',
             element: 'spectro',
             sex: 'female',
             accentColor: '#DED062',
-            photoUrl: '/characters/rover_female.png',
+            photoPath: '/characters/rover_female.png',
         },
 
         {
@@ -136,28 +136,28 @@ async function main() {
             element: 'havoc',
             sex: 'female',
             accentColor: '#FF8BCF',
-            photoUrl: '/characters/taoqi.png',
+            photoPath: '/characters/taoqi.png',
         },
         {
             name: 'danjin',
             element: 'havoc',
             sex: 'female',
             accentColor: '#FF8BCF',
-            photoUrl: '/characters/danjin.png',
+            photoPath: '/characters/danjin.png',
         },
         {
             name: 'rover',
             element: 'havoc',
             sex: 'male',
             accentColor: '#FF8BCF',
-            photoUrl: '/characters/rover_male.png',
+            photoPath: '/characters/rover_male.png',
         },
         {
             name: 'rover',
             element: 'havoc',
             sex: 'female',
             accentColor: '#FF8BCF',
-            photoUrl: '/characters/rover_female.png',
+            photoPath: '/characters/rover_female.png',
         },
 
         {
@@ -165,34 +165,34 @@ async function main() {
             element: 'fusion',
             sex: 'female',
             accentColor: '#C2644C',
-            photoUrl: '/characters/encore.png',
+            photoPath: '/characters/encore.png',
         },
         {
             name: 'changli',
             element: 'fusion',
             sex: 'female',
             accentColor: '#C2644C',
-            photoUrl: '/characters/changli.png',
+            photoPath: '/characters/changli.png',
         },
         {
             name: 'chixia',
             element: 'fusion',
             sex: 'female',
             accentColor: '#C2644C',
-            photoUrl: '/characters/chixia.png',
+            photoPath: '/characters/chixia.png',
         },
         {
             name: 'mortefi',
             element: 'fusion',
             sex: 'male',
             accentColor: '#C2644C',
-            photoUrl: '/characters/mortefi.png',
+            photoPath: '/characters/mortefi.png',
         },
     ]
 
     const mapped = characters.map<IWuwaCharacterModel>((c) => ({
         ...c,
-        photoUrl: `https://127.0.0.1:3000${c.photoUrl}`,
+        photoUrl: `https://127.0.0.1:3000${c.photoPath}`,
         createdAt: now,
         updatedAt: now,
     }))

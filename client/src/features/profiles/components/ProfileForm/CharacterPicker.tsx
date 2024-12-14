@@ -1,4 +1,5 @@
 import { IWuwaCharacter } from '@/store/types'
+import { buildImageUrl } from '@/utils/url'
 import { faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@material-ui/core'
@@ -29,7 +30,7 @@ export const CharacterPicker = (props: Props) => {
             {selected ? (
                 <>
                     <img
-                        src={props.allCharacters[selected]?.photoUrl}
+                        src={buildImageUrl(props.allCharacters[selected]?.photoPath ?? '')}
                         className="w-full h-full object-cover object-bottom select-none"
                         style={{
                             backgroundColor:
@@ -76,7 +77,7 @@ export const CharacterPicker = (props: Props) => {
                                     }}
                                 >
                                     <img
-                                        src={character.photoUrl}
+                                        src={buildImageUrl(character.photoPath)}
                                         className="w-full h-32 object-cover object-top"
                                     />
 

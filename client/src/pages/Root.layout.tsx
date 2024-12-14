@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
@@ -16,6 +16,7 @@ import { buildProtectedUrl } from '@/utils/url'
 import { DEBUG } from '@/config/config'
 import { DebugPanel } from '@/modules/root/Debug'
 import { useLocalize } from '@/hooks/intl/useLocalize'
+import bgAnimation from '@/assets/bg_animation.mp4'
 
 const navigation = [
     {
@@ -77,8 +78,6 @@ export const RootLayout = () => {
     const navigate = useNavigate()
     const localize = useLocalize()
 
-    const [transitioned, setTransitioned] = useState(false)
-
     // @todo factor out initial fetching
     const chatsService = useChatsService()
     useEffect(() => {
@@ -89,17 +88,6 @@ export const RootLayout = () => {
             abortController.abort()
         }
     }, [])
-
-    useLayoutEffect(() => {
-        const timer = setTimeout(() => {
-            setTransitioned(true)
-        }, 0)
-
-        return () => {
-            clearTimeout(timer)
-            setTransitioned(false)
-        }
-    }, [location])
 
     useEffect(() => {
         // @ts-expect-error fix ts later
@@ -115,9 +103,25 @@ export const RootLayout = () => {
         })
     }, [navigate])
 
+    const videoRef = useRef<HTMLVideoElement>(null)
+    useEffect(() => {
+        const video = videoRef.current
+        if (video) video.playbackRate = 0.5
+    }, [])
+
     return (
         <>
             <div className="relative h-full bg-[#252323] flex flex-col">
+                <video
+                    ref={videoRef}
+                    src={bgAnimation}
+                    className="absolute top-0 left-0 w-full h-full object-cover object-center pointer-events-none"
+                    muted
+                    controls={false}
+                    autoPlay
+                    loop
+                ></video>
+
                 {DEBUG && <DebugPanel />}
 
                 <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden">
@@ -129,7 +133,7 @@ export const RootLayout = () => {
                     </WithTransition>
 
                     <div
-                        className="grid bg-[#FFFAE7] border-t border-t-[#F18F01] shadow-md relative z-20"
+                        className="grid relative z-20 bg-gradient-to-t from-black/60 to-transparent"
                         style={{
                             gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))`,
                         }}
@@ -141,30 +145,15 @@ export const RootLayout = () => {
                                 end={n.end}
                                 className={({ isActive }) =>
                                     cn('py-2 flex flex-col items-center justify-end relative', {
-                                        'text-[#F18F01]': isActive,
-                                        'text-[hsl(36,99%,43%)]': !isActive,
-                                        'text-gray-300 pointer-events-none': n.disabled,
-                                        // 'pointer-events-none text-gray-700': n.disabled,
+                                        'text-white s': isActive,
+                                        'text-gray-300': !isActive,
+                                        'text-gray-500 pointer-events-none': n.disabled,
                                     })
                                 }
                             >
                                 {({ isActive }) => (
                                     <>
-                                        {isActive && (
-                                            <span
-                                                className={cn(
-                                                    'transition-all duration-300 w-6 h-6 box-content absolute left-1/2 -translate-x-1/2 shadow-md bg-[#FFFAE7] rounded-full',
-                                                    {
-                                                        'top-0 opacity-0': !transitioned,
-                                                        '!-top-5 p-3 opacity-100':
-                                                            isActive && transitioned,
-                                                    },
-                                                )}
-                                            >
-                                                <n.IconActive />
-                                            </span>
-                                        )}
-                                        {/* {isActive && <n.IconInactive />} */}
+                                        {isActive && <n.IconActive />}
                                         {!isActive && <n.IconInactive />}
 
                                         <span className="text-xs">{localize(n.label)}</span>

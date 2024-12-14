@@ -94,7 +94,7 @@ export const ProfileForm = ({ form }: Props) => {
                     >
                         {Array.from({ length: 3 }, (_, idx) => (
                             <div key={idx} className="relative">
-                                <div className="relative overflow-hidden rounded-xl bg-red-400 h-60">
+                                <div className="relative overflow-hidden rounded-xl bg-red-400 h-52">
                                     {form.state.team[idx] && (
                                         <LevelDropdown
                                             hasError={

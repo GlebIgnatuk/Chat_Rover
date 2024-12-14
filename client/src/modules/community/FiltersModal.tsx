@@ -2,6 +2,7 @@ import { FlagIcon, FLAGS_MAP } from '@/components/FlagIcon'
 import { SUPPORTED_SERVERS } from '@/config/config'
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
+import { buildImageUrl } from '@/utils/url'
 import { faCheck, faPlus, faPlusMinus, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { forwardRef, useState } from 'react'
@@ -41,7 +42,10 @@ export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubm
                                 )}
                                 onClick={() => setEditingIndex(idx)}
                             >
-                                <img src={characters[t.characterId]?.photoUrl} className="" />
+                                <img
+                                    src={buildImageUrl(characters[t.characterId]?.photoPath ?? '')}
+                                    className=""
+                                />
                                 <div className="absolute bottom-0 left-0 w-full text-white bg-gradient-to-t from-black to-transparent py-2 text-center font-semibold text-xl">
                                     {t.minConstellation} - {t.maxConstellation}
                                 </div>
@@ -92,7 +96,7 @@ export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubm
                             {Object.values(characters).map((c) => (
                                 <div key={c._id}>
                                     <img
-                                        src={c.photoUrl}
+                                        src={buildImageUrl(c.photoPath)}
                                         onClick={() => state.addTeamMember(editingIndex, c._id)}
                                         className={cn(
                                             'w-20 h-20 object-cover object-top rounded-full bg-white cursor-pointer',

@@ -23,3 +23,7 @@ export const buildProtectedUrl = (path: string) => {
 export const buildAuthUrl = (path: string) => {
     return _buildUrl(path, _buildUrl(AUTH_PATH_PREFIX, PATH_PREFIX))
 }
+
+export const buildImageUrl = (path: string) => {
+    return _buildUrl(path, window.location.origin)
+}

@@ -86,14 +86,17 @@ export const SignUpProfileScreen = () => {
             />
 
             <div
-                className="flex flex-col items-center h-full py-10 overflow-y-auto"
+                className="flex flex-col items-center h-full pt-2 pb-10 overflow-y-auto"
                 style={{ perspective: '1000px' }}
             >
                 <div
-                    className={cn('relative w-[370px] rounded-xl transition-all duration-300', {
-                        'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.75)]': isCardOpen,
-                        'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.25)]': !isCardOpen,
-                    })}
+                    className={cn(
+                        'relative max-w-[370px] w-[90%] rounded-xl transition-all duration-300',
+                        {
+                            'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.75)]': isCardOpen,
+                            'shadow-[0px_0px_24px_2px_rgba(255,215,0,0.25)]': !isCardOpen,
+                        },
+                    )}
                     style={{
                         transform: isCardOpen ? 'rotateY(0deg)' : 'rotateY(180deg)',
                         transformStyle: 'preserve-3d',

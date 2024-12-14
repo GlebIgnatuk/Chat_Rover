@@ -80,5 +80,6 @@ export type IWuwaCharacter = {
     element: string
     sex: string
     accentColor: string
+    photoPath: string
     photoUrl: string
 }
