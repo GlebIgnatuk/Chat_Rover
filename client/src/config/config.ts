@@ -91,7 +91,7 @@ export const FAKE_PROFILES = names.map((name, idx) =>
         first_name: name.split(' ')[0],
         last_name: name.split(' ')[1] || null,
         username: name.toLowerCase().trim().replace(/[^\w]/g, '_'),
-        language_code: 'en',
+        language_code: idx % 2 === 0 ? 'ru' : 'en',
         is_premium: true,
         allows_write_to_pm: true,
     }),

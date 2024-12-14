@@ -7,6 +7,16 @@ import { buildAuthUrl } from '@/utils/url'
 import { useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 
+const getSourceLanguage = (data: string) => {
+    try {
+        const params = new URLSearchParams(data)
+        const user = params.get('user') || ''
+        return JSON.parse(user).language_code
+    } catch {
+        return 'en'
+    }
+}
+
 export const SplashScreen = () => {
     const abortController = useRef<AbortController>()
     if (!abortController.current) {
@@ -40,10 +50,8 @@ export const SplashScreen = () => {
         }
     }
 
-    //// @ts-expect-error add types
-    // const initData = window.Telegram.WebApp.initData
-    // @todo get language from tg context
-    const sourceLanguage = 'ru'
+    // @ts-expect-error add types
+    const sourceLanguage = getSourceLanguage(window.Telegram.WebApp.initData)
     const alternativeLanguage = 'en'
     const intlsLoader = useBatchedLoader({
         values: [

@@ -23,7 +23,7 @@ body {
 }
 
 #root {
-  @apply text-primary-100 bg-gray-700;
+  @apply text-white;
 }
 
 #root,

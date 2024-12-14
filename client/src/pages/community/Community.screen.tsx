@@ -1,5 +1,8 @@
+import { FlagIcon } from '@/components/FlagIcon'
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
+import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
+import { CharacterAvatar } from '@/features/profiles/components/ProfileForm/CharacterAvatar'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
@@ -14,7 +17,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
 export const CommunityScreen = () => {
@@ -23,6 +26,7 @@ export const CommunityScreen = () => {
     const [isOpen, setIsOpen] = useState(false)
     const characters = useWuwaCharacters((state) => state.items)
     const localize = useLocalize()
+    const navigate = useNavigate()
 
     const pageRef = useRef(1)
 
@@ -108,13 +112,13 @@ export const CommunityScreen = () => {
             </Modal>
 
             <div className="grid grid-cols-2 p-2 gap-2">
-                <div className="bg-gray-500 p-2 rounded-xl flex items-center gap-2">
+                <div className="bg-gray-500 p-2 rounded-xl flex items-center gap-2 text-gray-200">
                     <FontAwesomeIcon icon={faPerson} />
                     <span>{localize('search__characters')}</span>
                 </div>
 
                 <div
-                    className="bg-cyan-600 p-2 rounded-xl flex items-center gap-2 cursor-pointer"
+                    className="bg-stone-800 p-2 rounded-xl flex items-center gap-2 cursor-pointer text-primary-700"
                     onClick={() => setIsOpen(true)}
                 >
                     <FontAwesomeIcon icon={faFilter} />
@@ -130,61 +134,100 @@ export const CommunityScreen = () => {
                 {state.searchedItems.map((item) => (
                     <div
                         key={item._id}
-                        className="bg-[#FFFAE7] p-2 flex gap-3 items-center rounded-xl border-[4px] border-[#D2AA6C]"
+                        className="bg-black/30 backdrop-blur-sm rounded-xl"
+                        onClick={() =>
+                            navigate(buildProtectedUrl(`/chats/new?peerId=${item.user._id}`))
+                        }
                     >
-                        {item.user.avatarUrl ? (
-                            <img
-                                src={item.user.avatarUrl}
-                                className="w-14 h-14 object-cover object-center border-2 border-[#A17DA8] rounded-full shrink-0"
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center border-2 border-[#A17DA8] bg-gradient-to-b from-[#f0c0fb] to-[#A17DA8] rounded-full w-14 h-14 uppercase font-semibold text-xl overflow-hidden">
-                                {item.user.nickname.substring(0, 2)}
+                        <div className="pl-2 flex items-start justify-between">
+                            <div className="pt-1">
+                                <span className="font-semibold text-accent">{item.nickname}</span>
+                                <span className="text-gray-400"> / </span>
+                                <span className="text-xs text-accent">{item.user.nickname}</span>
                             </div>
-                        )}
 
-                        <div className="grow">
-                            <div className="font-semibold text-[#E79B46]">
-                                {item.user.nickname} ({item.nickname})
+                            <div className="text-xs w-16 bg-stone-800 border border-primary-700 text-primary-700 rounded-tr-xl rounded-bl-xl text-center">
+                                {item.server}
                             </div>
-                            <div className="font-medium text-[#402c14] grid grid-cols-7 items-center">
-                                <span className="col-span-2 font-semibold text-sm">
-                                    {item.server}
-                                </span>
-                                <div className="col-span-4 text-sm text-gray-500">
-                                    {item.languages.map((l) => (
-                                        <span key={l} className="mr-1">
-                                            {l}
-                                        </span>
-                                    ))}
-                                </div>
-                                <span className="text-sm">
-                                    {item.usesVoice ? 'Voice' : 'Muted'}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
+                        </div>
+
+                        <div className="px-2 my-1 grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center">
+                            <AccountAvatar
+                                url={
+                                    `https://picsum.photos/200?r=${Math.random()}` ||
+                                    item.user.avatarUrl
+                                }
+                                nickname={item.user.nickname}
+                                size="2xl"
+                                // radius="xl"
+                            />
+
+                            <div className="border-t border-primary-700"></div>
+
+                            <div className="relative flex gap-2 justify-end">
+                                <div className="absolute w-full top-1/2 -translate-y-1/2 border-t border-primary-700 -z-10"></div>
+
                                 {item.team.map((t, idx) => (
-                                    <img
+                                    <CharacterAvatar
                                         key={idx}
-                                        className="bg-white w-8 h-8 object-cover object-top rounded-full"
-                                        src={
+                                        size="xl"
+                                        url={
                                             t
                                                 ? buildImageUrl(
                                                       characters[t.characterId]?.photoPath ?? '',
                                                   )
-                                                : undefined
+                                                : null
                                         }
                                     />
                                 ))}
                             </div>
                         </div>
 
-                        <NavLink
+                        <div className="px-2">
+                            <div className="flex justify-between items-center py-1">
+                                <span className="text-sm text-primary-700">
+                                    {localize('auth__profile__world_level')}
+                                </span>
+                                <span className="text-xs text-gray-300">
+                                    Rank {item.worldLevel}
+                                </span>
+                            </div>
+                            <hr className="border-gray-500 border-1" />
+                            <div className="flex justify-between items-center py-1">
+                                <span className="text-sm text-primary-700">
+                                    {localize('auth__profile__voice')}
+                                </span>
+                                <span className="text-xs text-gray-300">
+                                    {item.usesVoice ? 'Yes' : 'No'}
+                                </span>
+                            </div>
+                            <hr className="border-gray-500 border-1" />
+                            <div className="flex justify-between items-center py-1">
+                                <span className="text-sm text-primary-700">
+                                    {localize('auth__profile__languages')}
+                                </span>
+                                <span className="flex gap-1">
+                                    {item.languages.map((lang) => (
+                                        <div
+                                            key={lang}
+                                            className="bg-stone-800 pr-2 flex gap-2 items-center rounded-xl overflow-hidden border border-primary-700"
+                                        >
+                                            <FlagIcon code={lang} className="w-5 h-5" />
+                                            <span className="uppercase text-xs text-gray-300">
+                                                {lang}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* <NavLink
                             to={buildProtectedUrl(`/chats/new?peerId=${item.user._id}`)}
                             className="text-2xl w-8 h-8 text-center"
                         >
                             💬
-                        </NavLink>
+                        </NavLink> */}
                     </div>
                 ))}
             </div>

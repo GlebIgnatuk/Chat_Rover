@@ -31,7 +31,7 @@ export const CharacterPicker = (props: Props) => {
                 <>
                     <img
                         src={buildImageUrl(props.allCharacters[selected]?.photoPath ?? '')}
-                        className="w-full h-full object-cover object-bottom select-none"
+                        className="w-full h-full object-cover object-top select-none"
                         style={{
                             backgroundColor:
                                 props.allCharacters[selected]?.accentColor ?? '#000000',

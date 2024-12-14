@@ -15,10 +15,12 @@ export default {
       },
       colors: {
         primary: {
-          100: '#F3BDB2',
-          700: '#F3BDB2',
-          DEFAULT: '#F3BDB2'
+          700: '#c9ac67',
+          DEFAULT: '#c9ac67'
         },
+        accent: {
+          DEFAULT: '#f6cb66'
+        }
       }
     },
   },
