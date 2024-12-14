@@ -28,7 +28,7 @@ export const ChatsScreen = () => {
                     <NavLink
                         key={chat._id}
                         to={buildProtectedUrl(`/chats/${chat._id}`)}
-                        className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 bg-[#FFFAE7]"
+                        className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 bg-black/30 backdrop-blur-sm"
                     >
                         <div className="relative w-14 h-14 shrink-0">
                             {chat.peer.avatarUrl ? (
@@ -37,7 +37,7 @@ export const ChatsScreen = () => {
                                     className="w-full h-full object-cover object-center border-2 border-[#A17DA8] rounded-full"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center border-2 border-[#A17DA8] bg-gradient-to-b from-[#f0c0fb] to-[#A17DA8] rounded-full uppercase font-semibold text-xl overflow-hidden">
+                                <div className="text-white w-full h-full flex items-center justify-center border-2 border-purple-600 bg-gradient-to-b from-purple-900 to-purple-600 rounded-full uppercase font-semibold text-xl overflow-hidden">
                                     {chat.peer.nickname.substring(0, 2)}
                                 </div>
                             )}
@@ -55,18 +55,16 @@ export const ChatsScreen = () => {
 
                         <div className="grow flex flex-col justify-center">
                             <div className="flex items-center justify-between">
-                                <div className="font-semibold text-[#E79B46]">
-                                    {chat.peer.nickname}
-                                </div>
+                                <div className="font-semibold text-white">{chat.peer.nickname}</div>
 
-                                <div className="text-xs text-[#8b673e]">
+                                <div className="text-xs text-gray-200">
                                     {new Date(chat.lastMessage.createdAt)
                                         .toTimeString()
                                         .substring(0, 9)}
                                 </div>
                             </div>
 
-                            <div className="text-[#8b673e]">
+                            <div className="text-gray-200   ">
                                 <div className="whitespace-nowrap text-ellipsis overflow-hidden">
                                     {chat.lastMessage.text}
                                 </div>

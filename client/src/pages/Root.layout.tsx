@@ -22,7 +22,12 @@ const navigation = [
     {
         path: buildProtectedUrl('/game_chat'),
         label: 'nav__chat',
-        IconActive: () => <img src={wuwaIcon} className="w-full h-full rounded-full" />,
+        IconActive: () => (
+            <img
+                src={wuwaIcon}
+                className="w-6 h-6 rounded-full object-cover object-center border-white border"
+            />
+        ),
         IconInactive: () => (
             <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
         ),
@@ -111,7 +116,7 @@ export const RootLayout = () => {
 
     return (
         <>
-            <div className="relative h-full bg-[#252323] flex flex-col">
+            <div className="relative h-full flex flex-col">
                 <video
                     ref={videoRef}
                     src={bgAnimation}
