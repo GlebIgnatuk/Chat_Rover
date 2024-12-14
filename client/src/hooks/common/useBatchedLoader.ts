@@ -84,8 +84,12 @@ export const useBatchedLoader = <T extends readonly (() => unknown)[] | []>(
 
     const $unwrap = (): ResolvedData<T> => {
         if (!data) throw new Error('"data" is not ready')
-        if (data.some((d) => d.status === 'rejected'))
-            throw new Error('Failed to unwrap rejected promises')
+        const rejected = data.filter((d) => d.status === 'rejected') as PromiseRejectedResult[]
+        if (rejected.length !== 0) {
+            throw new Error(
+                `Failed to unwrap rejected promises: \n${rejected.map((p) => `- ${p.reason}`).join('\n')}`,
+            )
+        }
 
         const unwrapped = data.map((d) => (d as PromiseFulfilledResult<unknown>).value)
         return unwrapped as ResolvedData<T>

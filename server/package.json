@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node ./dist/src/handler.local.js",
-    "dev": "nodemon",
+    "dev": "nodemon --config nodemon.json",
+    "dev:mobile": "nodemon --config nodemon.json",
     "build": "yarn build:dev",
     "build:dev": "swc ./src ./scripts --config-file dev.swcrc -d dist --copy-files"
   },

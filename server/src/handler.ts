@@ -1,4 +1,4 @@
-import { config, dev, hmr, PORT, ROOT_DIR } from '@/config/config'
+import { config, dev, PORT, ROOT_DIR, standalone } from '@/config/config'
 import { MongoDBService } from '@/services/database'
 import express, { Router } from 'express'
 import fs from 'fs'
@@ -23,7 +23,7 @@ import { GlobalChatService } from './core/globalChatService'
 
 const app = express()
 let server: http.Server | https.Server
-if (dev && !hmr) {
+if (standalone) {
     server = https.createServer(
         {
             cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
@@ -97,9 +97,9 @@ const handler = async () => {
     ])
 
     // Start the server
-    server.listen(PORT, () => {
+    server.listen(PORT, `0.0.0.0`, () => {
         // eslint-disable-next-line no-console
-        console.log(`> Ready on http://localhost:${PORT}`)
+        console.log(`> Ready on ${standalone ? 'https' : 'http'}://0.0.0.0:${PORT}`)
         console.log(`  Environment: ${process.env.NODE_ENV}`)
         console.log(`          App: ${process.env.APP_ENV}`)
         console.log(`       Logger: ${process.env.LOGGER_LEVEL}`)

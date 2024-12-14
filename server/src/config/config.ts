@@ -1,9 +1,9 @@
 import path from 'path'
 
 export const dev = process.env.NODE_ENV !== 'production'
-export const hmr = process.env.NODE_ENV === 'hmr'
+export const standalone = process.env.STANDALONE !== 'false'
 export const ROOT_DIR = path.join(__dirname, '..')
-export const PORT = parseInt(process.env.PORT || (hmr ? '4000' : '3000'))
+export const PORT = parseInt(process.env.PORT || (standalone ? '3000' : '4000'))
 
 const keys = ['TELEGRAM_BOT_TOKEN', 'MONGO_URI', 'ALLOW_FAKE_PROFILES', 'OPENAI_API_KEY'] as const
 

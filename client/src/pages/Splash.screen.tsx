@@ -113,13 +113,15 @@ export const SplashScreen = () => {
                     replace
                 />
             )
-        } catch {
+        } catch (e) {
             return (
                 <div className="pointer-events-none relative h-full flex justify-center items-center">
                     <div className="relative w-full flex flex-col items-center">
                         <div className="text-primary py-1 px-2 rounded-xl text-5xl border-primary border shadow-lg shadow-primary">
                             Failed to load!
                         </div>
+
+                        <pre className="my-3">{(e as Error).message}</pre>
 
                         <div
                             className="p-4 bg-red-500 cursor-pointer"
