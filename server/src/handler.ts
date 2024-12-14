@@ -23,7 +23,7 @@ import { GlobalChatService } from './core/globalChatService'
 
 const app = express()
 let server: http.Server | https.Server
-if (standalone) {
+if (dev && standalone) {
     server = https.createServer(
         {
             cert: fs.readFileSync(path.join(ROOT_DIR, 'tls', 'cert.pem')),
