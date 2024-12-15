@@ -49,7 +49,7 @@ export const ProfileForm = ({ form }: Props) => {
                             <input
                                 type="text"
                                 className={cn(
-                                    'text-white bg-transparent outline-none w-full px-1',
+                                    'text-white bg-transparent outline-none w-full px-1 placeholder:text-white',
                                     {
                                         'outline outline-red-600 shadow-[0_0_10px_0_rgba(255,0,0,0.5)] rounded-xl':
                                             form.errors['nickname'] !== undefined,

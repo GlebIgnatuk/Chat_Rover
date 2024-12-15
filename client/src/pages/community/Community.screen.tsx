@@ -1,14 +1,10 @@
-import { Card } from '@/components/Card'
-import { FlagIcon } from '@/components/FlagIcon'
 import { useStore } from '@/context/app/useStore'
-import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
-import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
-import { CharacterAvatar } from '@/features/profiles/components/ProfileForm/CharacterAvatar'
+import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { api } from '@/services/api'
 import { ISearchedProfile } from '@/store/types'
-import { buildImageUrl, buildProtectedUrl } from '@/utils/url'
+import { buildProtectedUrl } from '@/utils/url'
 import {
     faChevronLeft,
     faChevronRight,
@@ -25,7 +21,6 @@ export const CommunityScreen = () => {
     const state = useStore((state) => state.community)
     const loading = state.loading.items.$ ?? { is: false }
     const [isOpen, setIsOpen] = useState(false)
-    const characters = useWuwaCharacters((state) => state.items)
     const localize = useLocalize()
     const navigate = useNavigate()
 
@@ -132,96 +127,13 @@ export const CommunityScreen = () => {
                     <div className="text-center text-2xl mt-10">Nothing was found...</div>
                 )}
 
-                {state.searchedItems.map((item) => (
-                    <Card
-                        key={item._id}
-                        className="cursor-pointer"
-                        onClick={() =>
-                            navigate(buildProtectedUrl(`/chats/new?peerId=${item.user._id}`))
-                        }
-                    >
-                        <div className="pl-2 flex items-start justify-between">
-                            <div className="pt-1">
-                                <span className="font-semibold text-accent">{item.nickname}</span>
-                                <span className="text-gray-400"> / </span>
-                                <span className="text-xs text-accent">{item.user.nickname}</span>
-                            </div>
-
-                            <div className="text-xs w-16 bg-stone-800 border border-primary-700 text-primary-700 rounded-tr-xl rounded-bl-xl text-center">
-                                {item.server}
-                            </div>
-                        </div>
-
-                        <div className="px-2 my-1 grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center">
-                            <AccountAvatar
-                                url={
-                                    `https://picsum.photos/200?r=${Math.random()}` ||
-                                    item.user.avatarUrl
-                                }
-                                nickname={item.user.nickname}
-                                size="2xl"
-                            />
-
-                            <div className="border-t border-primary-700"></div>
-
-                            <div className="relative flex gap-2 justify-end">
-                                <div className="absolute w-full top-1/2 -translate-y-1/2 border-t border-primary-700 -z-10"></div>
-
-                                {item.team.map((t, idx) => (
-                                    <CharacterAvatar
-                                        key={idx}
-                                        size="xl"
-                                        url={
-                                            t
-                                                ? buildImageUrl(
-                                                      characters[t.characterId]?.photoPath ?? '',
-                                                  )
-                                                : null
-                                        }
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="px-2 pb-1">
-                            <div className="flex justify-between items-center py-1">
-                                <span className="text-sm text-primary-700">
-                                    {localize('auth__profile__world_level')}
-                                </span>
-                                <span className="text-xs text-gray-300">
-                                    Rank {item.worldLevel}
-                                </span>
-                            </div>
-                            <hr className="border-gray-500 border-1" />
-                            <div className="flex justify-between items-center py-1">
-                                <span className="text-sm text-primary-700">
-                                    {localize('auth__profile__voice')}
-                                </span>
-                                <span className="text-xs text-gray-300">
-                                    {item.usesVoice ? 'Yes' : 'No'}
-                                </span>
-                            </div>
-                            <hr className="border-gray-500 border-1" />
-                            <div className="flex justify-between items-center py-1">
-                                <span className="text-sm text-primary-700">
-                                    {localize('auth__profile__languages')}
-                                </span>
-                                <span className="flex gap-1">
-                                    {item.languages.map((lang) => (
-                                        <div
-                                            key={lang}
-                                            className="bg-stone-800 pr-2 flex gap-2 items-center rounded-xl overflow-hidden border border-primary-700"
-                                        >
-                                            <FlagIcon code={lang} className="w-5 h-5" />
-                                            <span className="uppercase text-xs text-gray-300">
-                                                {lang}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </span>
-                            </div>
-                        </div>
-                    </Card>
+                {state.searchedItems.map(({ user, ...profile }) => (
+                    <ProfileCard
+                        key={profile._id}
+                        user={user}
+                        profile={profile}
+                        onClick={() => navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))}
+                    />
                 ))}
             </div>
 

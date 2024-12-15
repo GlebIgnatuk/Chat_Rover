@@ -1,9 +1,13 @@
 import { useAccount } from '@/context/account'
+import { useStore } from '@/context/app/useStore'
+import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { buildProtectedUrl } from '@/utils/url'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 export const ProfilesScreen = () => {
+    const navigate = useNavigate()
     const { profiles, loading } = useAccount()
+    const user = useStore((state) => state.identity.user)
 
     if (loading.is) {
         return <div>Loading...</div>
@@ -13,19 +17,16 @@ export const ProfilesScreen = () => {
 
     return (
         <>
-            <NavLink to={buildProtectedUrl('/')} className="p-2 bg-red-400 mb-2 block text-center">
-                Back
-            </NavLink>
-
             <div className="flex flex-col gap-3">
                 {profiles.map((profile) => (
-                    <NavLink
+                    <ProfileCard
                         key={profile._id}
-                        to={buildProtectedUrl(`/account/profiles/${profile._id}`)}
-                        className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold"
-                    >
-                        {profile.nickname} | {profile.server}
-                    </NavLink>
+                        profile={profile}
+                        user={user}
+                        onClick={() => {
+                            navigate(buildProtectedUrl(`/account/profiles/${profile._id}`))
+                        }}
+                    />
                 ))}
                 <NavLink
                     to={buildProtectedUrl(`/account/profiles/new`)}

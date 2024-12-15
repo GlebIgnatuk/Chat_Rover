@@ -1,6 +1,6 @@
 import { IWuwaCharacter } from '@/store/types'
 import { buildImageUrl } from '@/utils/url'
-import { faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@material-ui/core'
 import { useEffect, useState } from 'react'
@@ -53,12 +53,15 @@ export const CharacterPicker = (props: Props) => {
                 </>
             ) : (
                 <div
-                    className="w-full h-full bg-gradient-to-t from-gray-500 to-gray-700 text-8xl flex items-center justify-center"
+                    className="w-full h-full bg-gradient-to-b from-stone-800 to-gray-700 text-8xl flex items-center justify-center cursor-pointer"
                     onClick={() => {
                         setIsOpen(true)
                     }}
                 >
-                    <span className="rotate-45 select-none">×</span>
+                    <FontAwesomeIcon
+                        icon={faPlus}
+                        className="text-sm w-16 h-16 p-1 text-gray-300"
+                    />
                 </div>
             )}
 
