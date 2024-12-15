@@ -25,7 +25,7 @@ const navigation = [
         IconActive: () => (
             <img
                 src={wuwaIcon}
-                className="w-6 h-6 rounded-full object-cover object-center border-white border"
+                className="w-6 h-6 rounded-full object-cover object-center border-primary-700 border"
             />
         ),
         IconInactive: () => (
@@ -129,7 +129,7 @@ export const RootLayout = () => {
 
                 {DEBUG && <DebugPanel />}
 
-                <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden">
+                <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden pb-14">
                     <WithTransition
                         key={location.pathname}
                         ignore={location.state?.animate === false}
@@ -138,7 +138,7 @@ export const RootLayout = () => {
                     </WithTransition>
 
                     <div
-                        className="grid relative z-20 bg-gradient-to-t from-black/60 to-transparent"
+                        className="grid fixed bottom-0 w-full sm:w-[460px] z-20 bg-gradient-to-t from-black/60 to-transparent"
                         style={{
                             gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))`,
                         }}
@@ -150,7 +150,7 @@ export const RootLayout = () => {
                                 end={n.end}
                                 className={({ isActive }) =>
                                     cn('py-2 flex flex-col items-center justify-end relative', {
-                                        'text-white s': isActive,
+                                        'text-primary-700': isActive,
                                         'text-gray-300': !isActive,
                                         'text-gray-500 pointer-events-none': n.disabled,
                                     })
