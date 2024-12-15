@@ -11,7 +11,8 @@ export default {
       },
       fontFamily: {
         tangerine: ['Tangerine', 'cursive'],
-        'vasek': ['Vasek', 'cursive']
+        'vasek': ['Vasek', 'cursive'],
+        'exo2': ['"Exo 2"', 'sans-serif'],
       },
       colors: {
         primary: {

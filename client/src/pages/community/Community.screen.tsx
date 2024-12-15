@@ -1,3 +1,4 @@
+import { Card } from '@/components/Card'
 import { FlagIcon } from '@/components/FlagIcon'
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
@@ -132,9 +133,9 @@ export const CommunityScreen = () => {
                 )}
 
                 {state.searchedItems.map((item) => (
-                    <div
+                    <Card
                         key={item._id}
-                        className="bg-black/30 backdrop-blur-sm rounded-xl"
+                        className="cursor-pointer"
                         onClick={() =>
                             navigate(buildProtectedUrl(`/chats/new?peerId=${item.user._id}`))
                         }
@@ -159,7 +160,6 @@ export const CommunityScreen = () => {
                                 }
                                 nickname={item.user.nickname}
                                 size="2xl"
-                                // radius="xl"
                             />
 
                             <div className="border-t border-primary-700"></div>
@@ -183,7 +183,7 @@ export const CommunityScreen = () => {
                             </div>
                         </div>
 
-                        <div className="px-2">
+                        <div className="px-2 pb-1">
                             <div className="flex justify-between items-center py-1">
                                 <span className="text-sm text-primary-700">
                                     {localize('auth__profile__world_level')}
@@ -221,14 +221,7 @@ export const CommunityScreen = () => {
                                 </span>
                             </div>
                         </div>
-
-                        {/* <NavLink
-                            to={buildProtectedUrl(`/chats/new?peerId=${item.user._id}`)}
-                            className="text-2xl w-8 h-8 text-center"
-                        >
-                            💬
-                        </NavLink> */}
-                    </div>
+                    </Card>
                 ))}
             </div>
 

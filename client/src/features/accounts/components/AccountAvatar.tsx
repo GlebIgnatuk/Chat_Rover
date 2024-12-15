@@ -6,13 +6,21 @@ export interface AccountAvatarProps {
     nickname?: string
     bordered?: boolean
     radius?: 'xl' | 'full'
+    online?: boolean
 }
 
-export const AccountAvatar = ({ size, bordered, radius, url, nickname }: AccountAvatarProps) => {
+export const AccountAvatar = ({
+    size,
+    bordered,
+    radius,
+    url,
+    nickname,
+    online,
+}: AccountAvatarProps) => {
     return (
         <div
             className={cn(
-                'flex items-center justify-center text-primary-700 bg-gradient-to-b from-stone-800 to-stone-700 uppercase font-semibold overflow-hidden',
+                'relative flex items-center justify-center text-primary-700 bg-gradient-to-b from-stone-800 to-stone-700 uppercase font-semibold',
                 {
                     'w-20 h-20 text-3xl': size === '3xl',
                     'w-[4.5rem] h-[4.5rem] text-2xl': size === '2xl',
@@ -28,10 +36,31 @@ export const AccountAvatar = ({ size, bordered, radius, url, nickname }: Account
             )}
         >
             {url ? (
-                <img src={url} className="w-full h-full object-cover object-center" />
+                <img
+                    src={url}
+                    className={cn('w-full h-full object-cover object-center', {
+                        'rounded-xl': radius === 'xl',
+                        'rounded-full': radius === undefined || radius === 'full',
+                    })}
+                />
             ) : nickname ? (
                 <span>{nickname.substring(0, 2)}</span>
             ) : null}
+
+            <div
+                className={cn('absolute w-3 h-3 border border-primary-700 rounded-full', {
+                    hidden: online === undefined,
+                    'bg-[#7CFC00]': online === true,
+                    'bg-stone-200': online === false,
+                    'w-4 h-4 bottom-[3px] right-[3px]': size === '3xl',
+                    'w-4 h-4 bottom-[2.5px] right-[2.5px]': size === '2xl',
+                    'w-3 h-3 bottom-[3px] right-[3px]': size === 'xl',
+                    'w-3 h-3 bottom-[2px] right-[2px]': size === 'lg',
+                    'w-3 h-3 bottom-[1px] right-[1px]': size === 'md',
+                    'w-2 h-2 bottom-0 right-0': size === 'sm',
+                    'w-2 h-2 -bottom-[1px] -right-[1px]': size === 'xs',
+                })}
+            ></div>
         </div>
     )
 }
