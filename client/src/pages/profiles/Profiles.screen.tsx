@@ -16,8 +16,15 @@ export const ProfilesScreen = () => {
     }
 
     return (
-        <>
-            <div className="flex flex-col gap-3">
+        <div className="h-full grid grid-rows-[max-content,minmax(0,1fr)] px-1 pt-1">
+            <NavLink
+                to={buildProtectedUrl(`/account/profiles/new`)}
+                className="p-2 rounded-xl bg-stone-800 text-primary-700 border border-primary-700 font-semibold text-center text-lg"
+            >
+                (+) Create
+            </NavLink>
+
+            <div className="overflow-auto py-1 space-y-1">
                 {profiles.map((profile) => (
                     <ProfileCard
                         key={profile._id}
@@ -28,13 +35,7 @@ export const ProfilesScreen = () => {
                         }}
                     />
                 ))}
-                <NavLink
-                    to={buildProtectedUrl(`/account/profiles/new`)}
-                    className="p-4 bg-[#FFFAE7] text-[#E79B46] font-semibold text-center"
-                >
-                    (+) Create
-                </NavLink>
             </div>
-        </>
+        </div>
     )
 }
