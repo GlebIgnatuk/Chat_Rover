@@ -65,7 +65,7 @@ export const getIntl: IRequestHandler = async (req, res) => {
                 'Мы бы хотели видеть тебя в нашем мире. Давай быстренько всё оформим. Пожалуйста укажи своё имя ниже.',
             auth__profile__info1: 'Давай создадим профиль!',
             auth__profile__info2: 'Нажми чтобы начать',
-            auth__profile__nickname: 'Твой никнейм...',
+            auth__profile__nickname_placeholder: 'Твой никнейм...',
             auth__profile__uid: 'UID',
             auth__profile__about: 'О Себе',
             auth__profile__about_placeholder: 'Ищу Роверов для совместной игры...',

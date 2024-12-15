@@ -55,7 +55,7 @@ export const ProfileForm = ({ form }: Props) => {
                                             form.errors['nickname'] !== undefined,
                                     },
                                 )}
-                                placeholder={localize('auth__profile__nickname')}
+                                placeholder={localize('auth__profile__nickname_placeholder')}
                                 value={form.state.nickname}
                                 maxLength={55}
                                 onChange={(e) => {

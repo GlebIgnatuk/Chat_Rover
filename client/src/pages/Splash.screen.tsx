@@ -123,19 +123,30 @@ export const SplashScreen = () => {
             )
         } catch (e) {
             return (
-                <div className="pointer-events-none relative h-full flex justify-center items-center">
-                    <div className="relative w-full flex flex-col items-center">
-                        <div className="text-primary py-1 px-2 rounded-xl text-5xl border-primary border shadow-lg shadow-primary">
-                            Failed to load!
+                <div className="relative h-full flex justify-center items-center bg-[#131313]">
+                    <div className="relative flex flex-col items-center gap-5">
+                        <div
+                            className="relative text-red-100 py-1 px-2 rounded-lg text-5xl"
+                            style={{
+                                textShadow: `0 0 7px #fff,
+        0 0 10px #ff0000,
+        0 0 21px #ff0000,
+        0 0 42px #ff0000,
+            0 0 82px #ff0000`,
+                            }}
+                        >
+                            Failed to load
                         </div>
 
-                        <pre className="my-3">{(e as Error).message}</pre>
+                        <div className="w-4/5 break-all text-center">
+                            Reason: {(e as Error).message}
+                        </div>
 
                         <div
-                            className="p-4 bg-red-500 cursor-pointer"
+                            className="px-6 py-2 border-primary-700 border rounded-lg cursor-pointer bg-stone-800"
                             onClick={() => {
                                 clearTelegramData()
-                                window.location.href = '/'
+                                window.location.reload()
                             }}
                         >
                             Retry
@@ -146,13 +157,20 @@ export const SplashScreen = () => {
         }
     } else {
         return (
-            <div className="pointer-events-none relative h-full flex justify-center items-center">
-                <div className="relative w-full flex flex-col items-center">
-                    <div className="text-primary py-1 px-2 rounded-xl text-5xl border-primary border shadow-lg shadow-primary">
+            <div className="pointer-events-none relative h-full flex justify-center items-center bg-[#131313]">
+                <div className="relative flex flex-col items-center">
+                    <div
+                        className="relative text-white py-1 px-2 rounded-lg text-5xl"
+                        style={{
+                            textShadow: `0 0 7px #fff,
+                        0 0 10px #f6cb66,
+                        0 0 21px #f6cb66,
+                        0 0 42px #f6cb66,
+                            0 0 82px #f6cb66`,
+                        }}
+                    >
                         Rover Chat
                     </div>
-
-                    <div className="h-[2px] w-4/5 mt-3 bg-transparent"></div>
                 </div>
             </div>
         )
