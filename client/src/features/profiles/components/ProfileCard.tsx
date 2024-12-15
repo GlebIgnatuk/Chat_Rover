@@ -37,11 +37,7 @@ export const ProfileCard = ({ profile, user, onClick }: ProfileCardProps) => {
             </div>
 
             <div className="px-2 my-1 grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center">
-                <AccountAvatar
-                    url={`https://picsum.photos/200?r=${Math.random()}` || user.avatarUrl}
-                    nickname={user.nickname}
-                    size="2xl"
-                />
+                <AccountAvatar url={user.avatarUrl} nickname={user.nickname} size="2xl" />
 
                 <div className="border-t border-primary-700"></div>
 

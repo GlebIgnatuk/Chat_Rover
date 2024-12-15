@@ -79,7 +79,7 @@ export const CommunityScreen = () => {
     }
 
     useEffect(() => {
-        if (loading.is || loading.error) return
+        if (loading.is || loading.error || state.searchedItems.length !== 0) return
 
         const abortController = new AbortController()
         searchProfiles(1, abortController.signal)
