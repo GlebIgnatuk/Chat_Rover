@@ -9,8 +9,6 @@ const dev = env !== 'production'
 const ssl = process.env.SSL !== 'false'
 const mode = ssl ? `${env}.ssl` : env
 
-console.log(process.env)
-
 const interfaces = Object.entries(os.networkInterfaces()).reduce<Record<string, string[]>>(
     (acc, [name, nets]) => {
         const available = (nets?.filter((net) => net.family === 'IPv4' && !net.internal) ?? []).map(

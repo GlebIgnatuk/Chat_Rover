@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "dev:mobile": "cross-env SSL=false vite --port 3000",
-    "build": "tsc -b && vite build --emptyOutDir",
+    "build": "tsc -b && cross-env SSL=false vite build --emptyOutDir",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
