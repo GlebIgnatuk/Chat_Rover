@@ -109,7 +109,6 @@ export const useGlobalChat = (slug: string) => {
         socket.on('connect', async () => {})
 
         socket.on('init', async () => {
-            console.log(socket.connected)
             socket.emit('subscribe', slug)
         })
 

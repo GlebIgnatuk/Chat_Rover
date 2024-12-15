@@ -128,7 +128,7 @@ export const useChatsService = () => {
                 )
 
                 if (response.success) {
-                    chatsMessages.append(chatId, response.data)
+                    chatsMessages.prepend(chatId, response.data.reverse())
                     chatsMessages.loading.stop(chatId)
                 } else {
                     chatsMessages.loading.stopWithError(response.error, chatId)

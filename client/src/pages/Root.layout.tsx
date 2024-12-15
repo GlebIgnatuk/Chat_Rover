@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
@@ -17,6 +17,7 @@ import { DEBUG } from '@/config/config'
 import { DebugPanel } from '@/modules/root/Debug'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import bgAnimation from '@/assets/bg_animation.mp4'
+import { BackgroundVideo } from '@/components/BackgroundVideo'
 
 const navigation = [
     {
@@ -108,31 +109,18 @@ export const RootLayout = () => {
         })
     }, [navigate])
 
-    const videoRef = useRef<HTMLVideoElement>(null)
-    useEffect(() => {
-        const video = videoRef.current
-        if (video) video.playbackRate = 0.5
-    }, [])
-
     return (
         <>
             <div className="relative h-full flex flex-col">
-                <video
-                    ref={videoRef}
-                    src={bgAnimation}
-                    className="absolute top-0 left-0 w-full h-full object-cover object-center pointer-events-none"
-                    muted
-                    controls={false}
-                    autoPlay
-                    loop
-                ></video>
+                <BackgroundVideo src={bgAnimation} speed={0.5} />
 
                 {DEBUG && <DebugPanel />}
 
                 <div className="relative grow grid grid-rows-[minmax(0,1fr),max-content] overflow-hidden pb-14">
                     <WithTransition
                         key={location.pathname}
-                        ignore={location.state?.animate === false}
+                        ignore
+                        // ignore={location.state?.animate === false}
                     >
                         <Outlet />
                     </WithTransition>

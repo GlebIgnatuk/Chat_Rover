@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useChatsService } from './useChatsService'
 import { useStore } from '@/context/app/useStore'
 
-export const useChat = (chatId: string) => {
+export const useChat = (chatId: string, shouldLoad: boolean = true) => {
     const chats = useStore((state) => state.chats)
     const chatsMessages = useStore((state) => state.chatsMessages)
 
@@ -26,6 +26,7 @@ export const useChat = (chatId: string) => {
     }
 
     useEffect(() => {
+        if (shouldLoad === false) return
         if (chat || chatLoading?.is) return
 
         const abortController = new AbortController()
@@ -37,6 +38,7 @@ export const useChat = (chatId: string) => {
     }, [chat])
 
     useEffect(() => {
+        if (shouldLoad === false) return
         if (!chat || messages) return
         if (messagesLoading && (messagesLoading.is || messagesLoading.error === undefined)) return
 

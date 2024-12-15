@@ -68,7 +68,7 @@ export const CommunityScreen = () => {
 
             query.append('page', page.toString())
             query.append('limit', '10')
-            console.log(query.toString())
+
             const response = await api<ISearchedProfile[]>(`/profiles?${query}`, { signal })
             if (response.success) {
                 state.setSearchedItems(response.data)

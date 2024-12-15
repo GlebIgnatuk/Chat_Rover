@@ -1,51 +1,60 @@
-import { useAccount } from '@/context/account'
+import { Card } from '@/components/Card'
 import { buildProtectedUrl } from '@/utils/url'
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faCrown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { cn } from 'tailwind-cn'
+import { useNavigate } from 'react-router-dom'
+
+const servers = [
+    {
+        label: 'Global',
+        icon: faCrown,
+    },
+    {
+        label: 'SEA',
+        icon: faCrown,
+    },
+    {
+        label: 'Asia',
+        icon: faCrown,
+    },
+    {
+        label: 'Europe',
+        icon: faCrown,
+    },
+    {
+        label: 'HMT',
+        icon: faCrown,
+    },
+    {
+        label: 'America',
+        icon: faCrown,
+    },
+]
 
 export const GameChatScreen = () => {
-    const { loading, profiles } = useAccount()
     const navigate = useNavigate()
 
     return (
-        <div className="h-full overflow-hidden grid grid-rows-[max-content,minmax(0,1fr)]">
-            <div className="bg-[#131313] grid grid-cols-11">
-                <FontAwesomeIcon
-                    icon={faChevronLeft}
-                    className="w-4 h-4 cursor-pointer text-white col-span-1 self-center place-self-center"
-                    onClick={() => navigate(-2)}
-                />
-                <NavLink
-                    to={buildProtectedUrl('/game_chat/global')}
-                    state={{ animate: false }}
-                    className={({ isActive }) =>
-                        cn('text-center py-2 col-span-5', {
-                            'font-bold': isActive,
-                        })
-                    }
+        <div className="flex flex-col gap-2 p-1">
+            {servers.map((server) => (
+                <Card
+                    key={server.label}
+                    className="cursor-pointer"
+                    onClick={() => {
+                        navigate(buildProtectedUrl(`/game_chat/${server.label.toLowerCase()}`))
+                    }}
                 >
-                    Global
-                </NavLink>
-                <NavLink
-                    to={buildProtectedUrl('/game_chat/regional')}
-                    state={{ animate: false, chatId: profiles[0]?.server.toLowerCase() }}
-                    className={({ isActive }) =>
-                        cn('text-center py-2 col-span-5', {
-                            'font-bold': isActive,
-                            'text-gray-300 pointer-events-none':
-                                loading.is || loading.error || profiles.length === 0,
-                        })
-                    }
-                >
-                    Regional {profiles[0]?.server}
-                </NavLink>
-            </div>
+                    <div className="grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center p-2">
+                        <FontAwesomeIcon icon={server.icon} className="w-6 h-6 text-accent" />
 
-            <div className="">
-                <Outlet />
-            </div>
+                        <span className="text-lg text-primary-700 ml-2">{server.label}</span>
+
+                        <span className="text-sm text-gray-300">
+                            {Math.floor(Math.random() * (9999 - 1000)) + 1000}
+                        </span>
+                    </div>
+                </Card>
+            ))}
         </div>
     )
 }

@@ -2,7 +2,7 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
-import { buildProtectedUrl, buildPublicUrl } from '@/utils/url'
+import { buildPublicUrl } from '@/utils/url'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
@@ -66,6 +66,28 @@ const router = createBrowserRouter([
                 element: <PrivateStoreProvider />,
                 children: [
                     {
+                        path: 'chats',
+                        children: [
+                            {
+                                path: ':id',
+                                element: <ChatScreen />,
+                            },
+                        ],
+                    },
+                    {
+                        path: 'game_chat',
+                        children: [
+                            {
+                                path: 'global',
+                                element: <GlobalChatScreen />,
+                            },
+                            {
+                                path: ':region',
+                                element: <RegionalChatScreen />,
+                            },
+                        ],
+                    },
+                    {
                         path: '',
                         element: <RootLayout />,
                         children: [
@@ -75,28 +97,8 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: 'game_chat',
+                                index: true,
                                 element: <GameChatScreen />,
-                                children: [
-                                    {
-                                        path: 'global',
-                                        element: <GlobalChatScreen />,
-                                    },
-                                    {
-                                        path: 'regional',
-                                        element: <RegionalChatScreen />,
-                                    },
-                                    {
-                                        path: '*',
-                                        index: true,
-                                        element: (
-                                            <Navigate
-                                                to={buildProtectedUrl('/game_chat/global')}
-                                                state={{ animate: false }}
-                                                replace
-                                            />
-                                        ),
-                                    },
-                                ],
                             },
                             {
                                 path: 'chats',
@@ -108,10 +110,6 @@ const router = createBrowserRouter([
                                     {
                                         path: 'new',
                                         element: <ChatNewScreen />,
-                                    },
-                                    {
-                                        path: ':id',
-                                        element: <ChatScreen />,
                                     },
                                 ],
                             },

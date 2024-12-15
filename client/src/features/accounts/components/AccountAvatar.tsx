@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { cn } from 'tailwind-cn'
 
 export interface AccountAvatarProps {
@@ -7,6 +8,7 @@ export interface AccountAvatarProps {
     bordered?: boolean
     radius?: 'xl' | 'full'
     online?: boolean
+    children?: ReactNode
 }
 
 export const AccountAvatar = ({
@@ -16,6 +18,7 @@ export const AccountAvatar = ({
     url,
     nickname,
     online,
+    children,
 }: AccountAvatarProps) => {
     return (
         <div
@@ -45,6 +48,8 @@ export const AccountAvatar = ({
                 />
             ) : nickname ? (
                 <span>{nickname.substring(0, 2)}</span>
+            ) : children ? (
+                children
             ) : null}
 
             <div
