@@ -56,7 +56,7 @@ export const ChatsScreen = () => {
 
                             <div className="text-gray-300">
                                 <div className="line-clamp-2 leading-5">
-                                    {chat.lastMessage.text.repeat(3)}
+                                    {chat.lastMessage.text}
                                 </div>
                             </div>
                         </div>
