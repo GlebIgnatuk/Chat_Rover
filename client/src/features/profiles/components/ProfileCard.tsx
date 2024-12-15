@@ -55,6 +55,7 @@ export const ProfileCard = ({ profile, user, onClick }: ProfileCardProps) => {
                             url={
                                 t ? buildImageUrl(characters[t.characterId]?.photoPath ?? '') : null
                             }
+                            level={t ? t.level : undefined}
                         />
                     ))}
                 </div>
