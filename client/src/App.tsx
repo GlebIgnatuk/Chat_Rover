@@ -21,6 +21,7 @@ import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/c
 import { PublicStoreProvider } from './PublicStoreProvider'
 import { PrivateStoreProvider } from './PrivateStoreProvider'
 import { SplashScreen } from './pages/Splash.screen'
+import { HomeLayout } from './pages/Home.layout'
 
 const router = createBrowserRouter([
     {
@@ -66,68 +67,73 @@ const router = createBrowserRouter([
                 element: <PrivateStoreProvider />,
                 children: [
                     {
-                        path: 'chats',
-                        children: [
-                            {
-                                path: ':id',
-                                element: <ChatScreen />,
-                            },
-                        ],
-                    },
-                    {
-                        path: 'game_chat',
-                        children: [
-                            {
-                                path: 'global',
-                                element: <GlobalChatScreen />,
-                            },
-                            {
-                                path: ':region',
-                                element: <RegionalChatScreen />,
-                            },
-                        ],
-                    },
-                    {
-                        path: '',
                         element: <RootLayout />,
                         children: [
-                            {
-                                path: '',
-                                element: <CommunityScreen />,
-                            },
-                            {
-                                path: 'game_chat',
-                                index: true,
-                                element: <GameChatScreen />,
-                            },
                             {
                                 path: 'chats',
                                 children: [
                                     {
-                                        path: '',
-                                        element: <ChatsScreen />,
-                                    },
-                                    {
-                                        path: 'new',
-                                        element: <ChatNewScreen />,
+                                        path: ':id',
+                                        element: <ChatScreen />,
                                     },
                                 ],
                             },
                             {
-                                path: 'account',
-                                element: <AccountScreen />,
+                                path: 'game_chat',
+                                children: [
+                                    {
+                                        path: 'global',
+                                        element: <GlobalChatScreen />,
+                                    },
+                                    {
+                                        path: ':region',
+                                        element: <RegionalChatScreen />,
+                                    },
+                                ],
                             },
                             {
-                                path: 'account/profiles',
-                                element: <ProfilesScreen />,
-                            },
-                            {
-                                path: 'account/profiles/new',
-                                element: <ProfileNewScreen />,
-                            },
-                            {
-                                path: 'account/profiles/:id',
-                                element: <ProfileScreen />,
+                                path: '',
+                                element: <HomeLayout />,
+                                children: [
+                                    {
+                                        path: '',
+                                        element: <CommunityScreen />,
+                                    },
+                                    {
+                                        path: 'game_chat',
+                                        index: true,
+                                        element: <GameChatScreen />,
+                                    },
+                                    {
+                                        path: 'chats',
+                                        children: [
+                                            {
+                                                path: '',
+                                                element: <ChatsScreen />,
+                                            },
+                                            {
+                                                path: 'new',
+                                                element: <ChatNewScreen />,
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        path: 'account',
+                                        element: <AccountScreen />,
+                                    },
+                                    {
+                                        path: 'account/profiles',
+                                        element: <ProfilesScreen />,
+                                    },
+                                    {
+                                        path: 'account/profiles/new',
+                                        element: <ProfileNewScreen />,
+                                    },
+                                    {
+                                        path: 'account/profiles/:id',
+                                        element: <ProfileScreen />,
+                                    },
+                                ],
                             },
                         ],
                     },

@@ -4,8 +4,6 @@ import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
 import { useGlobalChat } from '../hooks/useGlobalChat'
-import { BackgroundVideo } from '@/components/BackgroundVideo'
-import bgAnimation from '@/assets/bg_animation.mp4'
 
 export interface GlobalChatProps {
     chatId: string
@@ -53,8 +51,6 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
 
     return (
         <div className="relative h-full grid grid-rows-[minmax(0,1fr),max-content]">
-            <BackgroundVideo src={bgAnimation} speed={0.5} />
-
             <div className="overflow-hidden">
                 <div
                     className="h-full flex flex-col-reverse overflow-auto gap-2 px-2 pb-2"

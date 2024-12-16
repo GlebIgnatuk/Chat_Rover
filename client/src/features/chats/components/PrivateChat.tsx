@@ -4,8 +4,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
-import bgAnimation from '@/assets/bg_animation.mp4'
-import { BackgroundVideo } from '@/components/BackgroundVideo'
 
 export interface PrivateChatProps {
     chatId: string
@@ -54,8 +52,6 @@ export const PrivateChat = ({ chatId, shouldLoad }: PrivateChatProps) => {
 
     return (
         <div className="h-full grid grid-rows-[minmax(0,1fr),max-content] relative">
-            <BackgroundVideo src={bgAnimation} speed={0.5} />
-
             <div className="overflow-hidden">
                 <div
                     className="h-full flex flex-col-reverse overflow-auto gap-2 px-2 pb-2"

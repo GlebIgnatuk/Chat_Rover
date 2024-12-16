@@ -1,11 +1,14 @@
 import { clearTelegramData } from '@/context/auth/auth'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
+import { loadAssetAsync } from '@/services/AssetsCache'
 import { IAppConfig, IIntl, IWuwaCharacter } from '@/store/types'
 import { buildAuthUrl } from '@/utils/url'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
+
+import bgAnimation from '@/assets/bg_animation.mp4'
 
 const getSourceLanguage = (data: string) => {
     try {
@@ -72,6 +75,10 @@ export const SplashScreen = () => {
             abortController.current?.abort()
         },
     })
+
+    useEffect(() => {
+        loadAssetAsync('video', bgAnimation)
+    }, [])
 
     if (intlsLoader.data && dataLoader.data) {
         try {
