@@ -71,12 +71,15 @@ export const setupHttpRouter = (
 
     // App config
     unauthorized.get('/appConfig', AppConfigController.get)
-
+    
     // Intls
     unauthorized.get('/intls/:language', AppConfigController.getIntl)
-
+    
     // Wuwa characters
     unauthorized.get('/wuwaCharacters', WuwaCharactersController.list)
+    
+    // Translations
+    unauthorized.get('/translations/:language', TranslationsController.getByLanguage)
 
     //
     // Protected routes
@@ -143,7 +146,6 @@ export const setupHttpRouter = (
     authorized.post('/reports', ReportsController.create)
 
     // Translations
-    authorized.get('/translations/:language', TranslationsController.getByLanguage)
     authorized.get('/translations', TranslationsController.getAll)
     authorized.post('/translations', TranslationsController.create)
     authorized.patch('/translations/:id', TranslationsController.update)
