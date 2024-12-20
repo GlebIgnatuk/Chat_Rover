@@ -5,6 +5,7 @@ import { IWuwaCharacterRepository } from './wuwaCharacter'
 import { IProfileRepository } from './profile'
 import { IGlobalChatRepository } from './globalChat'
 import { IReportRepository } from './reports'
+import { ITranslationRepository } from './translation'
 
 export interface IRepositories {
     chatMessage: IChatMessageRepository
@@ -14,4 +15,5 @@ export interface IRepositories {
     user: IUserRepository
     wuwaCharacter: IWuwaCharacterRepository
     profile: IProfileRepository
+    translation: ITranslationRepository
 }

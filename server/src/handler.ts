@@ -20,6 +20,7 @@ import { ProfileRepository } from './repositories/impl/profile'
 import { OnlineService } from './core/onlineService'
 import { GlobalChatRepository } from './repositories/impl/globalChat'
 import { GlobalChatService } from './core/globalChatService'
+import { TranslationRepository } from './repositories/impl/translation'
 
 const app = express()
 let server: http.Server | https.Server
@@ -50,6 +51,7 @@ const handler = async () => {
         user: userRepo,
         wuwaCharacter: new WuwaCharacterRepository(),
         profile: new ProfileRepository(userRepo),
+        translation: new TranslationRepository(),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

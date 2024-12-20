@@ -36,7 +36,7 @@ export const SplashScreen = () => {
     }
 
     const loadIntl = async (language: string, signal?: AbortSignal): Promise<IIntl> => {
-        const response = await api<IIntl>(`/public/intls/${language}`, { signal })
+        const response = await api<IIntl>(`/public/translations/${language}`, { signal })
         if (response.success) {
             return response.data
         } else {
