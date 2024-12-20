@@ -7,6 +7,7 @@ import * as ReportsController from './reports/reports.controller'
 import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.controller'
 import * as ProfilesController from './profiles/profiles.controller'
 import * as AppConfigController from './appConfig/appConfig.controller'
+import * as TranslationsController from './translations/translations.controller'
 import { Router } from 'express'
 import {
     ValidatedUserPayload,
@@ -141,6 +142,13 @@ export const setupHttpRouter = (
     authorized.get('/reports', ReportsController.list)
     authorized.post('/reports', ReportsController.create)
 
+    // Translations
+    authorized.get('/translations/:language', TranslationsController.getByLanguage)
+    authorized.get('/translations', TranslationsController.getAll)
+    authorized.post('/translations', TranslationsController.create)
+    authorized.patch('/translations/:id', TranslationsController.update)
+    authorized.delete('/translations/:id', TranslationsController.remove)
+    
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))
 }
