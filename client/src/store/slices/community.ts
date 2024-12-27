@@ -10,6 +10,15 @@ export const createCommunitySlice =
     (set) => ({
         community: {
             searchedItems: searchedProfiles,
+            appendSearchedItems: (items) => {
+                set((state) =>
+                    R.assocPath(
+                        ['community', 'searchedItems'],
+                        [...state.community.searchedItems, ...items],
+                        state,
+                    ),
+                )
+            },
             setSearchedItems: (items) => {
                 set((state) => R.assocPath(['community', 'searchedItems'], items, state))
             },

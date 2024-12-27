@@ -68,5 +68,5 @@ export const searchSchema = Joi.object({
         .max(3),
 
     page: Joi.number().integer().min(1),
-    limit: Joi.number().integer().min(1).max(15),
+    limit: Joi.number().integer().min(1).max(20),
 })

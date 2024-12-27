@@ -4,17 +4,11 @@ import { useSearch } from '@/features/search/hooks/useSearch'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { buildProtectedUrl } from '@/utils/url'
-import {
-    faChevronLeft,
-    faChevronRight,
-    faFilter,
-    faPerson,
-} from '@fortawesome/free-solid-svg-icons'
+import { faFilter, faPerson } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cn } from 'tailwind-cn'
 
 export const CommunityScreen = () => {
     const search = useSearch()
@@ -23,28 +17,53 @@ export const CommunityScreen = () => {
     const localize = useLocalize()
     const navigate = useNavigate()
 
-    if (search.loading.is) {
-        return (
-            <div className="h-full flex items-center justify-center">
-                <CircularLoaderIndicator size="lg" />
-            </div>
-        )
-    } else if (search.loading.error) {
-        return (
-            <div className="h-full flex flex-col items-center justify-center gap-4">
-                <div className="text-3xl">Failed to load</div>
-                <button
-                    className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
-                    onClick={() => search.search(search.page)}
-                >
-                    Retry
-                </button>
-            </div>
-        )
+    const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const cardHeight = 200
+        const scrollHeight =
+            e.currentTarget.scrollHeight - e.currentTarget.clientHeight - e.currentTarget.scrollTop
+        const cardsLeft = Math.floor(scrollHeight / cardHeight)
+
+        if (cardsLeft <= 5 && !search.loading.is && !search.loading.error) {
+            search.goForward()
+        }
+    }
+
+    if (search.items.length === 0) {
+        if (search.loading.is) {
+            return (
+                <div className="h-full flex items-center justify-center">
+                    <CircularLoaderIndicator size="lg" />
+                </div>
+            )
+        } else if (search.loading.error) {
+            return (
+                <div className="h-full flex flex-col items-center justify-center gap-4">
+                    <div className="text-3xl">Failed to load</div>
+                    <button
+                        className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
+                        onClick={() => search.search(search.page)}
+                    >
+                        Retry
+                    </button>
+                </div>
+            )
+        } else {
+            return (
+                <div className="h-full flex flex-col items-center justify-center gap-4">
+                    <div className="text-3xl">Nothing was found</div>
+                    <button
+                        className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
+                        onClick={() => search.search(search.page)}
+                    >
+                        Retry
+                    </button>
+                </div>
+            )
+        }
     }
 
     return (
-        <div className="h-full overflow-hidden grid grid-rows-[max-content,minmax(0,1fr),max-content]">
+        <div className="h-full overflow-hidden grid grid-rows-[max-content,minmax(0,1fr)]">
             <Modal open={isOpen} hideBackdrop>
                 <FiltersModal
                     onClose={() => setIsOpen(false)}
@@ -70,19 +89,7 @@ export const CommunityScreen = () => {
                 </div>
             </div>
 
-            <div className="h-full overflow-auto p-1 shadow-inner space-y-2">
-                {search.items.length === 0 && (
-                    <div className="h-full flex flex-col items-center justify-center gap-4">
-                        <div className="text-3xl">Nothing was found</div>
-                        <button
-                            className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
-                            onClick={() => search.search(search.page)}
-                        >
-                            Retry
-                        </button>
-                    </div>
-                )}
-
+            <div className="h-full overflow-auto p-1 shadow-inner space-y-2" onScroll={onScroll}>
                 {search.items.map(({ user, ...profile }) => (
                     <ProfileCard
                         key={profile._id}
@@ -91,30 +98,12 @@ export const CommunityScreen = () => {
                         onClick={() => navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))}
                     />
                 ))}
-            </div>
 
-            <div className="flex items-center justify-between pt-2 pb-6 px-3">
-                <button
-                    onClick={() => search.goBack()}
-                    className={cn({
-                        'text-gray-300 pointer-events-none': search.page === 1,
-                    })}
-                >
-                    <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-                    Back
-                </button>
-
-                <div>{search.page}</div>
-
-                <button
-                    onClick={() => search.goForward()}
-                    className={cn({
-                        'text-gray-300 pointer-events-none': search.items.length < 10,
-                    })}
-                >
-                    Next
-                    <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-                </button>
+                {search.items.length !== 0 && search.loading.is && (
+                    <div className="flex justify-center py-6">
+                        <CircularLoaderIndicator size="sm" />
+                    </div>
+                )}
             </div>
         </div>
     )

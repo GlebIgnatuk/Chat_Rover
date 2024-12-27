@@ -99,7 +99,7 @@ export const getMine: IAuthorizedRequestHandler = async (req, res, next) => {
 export const search: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
         const { repositories } = res.locals
-        console.log(JSON.stringify(qs.parse(req.query), null, 2))
+
         // Validate query parameters with Joi schema
         const { error, value } = searchSchema.validate(qs.parse(req.query), { abortEarly: false })
         if (error) {

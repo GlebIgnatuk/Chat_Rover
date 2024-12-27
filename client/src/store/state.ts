@@ -92,6 +92,7 @@ export type IProfilesState = {
 export type ICommunityState = {
     community: {
         searchedItems: ISearchedProfile[]
+        appendSearchedItems: (items: ISearchedProfile[]) => void
         setSearchedItems: (items: ISearchedProfile[]) => void
         invalidateSearchedItems: () => void
 

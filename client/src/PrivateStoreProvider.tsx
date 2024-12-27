@@ -15,6 +15,7 @@ import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
 import { ISearchedProfile } from './store/types'
+import { ITEMS_PER_PAGE } from './features/search/hooks/useSearch'
 
 // This component makes sure that we have a user authenticated, so we can initialize store
 export const PrivateStoreProvider = () => {
@@ -53,7 +54,7 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     // }
 
     const searchProfiles = async () => {
-        const response = await api<ISearchedProfile[]>(`/profiles`)
+        const response = await api<ISearchedProfile[]>(`/profiles?limit=${ITEMS_PER_PAGE}`)
         if (response.success) {
             return response.data
         } else {
