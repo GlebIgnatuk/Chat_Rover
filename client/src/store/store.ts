@@ -11,10 +11,11 @@ import { createSettingsSlice } from './slices/settings'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { createIdentitySlice } from './slices/identity'
 import { createWuwaCharactersSlice } from './slices/wuwaCharacters'
-import { IAppConfig, IIntl, IWuwaCharacter } from './types'
+import { IAppConfig, IIntl, ISearchedProfile, IWuwaCharacter } from './types'
 
 export interface CreateStoreOptions {
     identity: IIdentity
+    searchedProfiles: ISearchedProfile[]
 }
 
 export const createStore = (options: CreateStoreOptions) =>
@@ -24,7 +25,7 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createOnlineSlice(...a),
         ...createGlobalChatsSlice(...a),
         ...createProfilesSlice(...a),
-        ...createCommunitySlice(...a),
+        ...createCommunitySlice(options.searchedProfiles)(...a),
         ...createIdentitySlice(options.identity)(...a),
     }))
 

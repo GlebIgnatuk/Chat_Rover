@@ -2,7 +2,7 @@ import backgroundImage from '@/assets/auth.jpeg'
 import { FAKE_PROFILES, generateFakeProfile } from '@/config/config'
 
 import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
-import { faCircleNotch, faHeartPulse } from '@fortawesome/free-solid-svg-icons'
+import { faHeartPulse } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { inferProfileState } from '../../../context/auth/auth'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { useLocalize } from '@/hooks/intl/useLocalize'
+import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
 
 export const SignInScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -81,10 +82,7 @@ export const SignInScreen = () => {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center">
                 <div className="z-10 flex flex-col gap-4 items-center">
-                    <FontAwesomeIcon
-                        icon={faCircleNotch}
-                        className="w-20 h-20 animate-spin duration-1000"
-                    />
+                    <CircularLoaderIndicator size="xl" />
                     <span className="text-lg">{localize('general__loading')}</span>
                 </div>
                 <img

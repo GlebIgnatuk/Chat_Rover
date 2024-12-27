@@ -14,6 +14,7 @@ import { useWebsocket } from './hooks/chats/useWebsocket'
 import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
+import { ISearchedProfile } from './store/types'
 
 // This component makes sure that we have a user authenticated, so we can initialize store
 export const PrivateStoreProvider = () => {
@@ -36,26 +37,40 @@ interface DataLoaderProps {
     identity: IIdentity
 }
 
-const promises = Array.from(
-    { length: Math.floor(Math.random() * (10 - 5)) + 5 },
-    () => () =>
-        new Promise((res) => setTimeout(res, Math.floor(Math.random() * (6000 - 1000)) + 1000)),
-)
+// const promises = Array.from(
+//     { length: Math.floor(Math.random() * (10 - 5)) + 5 },
+//     () => () =>
+//         new Promise((res) => setTimeout(res, Math.floor(Math.random() * (6000 - 1000)) + 1000)),
+// )
 
 // This component loads everything before showing main app screen showing a loader animation
 const DataLoader = ({ identity }: DataLoaderProps) => {
     const [loaded, setLoaded] = useState(false)
 
-    const abortController = useRef<AbortController>()
-    if (!abortController.current) {
-        abortController.current = new AbortController()
+    // const abortController = useRef<AbortController>()
+    // if (!abortController.current) {
+    //     abortController.current = new AbortController()
+    // }
+
+    const searchProfiles = async () => {
+        const response = await api<ISearchedProfile[]>(`/profiles`)
+        if (response.success) {
+            return response.data
+        } else {
+            return []
+        }
     }
 
     const loader = useBatchedLoader({
-        values: promises,
-        failFast: true,
+        values: [
+            () => searchProfiles(),
+            // mock loading
+            () => new Promise((res) => setTimeout(res, 300)),
+            () => new Promise((res) => setTimeout(res, 2000)),
+            () => new Promise((res) => setTimeout(res, 1000)),
+        ],
         onCancel: () => {
-            abortController.current?.abort()
+            // abortController.current?.abort()
         },
     })
 
@@ -66,7 +81,9 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        return <StoreProvider identity={identity} />
+        const [searchedProfiles] = loader.$unwrap()
+
+        return <StoreProvider identity={identity} searchedProfiles={searchedProfiles} />
     } else {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center">
@@ -98,14 +115,16 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
 
 interface StoreProviderProps {
     identity: IIdentity
+    searchedProfiles: ISearchedProfile[]
 }
 
 // This component initializes store with initial data like user
-const StoreProvider = ({ identity }: StoreProviderProps) => {
+const StoreProvider = ({ identity, searchedProfiles }: StoreProviderProps) => {
     const store = useRef<IStore>()
     if (!store.current) {
         store.current = createStore({
             identity,
+            searchedProfiles,
         })
     }
 
