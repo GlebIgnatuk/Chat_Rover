@@ -43,6 +43,16 @@ cp ./server/.env.example ./server/.env.local
 
 ### Run
 
+HTTPS
+
 ```console
 yarn dev
+```
+
+OR
+
+HTTP + wireless
+
+```console
+yarn dev:mobile
 ```
