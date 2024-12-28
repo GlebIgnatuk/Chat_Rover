@@ -1,3 +1,4 @@
+import { IPublicUserDTO } from '@/models/user'
 import { IAuthorizedRequestHandler } from '../types'
 
 export const search: IAuthorizedRequestHandler = async (req, res, next) => {
@@ -14,6 +15,30 @@ export const search: IAuthorizedRequestHandler = async (req, res, next) => {
         })
 
         return res.json({ success: true, data: users })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const get: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { repositories } = res.locals
+        const userId = req.params.id
+
+        const user = await repositories.user.get(userId)
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'NOT_FOUND' })
+        }
+
+        const publicUser: IPublicUserDTO = {
+            _id: user._id,
+            language: user.language,
+            lastActivityAt: user.lastActivityAt,
+            nickname: user.nickname,
+            avatarUrl: user.avatarUrl,
+        }
+
+        res.json({ success: true, data: publicUser })
     } catch (e) {
         next(e)
     }
@@ -46,7 +71,7 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
 
         const user = await repositories.user.create({
             externalId: identity.user.id,
-            language: req.body.language,
+            language: identity.user.language_code,
             nickname: req.body.nickname,
         })
 

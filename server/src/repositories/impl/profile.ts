@@ -109,6 +109,14 @@ export class ProfileRepository implements IProfileRepository {
     async search(params: IProfileSearchParams): Promise<ISearchedProfileDTO[]> {
         const query: Record<string, any> = {}
 
+        if (params.id !== undefined) {
+            query._id = new mongoose.Types.ObjectId(params.id)
+        }
+
+        if (params.userId !== undefined) {
+            query.userId = new mongoose.Types.ObjectId(params.userId)
+        }
+
         if (params.uid !== undefined) {
             query.uid = params.uid
         }
@@ -185,8 +193,21 @@ export class ProfileRepository implements IProfileRepository {
                 {
                     $lookup: {
                         from: UserModel.getCollection().name,
-                        localField: 'userId',
-                        foreignField: '_id',
+                        let: {
+                            userId: '$userId',
+                        },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ['$_id', '$$userId'] } } },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    nickname: 1,
+                                    language: 1,
+                                    avatarUrl: 1,
+                                    lastActivityAt: 1,
+                                },
+                            },
+                        ],
                         as: 'user',
                     },
                 },

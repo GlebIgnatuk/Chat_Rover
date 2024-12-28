@@ -22,14 +22,22 @@ export type IAppConfig = {
 export type IUser = {
     _id: string
     nickname: string
+    language: string
     avatarUrl: string | null
     lastActivityAt: string
     state: 'created' | 'complete'
 }
 
+export type IPublicUser = Pick<
+    IUser,
+    '_id' | 'nickname' | 'language' | 'avatarUrl' | 'lastActivityAt'
+>
+
 export type ISearchedProfile = {
     _id: string
     user: IUser
+    uid: number
+    about: string
     nickname: string
     server: string
     usesVoice: boolean

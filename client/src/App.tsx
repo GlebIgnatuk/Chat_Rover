@@ -22,6 +22,8 @@ import { PublicStoreProvider } from './PublicStoreProvider'
 import { PrivateStoreProvider } from './PrivateStoreProvider'
 import { SplashScreen } from './pages/Splash.screen'
 import { HomeLayout } from './pages/Home.layout'
+import { UserScreen } from './pages/user/User.screen'
+import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
 
 const router = createBrowserRouter([
     {
@@ -98,6 +100,14 @@ const router = createBrowserRouter([
                                     {
                                         path: '',
                                         element: <CommunityScreen />,
+                                    },
+                                    {
+                                        path: 'u/:userId',
+                                        element: <UserScreen />,
+                                    },
+                                    {
+                                        path: 'u/:userId/profiles/:profileId',
+                                        element: <RenderedProfileScreen />,
                                     },
                                     {
                                         path: 'game_chat',

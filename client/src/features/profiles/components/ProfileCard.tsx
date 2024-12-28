@@ -16,16 +16,23 @@ export interface ProfileCardProps {
     user: IUser
 
     onClick?: () => void
+    onNicknameClick?: () => void
 }
 
-export const ProfileCard = ({ profile, user, onClick }: ProfileCardProps) => {
+export const ProfileCard = ({ profile, user, onClick, onNicknameClick }: ProfileCardProps) => {
     const characters = useWuwaCharacters((state) => state.items)
     const localize = useLocalize()
 
     return (
         <Card className="cursor-pointer" onClick={onClick}>
             <div className="pl-2 flex items-start justify-between">
-                <div className="pt-1">
+                <div
+                    className="pt-1"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onNicknameClick?.()
+                    }}
+                >
                     <span className="font-semibold text-accent">{profile.nickname}</span>
                     <span className="text-gray-400"> / </span>
                     <span className="text-xs text-accent">{user.nickname}</span>

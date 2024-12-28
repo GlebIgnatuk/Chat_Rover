@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 import { ID } from './types'
-import { IProfileDTO, ITeamMember } from '@/models/profile'
-import { IUserDTO } from '@/models/user'
+import { IProfileDTO } from '@/models/profile'
+import { IPublicUserDTO } from '@/models/user'
 
 export interface IProfileCreate {
     userId: ID
@@ -22,10 +22,12 @@ export interface IProfileCreate {
 export interface IProfileUpdate extends Partial<IProfileCreate> {}
 
 export type ISearchedProfileDTO = Omit<IProfileDTO, 'userId'> & {
-    user: IUserDTO
+    user: IPublicUserDTO
 }
 
 export interface IProfileSearchParams {
+    id?: string
+    userId?: string
     uid?: number
     nickname?: string
     server?: string

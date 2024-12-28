@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { cn } from 'tailwind-cn'
 
 export interface AccountAvatarProps {
-    size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
+    size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '20xl'
     url?: string | null
     nickname?: string
     bordered?: boolean
@@ -25,6 +25,7 @@ export const AccountAvatar = ({
             className={cn(
                 'relative flex items-center justify-center text-primary-700 bg-gradient-to-b from-stone-800 to-stone-700 uppercase font-semibold',
                 {
+                    'w-40 h-40 text-3xl': size === '20xl',
                     'w-20 h-20 text-3xl': size === '3xl',
                     'w-[4.5rem] h-[4.5rem] text-2xl': size === '2xl',
                     'w-16 h-16 text-xl': size === 'xl',

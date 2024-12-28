@@ -71,13 +71,13 @@ export const setupHttpRouter = (
 
     // App config
     unauthorized.get('/appConfig', AppConfigController.get)
-    
+
     // Intls
     unauthorized.get('/intls/:language', AppConfigController.getIntl)
-    
+
     // Wuwa characters
     unauthorized.get('/wuwaCharacters', WuwaCharactersController.list)
-    
+
     // Translations
     unauthorized.get('/translations/:language', TranslationsController.getByLanguage)
 
@@ -113,6 +113,7 @@ export const setupHttpRouter = (
     // User
     authorized.get('/users', UsersController.search)
     authorized.get('/users/me', UsersController.getAuthenticated)
+    authorized.get('/users/:id', UsersController.get)
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)
     authorized.post('/me/activities', UsersController.trackActivity)
@@ -150,7 +151,7 @@ export const setupHttpRouter = (
     authorized.post('/translations', TranslationsController.create)
     authorized.patch('/translations/:id', TranslationsController.update)
     authorized.delete('/translations/:id', TranslationsController.remove)
-    
+
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))
 }

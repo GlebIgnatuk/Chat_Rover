@@ -48,6 +48,8 @@ export const postSchema = Joi.object({
 export const putSchema = postSchema
 
 export const searchSchema = Joi.object({
+    id: Joi.string(),
+    userId: Joi.string(),
     uid: Joi.number().integer().min(0).max(999_999_999),
     nickname: Joi.string().min(1).max(55),
     server: Joi.string().valid(...SUPPORTED_SERVERS),

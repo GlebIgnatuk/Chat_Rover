@@ -105,7 +105,10 @@ export const CommunityScreen = () => {
                         key={profile._id}
                         user={user}
                         profile={profile}
-                        onClick={() => navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))}
+                        onClick={() =>
+                            navigate(buildProtectedUrl(`/u/${user._id}/profiles/${profile._id}`))
+                        }
+                        onNicknameClick={() => navigate(buildProtectedUrl(`/u/${user._id}`))}
                     />
                 ))}
 
