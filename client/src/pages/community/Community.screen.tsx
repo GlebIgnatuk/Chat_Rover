@@ -4,7 +4,7 @@ import { useSearch } from '@/features/search/hooks/useSearch'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { buildProtectedUrl } from '@/utils/url'
-import { faFilter, faPerson } from '@fortawesome/free-solid-svg-icons'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@mui/material'
 import { useState } from 'react'
@@ -41,7 +41,7 @@ export const CommunityScreen = () => {
                     <div className="text-3xl">Failed to load</div>
                     <button
                         className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
-                        onClick={() => search.search(search.page)}
+                        onClick={() => search.search(search.page, search.filters)}
                     >
                         Retry
                     </button>
@@ -51,12 +51,22 @@ export const CommunityScreen = () => {
             return (
                 <div className="h-full flex flex-col items-center justify-center gap-4">
                     <div className="text-3xl">Nothing was found</div>
-                    <button
-                        className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
-                        onClick={() => search.search(search.page)}
-                    >
-                        Retry
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
+                            onClick={() => search.search(search.page, search.filters)}
+                        >
+                            Retry
+                        </button>
+                        <button
+                            className="bg-stone-800 text-primary-700 border border-primary-700 rounded-xl px-6 py-2"
+                            onClick={() => {
+                                search.reset()
+                            }}
+                        >
+                            Clear filters
+                        </button>
+                    </div>
                 </div>
             )
         }
@@ -68,17 +78,17 @@ export const CommunityScreen = () => {
                 <FiltersModal
                     onClose={() => setIsOpen(false)}
                     onSubmit={() => {
-                        search.search()
+                        search.search(1, search.filters)
                         setIsOpen(false)
                     }}
                 />
             </Modal>
 
-            <div className="grid grid-cols-2 p-2 gap-2">
-                <div className="bg-gray-500 p-2 rounded-xl flex items-center gap-2 text-gray-200">
+            <div className="grid grid-cols-1 p-1 gap-2">
+                {/* <div className="bg-gray-500 p-2 rounded-xl flex items-center gap-2 text-gray-200">
                     <FontAwesomeIcon icon={faPerson} />
                     <span>{localize('search__characters')}</span>
-                </div>
+                </div> */}
 
                 <div
                     className="bg-stone-800 p-2 rounded-xl flex items-center gap-2 cursor-pointer text-primary-700"

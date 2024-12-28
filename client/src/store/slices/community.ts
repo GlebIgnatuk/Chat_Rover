@@ -183,6 +183,24 @@ export const createCommunitySlice =
                         ),
                     )
                 },
+
+                reset: () => {
+                    set((state) =>
+                        R.assocPath(
+                            ['community', 'filters'],
+                            {
+                                ...state.community.filters,
+                                languages: [],
+                                team: [null, null, null],
+                                usesVoice: undefined,
+                                server: undefined,
+                                minWorldLevel: 0,
+                                maxWorldLevel: 8,
+                            },
+                            state,
+                        ),
+                    )
+                },
             },
         },
     })

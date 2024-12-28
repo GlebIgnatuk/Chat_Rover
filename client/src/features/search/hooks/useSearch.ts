@@ -4,7 +4,15 @@ import { ICommunityState } from '@/store/state'
 import { ISearchedProfile } from '@/store/types'
 import { useState } from 'react'
 
-const encodeFilters = (filters: ICommunityState['community']['filters']) => {
+type FiltersState = ICommunityState['community']['filters']
+
+type Filters = {
+    [K in keyof FiltersState as FiltersState[K] extends (...args: unknown[]) => unknown
+        ? never
+        : K]: FiltersState[K]
+}
+
+const encodeFilters = (filters: Filters) => {
     const query = new URLSearchParams()
     for (let i = 0; i < filters.team.length; i++) {
         const t = filters.team[i]
@@ -43,14 +51,14 @@ export const useSearch = () => {
     const canMoveForward =
         state.searchedItems.length !== 0 && state.searchedItems.length % ITEMS_PER_PAGE === 0
 
-    const search = async (nextPage: number = 1, signal?: AbortSignal) => {
+    const search = async (nextPage: number = 1, filters?: Filters, signal?: AbortSignal) => {
         const previousPage = page
 
         try {
             state.loading.start()
             setPage(nextPage)
 
-            const nextQuery = encodeFilters(state.filters)
+            const nextQuery = filters ? encodeFilters(filters) : new URLSearchParams()
 
             nextQuery.append('page', nextPage.toString())
             nextQuery.append('limit', ITEMS_PER_PAGE.toString())
@@ -79,22 +87,28 @@ export const useSearch = () => {
         }
     }
 
+    const reset = () => {
+        state.filters.reset()
+        search()
+    }
+
     const goBack = (signal?: AbortSignal) => {
         if (!canMoveBackwards) return
 
-        return search(page - 1, signal)
+        return search(page - 1, state.filters, signal)
     }
 
     const goForward = (signal?: AbortSignal) => {
         if (!canMoveForward) return
 
-        return search(page + 1, signal)
+        return search(page + 1, state.filters, signal)
     }
 
     return {
         search,
         goBack,
         goForward,
+        reset,
         page,
         canMoveBackwards,
         canMoveForward,

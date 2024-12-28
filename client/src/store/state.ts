@@ -130,6 +130,8 @@ export type ICommunityState = {
 
             maxWorldLevel: number
             setMaxWorldLevel: (level: number) => void
+
+            reset: () => void
         }
     }
 }
