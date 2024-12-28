@@ -3,12 +3,13 @@ import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
 import { loadAssetAsync } from '@/services/AssetsCache'
 import { IAppConfig, IIntl, IWuwaCharacter } from '@/store/types'
-import { buildAuthUrl } from '@/utils/url'
+import { buildAuthUrl, buildImageUrl } from '@/utils/url'
 
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 
 import bgAnimation from '@/assets/bg_animation.mp4'
+import bgCard from '@/assets/profile-card-bg.webp'
 
 const getSourceLanguage = (data: string) => {
     try {
@@ -79,6 +80,7 @@ export const SplashScreen = () => {
 
     useEffect(() => {
         loadAssetAsync('video', bgAnimation)
+        loadAssetAsync('img', bgCard)
     }, [])
 
     if (intlsLoader.data && dataLoader.data) {
@@ -112,6 +114,10 @@ export const SplashScreen = () => {
                 }
             } else {
                 throw new Error('Failed to load localization')
+            }
+
+            for (const character of wuwaCharacters) {
+                loadAssetAsync('img', buildImageUrl(character.photoPath))
             }
 
             return (
