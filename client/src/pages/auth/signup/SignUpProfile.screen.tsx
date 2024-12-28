@@ -9,7 +9,6 @@ import { buildProtectedUrl } from '@/utils/url'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import bgImage from '@/assets/auth.jpeg'
 import cardBgImage from '@/assets/profile-card-bg.webp'
 import { cn } from 'tailwind-cn'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -79,14 +78,9 @@ export const SignUpProfileScreen = () => {
     }
 
     return (
-        <div className="relative h-full overflow-y-auto">
-            <img
-                src={bgImage}
-                className="absolute top-0 left-0 w-full h-full object-cover object-center opacity-25"
-            />
-
+        <div className="relative h-full overflow-y-auto bg-stone-800">
             <div
-                className="flex flex-col items-center h-full pt-2 pb-10 overflow-y-auto"
+                className="flex flex-col items-center h-full pt-4 pb-10 overflow-y-auto"
                 style={{ perspective: '1000px' }}
             >
                 <div

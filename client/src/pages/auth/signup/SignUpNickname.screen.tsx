@@ -2,7 +2,6 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef, useState } from 'react'
 
-import backgroundImage from '@/assets/auth.jpeg'
 import { cn } from 'tailwind-cn'
 import { useNavigate } from 'react-router-dom'
 import { buildAuthUrl } from '@/utils/url'
@@ -66,18 +65,24 @@ export const SignUpNicknameScreen = () => {
     }
 
     return (
-        <div className="relative h-full font-vasek">
-            <img
-                src={backgroundImage}
-                className="absolute top-0 left-0 w-full h-full object-cover object-bottom"
-            />
-
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full transition-all text-black">
-                <div className="transition-all w-4/5 relative mx-auto opacity-80 bg-white/50 p-4 rounded-md shadow-[0px_0px_8px_2px_rgba(255,255,255,0.3)] before:absolute before:inset-0 before:border before:border-white/70 before:rotate-12 before:rounded-md before:pointer-events-none">
-                    <div className="text-4xl text-center font-bold">
+        <div className="relative h-full bg-[#131313] font-vasek">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full transition-all text-primary-700">
+                <div className="transition-all w-4/5 relative mx-auto p-4 rounded-md">
+                    <div
+                        className="text-4xl text-center font-bold text-primary-700 font-great-vibes"
+                        style={{
+                            textShadow: `0 0 7px #c9ac67,
+                                    0 0 10px #c9ac67,
+                                    0 0 31px #c9ac67,
+                                    0 0 62px #c9ac67,
+                                    0 0 102px #c9ac67`,
+                        }}
+                    >
                         {localize('auth__nickname__title')}
                     </div>
-                    <div className="text-3xl">{localize('auth__nickname__text')}</div>
+                    <div className="text-4xl text-primary-700 mt-6">
+                        {localize('auth__nickname__text')}
+                    </div>
 
                     <div className="relative mt-4">
                         <input
@@ -85,9 +90,9 @@ export const SignUpNicknameScreen = () => {
                             placeholder=""
                             type="text"
                             className={cn(
-                                'text-gray-700 w-full text-3xl text-center bg-transparent outline-none border-b border-b-black',
+                                'text-white w-full text-xl text-center bg-transparent outline-none border-b border-b-primary-700 font-exo2',
                                 {
-                                    'border-b-red-700 text-red-700': !isValidName,
+                                    'border-b-red-400 text-red-400': !isValidName,
                                 },
                             )}
                             autoComplete=""
@@ -97,19 +102,17 @@ export const SignUpNicknameScreen = () => {
 
                         <button
                             onClick={createUser}
-                            disabled={isLoading}
-                            className="mt-2 mx-auto flex items-center justify-center bg-black w-36 h-12 rounded-xl disabled:cursor-not-allowed disabled:bg-gray-500"
+                            disabled={isLoading || name.trim().length === 0}
+                            className="mt-6 mx-auto flex items-center justify-center w-36 h-12 rounded-xl text-primary-700 disabled:cursor-not-allowed disabled:text-stone-400"
                         >
                             {isLoading ? (
                                 <FontAwesomeIcon
                                     icon={faCircleNotch}
                                     onClick={createUser}
-                                    className="w-6 h-6 animate-spin text-white font-semibold"
+                                    className="w-6 h-6 animate-spin font-semibold"
                                 />
                             ) : (
-                                <span className="text-3xl text-white">
-                                    {localize('general__continue')}
-                                </span>
+                                <span className="text-5xl">{localize('general__continue')}</span>
                             )}
                         </button>
                     </div>

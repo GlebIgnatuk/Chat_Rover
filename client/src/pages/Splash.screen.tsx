@@ -69,6 +69,7 @@ export const SplashScreen = () => {
         values: [
             () => loadAppConfig(abortController.current?.signal),
             () => loadCharacters(abortController.current?.signal),
+            () => new Promise((res) => setTimeout(res, 1000)),
         ],
         failFast: true,
         onCancel: () => {

@@ -80,15 +80,11 @@ export const SignInScreen = () => {
 
     if (isLoading) {
         return (
-            <div className="pointer-events-none relative h-full flex justify-center items-center">
+            <div className="pointer-events-none relative h-full flex justify-center items-center bg-[#131313]">
                 <div className="z-10 flex flex-col gap-4 items-center">
-                    <CircularLoaderIndicator size="xl" />
-                    <span className="text-lg">{localize('general__loading')}</span>
+                    <CircularLoaderIndicator size="xl" className="text-primary-700" />
+                    <span className="text-lg text-primary-700">{localize('general__loading')}</span>
                 </div>
-                <img
-                    src={backgroundImage}
-                    className="absolute top-0 left-0 w-full h-full object-cover object-bottom animate-pulse-25-50"
-                />
             </div>
         )
     }
@@ -105,7 +101,7 @@ export const SignInScreen = () => {
                     />
                     <span className="text-lg">Error: {error}</span>
                     <button
-                        className="bg-primary-100 text-gray-700 font-medium px-4 py-2 rounded-md cursor-pointer active:bg-primary-100/90"
+                        className="bg-primary-100 text-primary-700 bg-stone-800 border border-primary-700 font-medium px-4 py-2 rounded-full cursor-pointer active:bg-primary-100/90"
                         onClick={() => signIn()}
                     >
                         Try again

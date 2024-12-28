@@ -1,4 +1,3 @@
-import backgroundImage from '@/assets/auth.jpeg'
 import { IIdentity } from './context/auth/AuthContext'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from './hooks/common/useLocation'
@@ -87,16 +86,18 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         return <StoreProvider identity={identity} searchedProfiles={searchedProfiles} />
     } else {
         return (
-            <div className="pointer-events-none relative h-full flex justify-center items-center">
-                <img
-                    src={backgroundImage}
-                    className="absolute top-0 left-0 w-full h-full object-cover object-bottom"
-                />
-
-                <div className="bg-black animate-pulse-25-50 absolute top-0 left-0 w-full h-full"></div>
-
+            <div className="pointer-events-none relative h-full flex justify-center items-center bg-[#131313]">
                 <div className="relative w-full flex flex-col items-center">
-                    <div className="bg-black text-primary py-1 px-2 rounded-xl text-4xl">
+                    <div
+                        className="text-primary py-1 px-2 rounded-xl text-4xl"
+                        style={{
+                            textShadow: `0 0 7px #c9ac67,
+                                    0 0 10px #c9ac67,
+                                    0 0 31px #c9ac67,
+                                    0 0 62px #c9ac67,
+                                    0 0 102px #c9ac67`,
+                        }}
+                    >
                         Rover Chat
                     </div>
 

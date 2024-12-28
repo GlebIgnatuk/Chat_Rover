@@ -13,6 +13,7 @@ export default {
         tangerine: ['Tangerine', 'cursive'],
         'vasek': ['Vasek', 'cursive'],
         'exo2': ['"Exo 2"', 'sans-serif'],
+        'great-vibes': ['"Great Vibes"', 'serif'],
       },
       colors: {
         primary: {

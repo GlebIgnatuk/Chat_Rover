@@ -19,7 +19,7 @@ const teamMemberSchema = Joi.object({
 export const postSchema = Joi.object({
     userId: Joi.required(),
     uid: Joi.number().integer().min(1).max(999_999_999).required(),
-    about: Joi.string().max(255).required(),
+    about: Joi.string().min(0).max(255),
     nickname: Joi.string().min(1).max(55).required(),
     server: Joi.string()
         .valid(...SUPPORTED_SERVERS)
