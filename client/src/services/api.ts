@@ -13,12 +13,18 @@ export const api = async <T = unknown>(
     path: string,
     init?: RequestInit,
 ): Promise<APIResponse<T>> => {
+    const headers: Record<string, string> = {
+        // @ts-expect-error add type definition later
+        'x-telegram-init-data': window.Telegram.WebApp.initData,
+    }
+    if (init?.body instanceof FormData === false) {
+        headers['content-type'] = 'application/json'
+    }
+
     const rawResponse = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
         ...init,
         headers: {
-            // @ts-expect-error add type definition later
-            'x-telegram-init-data': window.Telegram.WebApp.initData,
-            'content-type': 'application/json',
+            ...headers,
             ...init?.headers,
         },
     })

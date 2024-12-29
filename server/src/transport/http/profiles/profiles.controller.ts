@@ -1,6 +1,7 @@
 import { IAuthorizedRequestHandler } from '../types'
 import qs from 'qs'
 import { postSchema, putSchema, searchSchema } from './profiles.validator'
+import { config } from '@/config/config'
 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -119,6 +120,62 @@ export const search: IAuthorizedRequestHandler = async (req, res, next) => {
         }
 
         res.json({ success: true, data: profiles, pagination })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const createExport: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'no file provided' })
+        }
+
+        const profileId = req.params.id
+        const { repositories, identity } = res.locals
+
+        const profile = await repositories.profile.get(profileId)
+        if (!profile) {
+            return res.status(400).json({ success: false, error: 'profile not found' })
+        }
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(403).json({ success: false, error: 'user not found' })
+        }
+
+        if (user._id.equals(profile.userId) === false) {
+            return res.status(403).json({ success: false, error: 'not authorized' })
+        }
+
+        try {
+            const data = new FormData()
+            data.append('chat_id', identity.user.id.toString())
+            data.append(
+                'document',
+                new Blob([req.file.buffer], { type: 'image/png' }),
+                `${profile.nickname}.png`,
+            )
+            data.append('caption', `${user.nickname}/${profile.nickname}`)
+
+            const response = await fetch(
+                `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/sendDocument`,
+                {
+                    method: 'POST',
+                    body: data,
+                },
+            )
+
+            if (response.ok) {
+                res.json({ success: true })
+            } else {
+                console.error(await response.text())
+                res.status(400).json({ success: false })
+            }
+        } catch (e) {
+            console.error(e)
+            res.status(400).json({ success: false })
+        }
     } catch (e) {
         next(e)
     }

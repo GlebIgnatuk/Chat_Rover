@@ -64,7 +64,11 @@ const Rendered = ({ profile }: RenderedProps) => {
         <div className="flex flex-col items-center">
             {!isDrawing && (
                 <button
-                    onClick={download}
+                    onClick={() =>
+                        download()
+                            .then(() => alert('Success'))
+                            .catch((e) => alert(`Failed to download: ${e.message}`))
+                    }
                     disabled={isDownloading}
                     className="bg-stone-800 disabled:bg-stone-400 text-primary-700 px-4 py-2 text-center self-stretch font-medium rounded-full my-1"
                 >

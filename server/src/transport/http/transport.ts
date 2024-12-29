@@ -9,6 +9,7 @@ import * as ProfilesController from './profiles/profiles.controller'
 import * as AppConfigController from './appConfig/appConfig.controller'
 import * as TranslationsController from './translations/translations.controller'
 import { Router } from 'express'
+import multer, { memoryStorage } from 'multer'
 import {
     ValidatedUserPayload,
     validateUserPayload,
@@ -25,6 +26,8 @@ export const setupHttpRouter = (
     repositories: IRepositories,
     services: IServices,
 ) => {
+    const upload = multer({ storage: memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
+
     // Middlewares
     router.use(express.json())
     router.use(
@@ -122,6 +125,16 @@ export const setupHttpRouter = (
     authorized.post('/profiles', ProfilesController.create)
     authorized.put('/profiles/:id', ProfilesController.update)
     authorized.get('/profiles', ProfilesController.search)
+    authorized.post(
+        '/profiles/:id/exports',
+        (req, res, next) => {
+            const fn = upload.single('photo')
+
+            // @ts-expect-error
+            fn(req, res, next)
+        },
+        ProfilesController.createExport,
+    )
     authorized.get('/me/profiles', ProfilesController.getMine)
 
     // Private chat

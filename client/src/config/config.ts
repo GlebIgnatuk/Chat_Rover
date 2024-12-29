@@ -87,7 +87,7 @@ export const generateFakeProfile = (
 
 export const FAKE_PROFILES = names.map((name, idx) =>
     generateFakeProfile({
-        id: idx + 1,
+        id: 388841913 + idx,
         first_name: name.split(' ')[0],
         last_name: name.split(' ')[1] || null,
         username: name.toLowerCase().trim().replace(/[^\w]/g, '_'),

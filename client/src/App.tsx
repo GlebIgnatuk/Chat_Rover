@@ -24,7 +24,6 @@ import { SplashScreen } from './pages/Splash.screen'
 import { HomeLayout } from './pages/Home.layout'
 import { UserScreen } from './pages/user/User.screen'
 import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
-import { ExportsScreen } from './pages/__exports/Exports.screen'
 
 const router = createBrowserRouter([
     {
@@ -151,10 +150,6 @@ const router = createBrowserRouter([
                 ],
             },
         ],
-    },
-    {
-        path: '__exports',
-        element: <ExportsScreen />,
     },
     {
         path: '*',

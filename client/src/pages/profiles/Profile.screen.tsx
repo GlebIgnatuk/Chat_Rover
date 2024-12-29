@@ -11,10 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useAccount } from '@/context/account'
 import * as R from 'ramda'
+import { useStore } from '@/context/app/useStore'
 
 export const ProfileScreen = () => {
     const { id: profileId } = useParams()
     const { profiles, ...account } = useAccount()
+    const user = useStore((state) => state.identity.user)
     const profile = useMemo(() => profiles.find((p) => p._id === profileId), [profiles, profileId])
 
     const navigate = useNavigate()
@@ -68,6 +70,15 @@ export const ProfileScreen = () => {
 
     return (
         <div className="h-full overflow-y-auto">
+            <div
+                onClick={() =>
+                    navigate(buildProtectedUrl(`/u/${user._id}/profiles/${profile._id}`))
+                }
+                className="bg-stone-800 text-primary-700 py-1 text-center cursor-pointer rounded-full border border-primary-700 mx-1 my-1"
+            >
+                Preview
+            </div>
+
             <div className="pt-2 pb-10 flex flex-col items-center">
                 <ProfileForm form={form} />
             </div>

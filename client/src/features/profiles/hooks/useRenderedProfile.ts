@@ -10,6 +10,7 @@ import jpFlag from '@/assets/jp.svg'
 import krFlag from '@/assets/kr.svg'
 import usFlag from '@/assets/us.svg'
 import { buildImageUrl } from '@/utils/url'
+import { api } from '@/services/api'
 
 export interface UseRenderedProfileProps {
     profile: ISearchedProfile
@@ -55,6 +56,8 @@ export const useRenderedProfile = ({
             const image = await loadImage(cardBg)
             const teamImages = await Promise.all(
                 profile.team.map((t) => {
+                    if (!t) return new Image()
+
                     const character = characters[t.characterId]
                     if (!character) return new Image()
 
@@ -137,9 +140,6 @@ export const useRenderedProfile = ({
                     // characters
                     for (let i = 0; i < profile.team.length; ++i) {
                         const member = profile.team[i]
-                        // @todo
-                        if (!member) continue
-                        const character = characters[member.characterId]!
 
                         const gap = 0.25 * 16
                         const width = (WIDTH - gap * (profile.team.length + 1)) / 3
@@ -148,7 +148,14 @@ export const useRenderedProfile = ({
                             (_, Drawing) => Drawing.roundedRect(0, 0, width, 240, [0.75 * 16]),
                             (_, Drawing) => {
                                 // bg
-                                Drawing.fillRect(character.accentColor, 0, 0, width, 240)
+                                const character = member ? characters[member.characterId] : null
+                                if (member && character) {
+                                    Drawing.fillRect(character.accentColor, 0, 0, width, 240)
+                                } else {
+                                    // Drawing.fillRect('#232323', 0, 0, width, 240)
+                                    Drawing.linearGradient(0, 0, width, 240, '#232323', '#484848')
+                                    return
+                                }
 
                                 // avatar
                                 const image = teamImages[i]!
@@ -174,7 +181,6 @@ export const useRenderedProfile = ({
                                     [0, 0.75 * 16, 0.75 * 16, 0],
                                     '#EBC920',
                                 )
-                                // Drawing.text(character.level, 4, 0.75 * 16 + 14 + (28 - 18) / 2, 'Arial', 14, '#FFFFFF')
                                 Drawing.textV2(member.level.toString(), 0, 0.75 * 16, {
                                     font: 'Arial',
                                     fontSize: 14,
@@ -233,7 +239,8 @@ export const useRenderedProfile = ({
 
                     // constellation (z-index)
                     for (let i = 0; i < profile.team.length; ++i) {
-                        const member = profile.team[i]!
+                        const member = profile.team[i]
+                        if (!member) continue
 
                         const gap = 0.25 * 16
                         const width = (WIDTH - gap * (profile.team.length + 1)) / 3
@@ -475,40 +482,29 @@ export const useRenderedProfile = ({
         draw().then(() => setIsDrawing(false))
     }, [characters, profile, width, height])
 
-    const download = () => {
-        if (!canvasRef.current) return
+    const download = async () => {
+        const canvas = canvasRef.current
+        if (!canvas) return
 
         setIsDownloading(true)
 
-        const data = canvasRef.current.toDataURL()
+        try {
+            const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/png'))
+            if (!blob) throw new Error('Faield to create blob')
 
-        const w = window.open(`${window.location.origin}/__exports`, '_blank', 'popup=true')
-        if (!w) {
-            return setIsDownloading(false)
-        }
+            const data = new FormData()
+            data.append('photo', blob)
 
-        const onMessage = (e: MessageEvent) => {
-            switch (e.data.type) {
-                case 'EXPORTS:INIT':
-                    {
-                        w.postMessage({ type: 'data', payload: data })
-                    }
-                    break
-
-                case 'EXPORTS:DEINIT':
-                    {
-                        w.close()
-                        window.removeEventListener('message', onMessage)
-                        setIsDownloading(false)
-                    }
-                    break
-
-                default:
-                    break
+            const response = await api(`/profiles/${profile._id}/exports`, {
+                method: 'POST',
+                body: data,
+            })
+            if (!response.success) {
+                throw new Error(response.error)
             }
+        } finally {
+            setIsDownloading(false)
         }
-
-        window.addEventListener('message', onMessage)
     }
 
     return {
