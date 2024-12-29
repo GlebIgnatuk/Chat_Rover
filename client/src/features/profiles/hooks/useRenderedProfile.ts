@@ -479,11 +479,36 @@ export const useRenderedProfile = ({
         if (!canvasRef.current) return
 
         setIsDownloading(true)
-        const link = document.createElement('a')
-        link.download = `${profile.nickname}_profile.png`
-        link.href = canvasRef.current.toDataURL()
-        link.click()
-        setTimeout(() => setIsDownloading(false), 500)
+
+        const data = canvasRef.current.toDataURL()
+
+        const w = window.open(`${window.location.origin}/__exports`)
+        if (!w) {
+            return setIsDownloading(false)
+        }
+
+        const onMessage = (e: MessageEvent) => {
+            switch (e.data.type) {
+                case 'EXPORTS:INIT':
+                    {
+                        w.postMessage({ type: 'data', payload: data })
+                    }
+                    break
+
+                case 'EXPORTS:DEINIT':
+                    {
+                        w.close()
+                        window.removeEventListener('message', onMessage)
+                        setIsDownloading(false)
+                    }
+                    break
+
+                default:
+                    break
+            }
+        }
+
+        window.addEventListener('message', onMessage)
     }
 
     return {
