@@ -491,7 +491,6 @@ export const useRenderedProfile = ({
             switch (e.data.type) {
                 case 'EXPORTS:INIT':
                     {
-                        alert(data.length)
                         w.postMessage({ type: 'data', payload: data })
                     }
                     break

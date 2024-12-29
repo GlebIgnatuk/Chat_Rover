@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 export const ExportsScreen = () => {
     const [countDown, setCountDown] = useState(-1)
+    const [data, setData] = useState('')
 
     useEffect(() => {
         const opener = window.opener
@@ -15,23 +16,24 @@ export const ExportsScreen = () => {
             'message',
             (e) => {
                 const data = e.data.payload
-                alert(data.length)
-                const link = document.createElement('a')
-                link.download = `profile.png`
-                link.href = data
-                link.click()
+                setData(data)
+
+                // const link = document.createElement('a')
+                // link.download = `profile.png`
+                // link.href = data
+                // link.click()
 
                 const countDown = 5
                 for (let i = 0; i <= countDown; i++) {
                     setTimeout(() => setCountDown(i), (countDown - i) * 1000)
                 }
 
-                setTimeout(
-                    () => {
-                        opener.postMessage({ type: 'EXPORTS:DEINIT' })
-                    },
-                    (countDown + 0.2) * 1000,
-                )
+                // setTimeout(
+                //     () => {
+                //         opener.postMessage({ type: 'EXPORTS:DEINIT' })
+                //     },
+                //     (countDown + 0.2) * 1000,
+                // )
             },
             { once: true },
         )
@@ -44,6 +46,11 @@ export const ExportsScreen = () => {
             <div className="text-3xl">Exporting...</div>
             {countDown !== -1 && (
                 <div className="text-sm">The page will close in {countDown} seconds</div>
+            )}
+            {data && (
+                <a href={data} download="export.png">
+                    Download
+                </a>
             )}
         </div>
     )
