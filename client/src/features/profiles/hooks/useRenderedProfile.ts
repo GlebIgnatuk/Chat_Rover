@@ -482,7 +482,7 @@ export const useRenderedProfile = ({
 
         const data = canvasRef.current.toDataURL()
 
-        const w = window.open(`${window.location.origin}/__exports`)
+        const w = window.open(`${window.location.origin}/__exports`, '_blank', 'popup=true')
         if (!w) {
             return setIsDownloading(false)
         }

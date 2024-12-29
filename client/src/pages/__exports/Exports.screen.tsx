@@ -7,6 +7,10 @@ export const ExportsScreen = () => {
         const opener = window.opener
         if (!opener) return
 
+        window.addEventListener('beforeunload', () => {
+            opener.postMessage({ type: 'EXPORTS:DEINIT' })
+        })
+
         window.addEventListener(
             'message',
             (e) => {
