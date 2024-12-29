@@ -15,7 +15,7 @@ export const ExportsScreen = () => {
             'message',
             (e) => {
                 const data = e.data.payload
-
+                alert(data.length)
                 const link = document.createElement('a')
                 link.download = `profile.png`
                 link.href = data
