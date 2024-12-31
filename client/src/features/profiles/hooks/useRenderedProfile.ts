@@ -1,4 +1,4 @@
-import { createCanvas, loadImage } from '@/lib/canvas/engine'
+import { createCanvas } from '@/lib/canvas/engine'
 import { ISearchedProfile, IWuwaCharacter } from '@/store/types'
 import { useEffect, useRef, useState } from 'react'
 import cardBg from '@/assets/profile-card-bg.webp'
@@ -12,6 +12,7 @@ import usFlag from '@/assets/us.svg'
 import { buildImageUrl } from '@/utils/url'
 import { api } from '@/services/api'
 import { useLocalize } from '@/hooks/intl/useLocalize'
+import { loadAssetAsync } from '@/services/AssetsCache'
 
 export interface UseRenderedProfileProps {
     profile: ISearchedProfile
@@ -55,7 +56,7 @@ export const useRenderedProfile = ({
         const { Drawing } = createCanvas(canvas, { width, height }, RATIO)
 
         const draw = async () => {
-            const image = await loadImage(cardBg)
+            const image = await loadAssetAsync('img', cardBg)
             const teamImages = await Promise.all(
                 profile.team.map((t) => {
                     if (!t) return new Image()
@@ -63,17 +64,17 @@ export const useRenderedProfile = ({
                     const character = characters[t.characterId]
                     if (!character) return new Image()
 
-                    return loadImage(buildImageUrl(character.photoPath))
+                    return loadAssetAsync('img', buildImageUrl(character.photoPath))
                 }),
             )
             const langImages = await Promise.all(
                 Object.keys(langToIcon).map(async (l) => {
-                    const asset = await loadImage(langToIcon[l]!)
+                    const asset = await loadAssetAsync('img', langToIcon[l]!)
                     return { lang: l, asset }
                 }),
             ).then((assets) =>
                 assets.reduce<Record<string, HTMLImageElement>>(
-                    (acc, n) => ({ ...acc, [n.lang]: n.asset }),
+                    (acc, n) => ({ ...acc, [n.lang]: n.asset as HTMLImageElement }),
                     {},
                 ),
             )

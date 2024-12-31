@@ -1,26 +1,26 @@
-export type VideoAsset = { type: 'video'; asset: HTMLVideoElement }
-export type ImageAsset = { type: 'img'; asset: HTMLImageElement }
+// export type VideoAsset = { type: 'video'; asset: HTMLVideoElement }
+// export type ImageAsset = { type: 'img'; asset: HTMLImageElement }
 
-export type Asset = VideoAsset | ImageAsset
+type Asset = HTMLVideoElement | HTMLImageElement
 
 const assets = new Map<string, Asset>()
 
-export const loadAssetAsync = async <A extends Asset>(
-    type: A['type'],
+export const loadAssetAsync = async <T extends Asset>(
+    type: 'img' | 'video',
     url: string,
-): Promise<A['asset']> => {
-    if (assets.has(url)) return assets.get(url)!.asset
+): Promise<T> => {
+    if (assets.has(url)) return assets.get(url)! as T
 
     switch (type) {
         case 'img': {
             return new Promise((res, rej) => {
                 const asset = document.createElement('img')
                 asset.onload = () => {
-                    res(asset)
+                    res(asset as T)
                 }
                 asset.onerror = rej
 
-                assets.set(url, { type: 'img', asset })
+                assets.set(url, asset)
                 asset.src = url
             })
         }
@@ -29,11 +29,11 @@ export const loadAssetAsync = async <A extends Asset>(
             return new Promise((res, rej) => {
                 const asset = document.createElement('video')
                 asset.onload = () => {
-                    res(asset)
+                    res(asset as T)
                 }
                 asset.onerror = rej
 
-                assets.set(url, { type: 'video', asset })
+                assets.set(url, asset)
                 asset.preload = 'auto'
                 asset.src = url
             })

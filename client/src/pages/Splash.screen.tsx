@@ -10,6 +10,13 @@ import { Navigate } from 'react-router-dom'
 
 import bgAnimation from '@/assets/bg_animation.mp4'
 import bgCard from '@/assets/profile-card-bg.webp'
+import cnFlag from '@/assets/cn.svg'
+import deFlag from '@/assets/de.svg'
+import esFlag from '@/assets/es.svg'
+import frFlag from '@/assets/fr.svg'
+import jpFlag from '@/assets/jp.svg'
+import krFlag from '@/assets/kr.svg'
+import usFlag from '@/assets/us.svg'
 
 const getSourceLanguage = (data: string) => {
     try {
@@ -81,6 +88,13 @@ export const SplashScreen = () => {
     useEffect(() => {
         loadAssetAsync('video', bgAnimation)
         loadAssetAsync('img', bgCard)
+        loadAssetAsync('img', usFlag)
+        loadAssetAsync('img', jpFlag)
+        loadAssetAsync('img', krFlag)
+        loadAssetAsync('img', frFlag)
+        loadAssetAsync('img', deFlag)
+        loadAssetAsync('img', esFlag)
+        loadAssetAsync('img', cnFlag)
     }, [])
 
     if (intlsLoader.data && dataLoader.data) {
