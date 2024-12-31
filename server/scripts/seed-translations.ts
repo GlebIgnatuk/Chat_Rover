@@ -117,6 +117,14 @@ async function main() {
                 description: 'todo',
                 value: 'No',
             },
+            general__error: {
+                description: 'todo',
+                value: 'Error',
+            },
+            general__dismiss: {
+                description: 'todo',
+                value: 'Dismiss',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Filters',
@@ -144,6 +152,10 @@ async function main() {
             nav__account: {
                 description: 'todo',
                 value: 'Account',
+            },
+            exports__error__bot_start: {
+                description: 'todo',
+                value: "If you didn't receive the exported image make sure that you started the bot %url. Come back and repeat the export.",
             },
         },
         ru: {
@@ -239,6 +251,10 @@ async function main() {
                 description: 'todo',
                 value: 'Немецкий',
             },
+            general__languages__es: {
+                description: 'todo',
+                value: 'Испанский',
+            },
             general__yes: {
                 description: 'todo',
                 value: 'Да',
@@ -247,9 +263,13 @@ async function main() {
                 description: 'todo',
                 value: 'Нет',
             },
-            general__languages__es: {
+            general__error: {
                 description: 'todo',
-                value: 'Испанский',
+                value: 'Ошибка',
+            },
+            general__dismiss: {
+                description: 'todo',
+                value: 'Скрыть',
             },
             search__filters: {
                 description: 'todo',
@@ -278,6 +298,10 @@ async function main() {
             nav__account: {
                 description: 'todo',
                 value: 'Аккаунт',
+            },
+            exports__error__bot_start: {
+                description: 'todo',
+                value: 'Если вы не получили картинку проверьте что вы начали беседу с ботом %url. Попробуйте еще раз.',
             },
         },
     }

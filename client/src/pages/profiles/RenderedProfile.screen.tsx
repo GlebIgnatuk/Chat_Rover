@@ -3,8 +3,11 @@ import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 import { useRenderedProfile } from '@/features/profiles/hooks/useRenderedProfile'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 import { api } from '@/services/api'
 import { ISearchedProfile } from '@/store/types'
+import { Modal } from '@mui/material'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
@@ -53,8 +56,10 @@ interface RenderedProps {
 }
 
 const Rendered = ({ profile }: RenderedProps) => {
+    const [error, setError] = useState<string | null>(null)
     const user = useStore((state) => state.identity.user)
     const characters = useWuwaCharacters((state) => state.items)
+    const localize = useLocalize()
     const { ref, isDrawing, isDownloading, download } = useRenderedProfile({
         characters,
         profile,
@@ -69,7 +74,7 @@ const Rendered = ({ profile }: RenderedProps) => {
                     onClick={() =>
                         download()
                             .then(() => alert('Success'))
-                            .catch((e) => alert(`Failed to download: ${e.message}`))
+                            .catch((e) => setError(e.message))
                     }
                     disabled={isDownloading}
                     className="bg-stone-800 disabled:bg-stone-400 text-primary-700 px-4 py-2 text-center self-stretch font-medium rounded-full my-1"
@@ -90,6 +95,26 @@ const Rendered = ({ profile }: RenderedProps) => {
                     <CircularLoaderIndicator size="xl" />
                 </div>
             )}
+
+            <Modal open={error !== null}>
+                <div className="text-white text-lg text-center h-full flex flex-col gap-3 items-center justify-center px-2">
+                    <div className="text-red-500">{localize('general__error')}!</div>
+
+                    <div>
+                        {localize('exports__error__bot_start').replace(
+                            '%url',
+                            import.meta.env.VITE_BOT_URL,
+                        )}
+                    </div>
+
+                    <button
+                        className="bg-stone-800 text-primary-700 border border-primary-700 rounded-full px-4 py-1"
+                        onClick={() => setError(null)}
+                    >
+                        {localize('general__dismiss')}
+                    </button>
+                </div>
+            </Modal>
         </div>
     )
 }
