@@ -7,6 +7,7 @@ import { buildAuthUrl, buildImageUrl } from '@/utils/url'
 
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
+import TagManager from 'react-gtm-module'
 
 import bgAnimation from '@/assets/bg_animation.mp4'
 import bgCard from '@/assets/profile-card-bg.webp'
@@ -95,6 +96,12 @@ export const SplashScreen = () => {
         loadAssetAsync('img', deFlag)
         loadAssetAsync('img', esFlag)
         loadAssetAsync('img', cnFlag)
+    }, [])
+
+    useEffect(() => {
+        TagManager.initialize({
+            gtmId: import.meta.env.VITE_GTM_ID,
+        })
     }, [])
 
     if (intlsLoader.data && dataLoader.data) {
