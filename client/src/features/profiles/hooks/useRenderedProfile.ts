@@ -38,7 +38,7 @@ export const useRenderedProfile = ({
     profile,
 }: UseRenderedProfileProps) => {
     const [isDownloading, setIsDownloading] = useState(false)
-    const [isDrawing, setIsDrawing] = useState(false)
+    const [isDrawing, setIsDrawing] = useState(true)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const localize = useLocalize()
 
