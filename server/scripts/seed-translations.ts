@@ -109,6 +109,10 @@ async function main() {
                 description: 'todo',
                 value: 'Spanish',
             },
+            general__languages__ru: {
+                description: 'todo',
+                value: 'Russian',
+            },
             general__yes: {
                 description: 'todo',
                 value: 'Yes',
@@ -254,6 +258,10 @@ async function main() {
             general__languages__es: {
                 description: 'todo',
                 value: 'Испанский',
+            },
+            general__languages__ru: {
+                description: 'todo',
+                value: 'Русский',
             },
             general__yes: {
                 description: 'todo',

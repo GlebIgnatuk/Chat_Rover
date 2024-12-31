@@ -5,6 +5,7 @@ import cardBg from '@/assets/profile-card-bg.webp'
 import cnFlag from '@/assets/cn.svg'
 import deFlag from '@/assets/de.svg'
 import esFlag from '@/assets/es.svg'
+import ruFlag from '@/assets/ru.svg'
 import frFlag from '@/assets/fr.svg'
 import jpFlag from '@/assets/jp.svg'
 import krFlag from '@/assets/kr.svg'
@@ -28,6 +29,7 @@ const langToIcon: Record<string, string> = {
     fr: frFlag,
     de: deFlag,
     es: esFlag,
+    ru: ruFlag,
     'zh-CN': cnFlag,
     'zh-HK': cnFlag,
 }

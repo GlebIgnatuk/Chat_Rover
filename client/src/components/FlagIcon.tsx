@@ -7,6 +7,7 @@ import {
     KrFlagIcon,
     UsFlagIcon,
 } from '@/icons'
+import { RuFlagIcon } from '@/icons/RuFlagIcon'
 
 export const FLAGS_MAP: Record<
     string,
@@ -26,6 +27,7 @@ export const FLAGS_MAP: Record<
     fr: { Icon: FrFlagIcon, label: 'French' },
     de: { Icon: DeFlagIcon, label: 'German' },
     es: { Icon: EsFlagIcon, label: 'Spanish' },
+    ru: { Icon: RuFlagIcon, label: 'Russian' },
 }
 
 interface Props {

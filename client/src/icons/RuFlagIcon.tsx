@@ -1,0 +1,15 @@
+import { Icon } from './Icon'
+
+interface Props {
+    className?: string
+}
+
+export const RuFlagIcon = (props: Props) => {
+    return (
+        <Icon {...props}>
+            <path fill="#fff" d="M0 0h512v170.7H0z" />
+            <path fill="#0039a6" d="M0 170.7h512v170.6H0z" />
+            <path fill="#d52b1e" d="M0 341.3h512V512H0z" />
+        </Icon>
+    )
+}

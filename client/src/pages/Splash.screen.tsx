@@ -14,6 +14,7 @@ import bgCard from '@/assets/profile-card-bg.webp'
 import cnFlag from '@/assets/cn.svg'
 import deFlag from '@/assets/de.svg'
 import esFlag from '@/assets/es.svg'
+import ruFlag from '@/assets/ru.svg'
 import frFlag from '@/assets/fr.svg'
 import jpFlag from '@/assets/jp.svg'
 import krFlag from '@/assets/kr.svg'
@@ -95,6 +96,7 @@ export const SplashScreen = () => {
         loadAssetAsync('img', frFlag)
         loadAssetAsync('img', deFlag)
         loadAssetAsync('img', esFlag)
+        loadAssetAsync('img', ruFlag)
         loadAssetAsync('img', cnFlag)
     }, [])
 
