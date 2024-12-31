@@ -53,8 +53,6 @@ export const SignUpNicknameScreen = () => {
             } else {
                 setError(response.error)
             }
-            // await new Promise((res) => setTimeout(res, 2100))
-            // setIsScrollOpen(false)
         } finally {
             setIsLoading(false)
         }

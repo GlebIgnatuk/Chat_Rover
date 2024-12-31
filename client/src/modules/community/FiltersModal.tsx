@@ -19,7 +19,7 @@ interface Props {
     onClose: () => void
 }
 
-const elements = ['spectro', 'ice', 'aero', 'havoc', 'electro', 'fusion'] as const
+const elements = ['spectro', 'glacio', 'aero', 'havoc', 'electro', 'fusion'] as const
 
 export const FiltersModal = forwardRef<HTMLDivElement, Props>(({ onClose, onSubmit }, ref) => {
     const characters = useWuwaCharacters((state) => state.items)

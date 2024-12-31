@@ -89,7 +89,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         await this.chatRepo.patch(payload.chatId, {
             lastMessageSentAt: now,
         })
-        // await new Promise((res) => setTimeout(res, Math.random() * 4000 + 1000))
+
         return message
     }
 

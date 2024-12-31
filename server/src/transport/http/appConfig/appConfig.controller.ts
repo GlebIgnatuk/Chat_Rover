@@ -97,8 +97,6 @@ export const getIntl: IRequestHandler = async (req, res) => {
         },
     }
 
-    await new Promise((res) => setTimeout(res, 2100))
-
     if (language in intl) {
         res.json({ success: true, data: intl[language as keyof typeof intl] })
     } else {

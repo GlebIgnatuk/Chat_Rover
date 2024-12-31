@@ -37,20 +37,9 @@ interface DataLoaderProps {
     identity: IIdentity
 }
 
-// const promises = Array.from(
-//     { length: Math.floor(Math.random() * (10 - 5)) + 5 },
-//     () => () =>
-//         new Promise((res) => setTimeout(res, Math.floor(Math.random() * (6000 - 1000)) + 1000)),
-// )
-
 // This component loads everything before showing main app screen showing a loader animation
 const DataLoader = ({ identity }: DataLoaderProps) => {
     const [loaded, setLoaded] = useState(false)
-
-    // const abortController = useRef<AbortController>()
-    // if (!abortController.current) {
-    //     abortController.current = new AbortController()
-    // }
 
     const searchProfiles = async () => {
         const response = await api<ISearchedProfile[]>(`/profiles?limit=${ITEMS_PER_PAGE}`)
@@ -66,8 +55,8 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
             () => searchProfiles(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
-            () => new Promise((res) => setTimeout(res, 2000)),
             () => new Promise((res) => setTimeout(res, 1000)),
+            () => new Promise((res) => setTimeout(res, 900)),
         ],
         onCancel: () => {
             // abortController.current?.abort()

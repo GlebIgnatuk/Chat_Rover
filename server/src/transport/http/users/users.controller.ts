@@ -48,9 +48,6 @@ export const getAuthenticated: IAuthorizedRequestHandler = async (_, res, next) 
     try {
         const { repositories, identity } = res.locals
 
-        // @todo remove delay
-        await new Promise((res) => setTimeout(res, 2000))
-
         const user = await repositories.user.getByExternalId(identity.user.id)
         if (!user) {
             return res.status(404).json({ success: false, error: 'NOT_FOUND' })
@@ -65,9 +62,6 @@ export const getAuthenticated: IAuthorizedRequestHandler = async (_, res, next) 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
         const { repositories, identity } = res.locals
-
-        // @todo remove delay
-        await new Promise((res) => setTimeout(res, 2000))
 
         const user = await repositories.user.create({
             externalId: identity.user.id,
@@ -84,9 +78,6 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
 export const deleteAuthenticated: IAuthorizedRequestHandler = async (_, res, next) => {
     try {
         const { identity, repositories } = res.locals
-
-        // @todo remove delay
-        await new Promise((res) => setTimeout(res, 1000))
 
         await repositories.user.deleteByExternalId(identity.user.id)
 

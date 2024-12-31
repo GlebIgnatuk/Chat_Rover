@@ -69,7 +69,6 @@ export const useSearch = () => {
 
             const response = await api<ISearchedProfile[]>(`/profiles?${nextQuery}`, { signal })
             if (response.success) {
-                await new Promise((res) => setTimeout(res, 2000))
                 if (nextPage > 1) {
                     state.appendSearchedItems(response.data)
                 } else {

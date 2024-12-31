@@ -10,28 +10,28 @@ async function main() {
     const characters: Omit<IWuwaCharacterModel, 'createdAt' | 'updatedAt' | 'photoUrl'>[] = [
         {
             name: 'zhezhi',
-            element: 'ice',
+            element: 'glacio',
             sex: 'female',
             accentColor: '#93E0FF',
             photoPath: '/characters/zhezhi.png',
         },
         {
             name: 'lingyang',
-            element: 'ice',
+            element: 'glacio',
             sex: 'female',
             accentColor: '#93E0FF',
             photoPath: '/characters/lingyang.png',
         },
         {
             name: 'sanhua',
-            element: 'ice',
+            element: 'glacio',
             sex: 'female',
             accentColor: '#93E0FF',
             photoPath: '/characters/sanhua.png',
         },
         {
             name: 'baizhi',
-            element: 'ice',
+            element: 'glacio',
             sex: 'female',
             accentColor: '#93E0FF',
             photoPath: '/characters/baizhi.png',
