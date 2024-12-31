@@ -11,6 +11,7 @@ import krFlag from '@/assets/kr.svg'
 import usFlag from '@/assets/us.svg'
 import { buildImageUrl } from '@/utils/url'
 import { api } from '@/services/api'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 export interface UseRenderedProfileProps {
     profile: ISearchedProfile
@@ -39,6 +40,7 @@ export const useRenderedProfile = ({
     const [isDownloading, setIsDownloading] = useState(false)
     const [isDrawing, setIsDrawing] = useState(false)
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const localize = useLocalize()
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -217,7 +219,7 @@ export const useRenderedProfile = ({
                         [0.75 * 16, 0, 0.75 * 16, 0],
                         '#7D7881',
                     )
-                    Drawing.textV2('About', 0.25 * 16, offsetTop, {
+                    Drawing.textV2(localize('auth__profile__about'), 0.25 * 16, offsetTop, {
                         font: 'Arial',
                         fontSize: 0.75 * 16,
                         lineHeight: '20px',
@@ -295,7 +297,7 @@ export const useRenderedProfile = ({
                         [0.75 * 16, 0, 0.75 * 16, 0],
                         '#7D7881',
                     )
-                    Drawing.textV2('Info', 0.25 * 16, offsetTop, {
+                    Drawing.textV2(localize('auth__profile__info'), 0.25 * 16, offsetTop, {
                         font: 'Arial',
                         fontSize: 0.75 * 16,
                         lineHeight: '20px',
@@ -332,15 +334,20 @@ export const useRenderedProfile = ({
                     // table
                     {
                         const columnWidth = (WIDTH - 2 * 0.25 * 16 - 2 * 0.5 * 16) * (1 / 3)
-                        Drawing.textV2('World level', 0.25 * 16 + 0.5 * 16, offsetTop, {
-                            font: 'Arial',
-                            color: 'hsl(140, 4%, 32%)',
-                            fontSize: 0.75 * 16,
-                            lineHeight: '24px',
-                            fontWeight: 'bold',
-                            maxWidth: columnWidth,
-                            maxHeight: 24,
-                        })
+                        Drawing.textV2(
+                            localize('auth__profile__world_level'),
+                            0.25 * 16 + 0.5 * 16,
+                            offsetTop,
+                            {
+                                font: 'Arial',
+                                color: 'hsl(140, 4%, 32%)',
+                                fontSize: 0.75 * 16,
+                                lineHeight: '24px',
+                                fontWeight: 'bold',
+                                maxWidth: columnWidth,
+                                maxHeight: 24,
+                            },
+                        )
                         Drawing.textV2(
                             `Rank ${profile.worldLevel}`,
                             columnWidth + 0.25 * 16 + 0.5 * 16,
@@ -367,17 +374,22 @@ export const useRenderedProfile = ({
 
                     {
                         const columnWidth = (WIDTH - 2 * 0.25 * 16 - 2 * 0.5 * 16) * (1 / 3)
-                        Drawing.textV2('Voice', 0.25 * 16 + 0.5 * 16, offsetTop, {
-                            font: 'Arial',
-                            color: 'hsl(140, 4%, 32%)',
-                            fontSize: 0.75 * 16,
-                            lineHeight: '24px',
-                            fontWeight: 'bold',
-                            maxWidth: columnWidth,
-                            maxHeight: 24,
-                        })
                         Drawing.textV2(
-                            profile.usesVoice ? 'Yes' : 'No',
+                            localize('auth__profile__voice'),
+                            0.25 * 16 + 0.5 * 16,
+                            offsetTop,
+                            {
+                                font: 'Arial',
+                                color: 'hsl(140, 4%, 32%)',
+                                fontSize: 0.75 * 16,
+                                lineHeight: '24px',
+                                fontWeight: 'bold',
+                                maxWidth: columnWidth,
+                                maxHeight: 24,
+                            },
+                        )
+                        Drawing.textV2(
+                            profile.usesVoice ? localize('general__yes') : localize('general__no'),
                             columnWidth + 0.25 * 16 + 0.5 * 16,
                             offsetTop,
                             {
@@ -403,15 +415,20 @@ export const useRenderedProfile = ({
                     {
                         offsetTop += 2
                         const columnWidth = (WIDTH - 2 * 0.25 * 16 - 2 * 0.5 * 16) * (1 / 3)
-                        Drawing.textV2('Languages', 0.25 * 16 + 0.5 * 16, offsetTop, {
-                            font: 'Arial',
-                            color: 'hsl(140, 4%, 32%)',
-                            fontSize: 0.75 * 16,
-                            lineHeight: '24px',
-                            fontWeight: 'bold',
-                            maxWidth: columnWidth,
-                            maxHeight: 24,
-                        })
+                        Drawing.textV2(
+                            localize('auth__profile__languages'),
+                            0.25 * 16 + 0.5 * 16,
+                            offsetTop,
+                            {
+                                font: 'Arial',
+                                color: 'hsl(140, 4%, 32%)',
+                                fontSize: 0.75 * 16,
+                                lineHeight: '24px',
+                                fontWeight: 'bold',
+                                maxWidth: columnWidth,
+                                maxHeight: 24,
+                            },
+                        )
 
                         const chipWidth = 16 + 8
                         const gap = 0.25 * 16
@@ -446,32 +463,7 @@ export const useRenderedProfile = ({
                                     RATIO,
                                 (offsetTop + 4) * RATIO,
                             )
-                            // Drawing.textV2(
-                            //     profile.languages[i].substring(0, 2).toUpperCase(),
-                            //     0.25 * 16 + 0.5 * 16 + columnWidth + chipWidth * i + gap * i,
-                            //     offsetTop,
-                            // {
-                            //     font: 'Arial',
-                            //     color: '#FFFFFF',
-                            //     fontSize: 0.75 * 16,
-                            //     lineHeight: '24px',
-                            //     maxWidth: chipWidth - 8,
-                            //     alignText: 'right',
-                            //     maxHeight: 24,
-                            // })
                         }
-
-                        // Drawing.textV2(profile.usesVoice ? 'Yes' : 'No', columnWidth, offsetTop, {
-                        //     font: 'Arial',
-                        //     color: 'hsl(140, 4%, 32%)',
-                        //     fontSize: 0.75 * 16,
-                        //     lineHeight: '24px',
-                        //     maxWidth: (WIDTH - 2 * 0.25 * 16 - 2 * 0.5 * 16) * (2 / 3),
-                        //     maxHeight: 24,
-                        // })
-                        // offsetTop += 24
-                        // Drawing.divider(0.25 * 16 + 0.5 * 16, offsetTop, WIDTH - 2 * 0.25 * 16 - 2 * 0.5 * 16, 'hsl(140, 4%, 32%)')
-                        // offsetTop += 4
                     }
                 },
             )
@@ -479,7 +471,7 @@ export const useRenderedProfile = ({
             Drawing.drawImage(false, root, 0, 0)
         }
 
-        draw().then(() => setIsDrawing(false))
+        window.requestAnimationFrame(() => draw().then(() => setIsDrawing(false)))
     }, [characters, profile, width, height])
 
     const download = async () => {

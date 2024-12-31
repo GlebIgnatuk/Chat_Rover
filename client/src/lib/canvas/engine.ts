@@ -69,9 +69,9 @@ export const createCanvas = (
     }
 
     canvas.width = size.width * ratio
-    canvas.style.width = `${size.width}px`
+    // canvas.style.width = `${size.width}px`
     canvas.height = size.height * ratio
-    canvas.style.height = `${size.height}px`
+    // canvas.style.height = `${size.height}px`
 
     const ctx = canvas?.getContext('2d', { willReadFrequently: true })
     if (!ctx) throw new Error('No ctx')

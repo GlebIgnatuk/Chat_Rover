@@ -1,4 +1,5 @@
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 import { useRenderedProfile } from '@/features/profiles/hooks/useRenderedProfile'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
@@ -37,7 +38,7 @@ export const RenderedProfileScreen = () => {
 
         return (
             <div className="h-full overflow-hidden">
-                <div className="h-full relative overflow-auto py-4">
+                <div className="h-full relative overflow-auto">
                     <Rendered profile={profile} />
                 </div>
             </div>
@@ -52,6 +53,7 @@ interface RenderedProps {
 }
 
 const Rendered = ({ profile }: RenderedProps) => {
+    const user = useStore((state) => state.identity.user)
     const characters = useWuwaCharacters((state) => state.items)
     const { ref, isDrawing, isDownloading, download } = useRenderedProfile({
         characters,
@@ -61,8 +63,8 @@ const Rendered = ({ profile }: RenderedProps) => {
     })
 
     return (
-        <div className="flex flex-col items-center">
-            {!isDrawing && (
+        <div className="flex flex-col items-center px-2 py-2">
+            {!isDrawing && user._id === profile.user._id && (
                 <button
                     onClick={() =>
                         download()
@@ -78,7 +80,7 @@ const Rendered = ({ profile }: RenderedProps) => {
 
             <canvas
                 ref={ref}
-                className={cn('opacity-100 transition-opacity duration-300', {
+                className={cn('opacity-100 transition-opacity duration-300 w-full h-full', {
                     'opacity-0': isDrawing,
                 })}
             ></canvas>

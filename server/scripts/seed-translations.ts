@@ -109,6 +109,14 @@ async function main() {
                 description: 'todo',
                 value: 'Spanish',
             },
+            general__yes: {
+                description: 'todo',
+                value: 'Yes',
+            },
+            general__no: {
+                description: 'todo',
+                value: 'No',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Filters',
@@ -230,6 +238,14 @@ async function main() {
             general__languages__de: {
                 description: 'todo',
                 value: 'Немецкий',
+            },
+            general__yes: {
+                description: 'todo',
+                value: 'Да',
+            },
+            general__no: {
+                description: 'todo',
+                value: 'Нет',
             },
             general__languages__es: {
                 description: 'todo',
