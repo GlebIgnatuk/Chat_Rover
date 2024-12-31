@@ -12,6 +12,13 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
             return res.status(400).json({ success: false, error: 'User not found' })
         }
 
+        const profiles = await repositories.profile.search({ userId: user._id.toString() })
+        if (profiles.length !== 0) {
+            return res
+                .status(400)
+                .json({ success: false, error: 'Cannot have more than 1 profiles' })
+        }
+
         const payload = req.body
         payload.userId = user._id
 

@@ -3,11 +3,14 @@ import { useStore } from '@/context/app/useStore'
 import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { buildProtectedUrl } from '@/utils/url'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { cn } from 'tailwind-cn'
 
 export const ProfilesScreen = () => {
     const navigate = useNavigate()
     const { profiles, loading } = useAccount()
     const user = useStore((state) => state.identity.user)
+
+    const canCreate = profiles.length < 1
 
     if (loading.is) {
         return <div>Loading...</div>
@@ -19,7 +22,15 @@ export const ProfilesScreen = () => {
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr)] px-1 pt-1">
             <NavLink
                 to={buildProtectedUrl(`/account/profiles/new`)}
-                className="p-2 rounded-xl bg-stone-800 text-primary-700 border border-primary-700 font-semibold text-center text-lg"
+                className={cn(
+                    'p-2 rounded-xl bg-stone-800 text-primary-700 border border-primary-700 font-semibold text-center text-lg',
+                    {
+                        'text-gray-400 border-gray-400 cursor-not-allowed': !canCreate,
+                    },
+                )}
+                onClick={(e) => {
+                    if (!canCreate) e.preventDefault()
+                }}
             >
                 (+) Create
             </NavLink>
