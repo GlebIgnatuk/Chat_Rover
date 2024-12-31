@@ -268,7 +268,7 @@ export const useRenderedProfile = ({
                         )
                         // @todo measure text / center
                         Drawing.textV2(
-                            member.level.toString(),
+                            member.constellation.toString(),
                             (i + 1) * gap + (i + 1) * width - width / 2 - 40 / 2,
                             offsetTop - 16 - 40 / 2,
                             {
