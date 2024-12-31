@@ -7,6 +7,7 @@ import { buildImageUrl } from '@/utils/url'
 import { FlagIcon } from '@/components/FlagIcon'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
+import { cn } from 'tailwind-cn'
 
 export interface ProfileCardProps {
     profile: Pick<
@@ -29,11 +30,18 @@ export const ProfileCard = ({ profile, user, onClick, onNicknameClick }: Profile
                 <div
                     className="pt-1"
                     onClick={(e) => {
+                        if (!onNicknameClick) return
                         e.stopPropagation()
                         onNicknameClick?.()
                     }}
                 >
-                    <span className="font-semibold text-accent">{profile.nickname}</span>
+                    <span
+                        className={cn('font-semibold text-accent', {
+                            underline: onNicknameClick !== undefined,
+                        })}
+                    >
+                        {profile.nickname}
+                    </span>
                     <span className="text-gray-400"> / </span>
                     <span className="text-xs text-accent">{user.nickname}</span>
                 </div>
