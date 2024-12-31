@@ -68,7 +68,7 @@ export class PrivateChatService {
                                             [
                                                 {
                                                     text: 'Go to chat',
-                                                    url: `tg://resolve?domain=wuthering_waves_ml_dev_bot&appname=roverchat`,
+                                                    url: `tg://resolve?domain=rover_chat_bot&appname=rover_chat`,
                                                 },
                                             ],
                                         ],
