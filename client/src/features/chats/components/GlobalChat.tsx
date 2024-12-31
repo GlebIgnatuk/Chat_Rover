@@ -4,6 +4,8 @@ import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
 import { useGlobalChat } from '../hooks/useGlobalChat'
+import { buildProtectedUrl } from '@/utils/url'
+import { useNavigate } from 'react-router-dom'
 
 export interface GlobalChatProps {
     chatId: string
@@ -13,6 +15,7 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
     const user = useStore((state) => state.identity.user)
     const ref = useRef<HTMLInputElement | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
+    const navigate = useNavigate()
 
     const { messages, sendMessage } = useGlobalChat(chatId || '')
 
@@ -68,6 +71,9 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
                                 date={date}
                                 messages={messages}
                                 user={user}
+                                onNicknameClick={(user) => {
+                                    navigate(buildProtectedUrl(`/u/${user._id}`))
+                                }}
                             />
                         ))}
                 </div>

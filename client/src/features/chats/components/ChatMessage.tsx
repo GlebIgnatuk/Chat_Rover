@@ -7,9 +7,17 @@ export interface ChatMessageProps {
     sentAt: Date
     senderName: string
     isOwner: boolean
+    onNicknameClick?: () => void
 }
 
-export const ChatMessage = ({ senderName, sentAt, status, text, isOwner }: ChatMessageProps) => {
+export const ChatMessage = ({
+    senderName,
+    sentAt,
+    status,
+    text,
+    isOwner,
+    onNicknameClick,
+}: ChatMessageProps) => {
     return (
         <Card
             className={cn(
@@ -24,7 +32,14 @@ export const ChatMessage = ({ senderName, sentAt, status, text, isOwner }: ChatM
                 },
             )}
         >
-            <div className="font-semibold text-accent">{senderName}</div>
+            <div
+                className={cn('font-semibold text-accent', {
+                    'cursor-pointer': onNicknameClick !== undefined,
+                })}
+                onClick={onNicknameClick}
+            >
+                {senderName}
+            </div>
             <div>{text}</div>
             <div className="text-xs text-right text-primary-700">
                 {sentAt.toTimeString().substring(0, 5)}
