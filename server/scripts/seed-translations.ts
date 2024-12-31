@@ -35,7 +35,7 @@ async function main() {
             },
             auth__profile__nickname_placeholder: {
                 description: 'todo',
-                value: 'Your nickname...',
+                value: 'Your nickname in WuWa...',
             },
             auth__profile__uid: {
                 description: 'todo',
@@ -181,7 +181,7 @@ async function main() {
             },
             auth__profile__nickname_placeholder: {
                 description: 'todo',
-                value: 'Твой никнейм...',
+                value: 'Твой никнейм в WuWa...',
             },
             auth__profile__uid: {
                 description: 'todo',
