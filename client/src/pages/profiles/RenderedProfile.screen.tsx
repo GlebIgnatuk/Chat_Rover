@@ -100,12 +100,14 @@ const Rendered = ({ profile }: RenderedProps) => {
                 <div className="text-white text-lg text-center h-full flex flex-col gap-3 items-center justify-center px-2">
                     <div className="text-red-500">{localize('general__error')}!</div>
 
-                    <div>
-                        {localize('exports__error__bot_start').replace(
-                            '%url',
-                            import.meta.env.VITE_BOT_URL,
-                        )}
-                    </div>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: localize('exports__error__bot_start').replace(
+                                /%url/g,
+                                import.meta.env.VITE_BOT_URL,
+                            ),
+                        }}
+                    ></div>
 
                     <button
                         className="bg-stone-800 text-primary-700 border border-primary-700 rounded-full px-4 py-1"

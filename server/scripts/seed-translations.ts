@@ -155,7 +155,7 @@ async function main() {
             },
             exports__error__bot_start: {
                 description: 'todo',
-                value: "If you didn't receive the exported image make sure that you started the bot %url. Come back and repeat the export.",
+                value: 'If you didn\'t receive the exported image make sure that you started the bot <a href="%url">%url</a>. Come back and repeat the export.',
             },
         },
         ru: {
@@ -301,7 +301,7 @@ async function main() {
             },
             exports__error__bot_start: {
                 description: 'todo',
-                value: 'Если вы не получили картинку проверьте что вы начали беседу с ботом %url. Попробуйте еще раз.',
+                value: 'Если вы не получили картинку проверьте что вы начали беседу с ботом <a href="%url">%url</a>. Попробуйте еще раз.',
             },
         },
     }
