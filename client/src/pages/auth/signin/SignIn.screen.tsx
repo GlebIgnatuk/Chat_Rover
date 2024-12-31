@@ -23,7 +23,9 @@ export const SignInScreen = () => {
             setError('')
             setIsLoading(true)
 
+            const t0 = Date.now()
             const response = await api<IIdentity>('/users/me', { signal })
+            await new Promise((res) => setTimeout(res, 1 * 1000 - (Date.now() - t0)))
             setIsLoading(false)
 
             if (response.success) {

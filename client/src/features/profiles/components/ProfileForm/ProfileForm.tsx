@@ -179,7 +179,7 @@ export const ProfileForm = ({ form }: Props) => {
                     </div>
 
                     <div className="relative bg-[#FFFAE7] mx-1 mb-1 mt-2 p-2 pt-5 border-[#D8C9AD] rounded-xl overflow-hidden">
-                        <div className="text-[#7D7881] mb-10">TODO</div>
+                        <div className="text-[#7D7881] mb-10"></div>
 
                         <div className="h-[1px] bg-[#D8C9AD] relative my-2">
                             <div className="w-1 h-1 bg-inherit rotate-45 absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2"></div>
