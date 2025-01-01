@@ -10,14 +10,25 @@ import { IIdentity } from '@/context/auth/AuthContext'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 
 const getInitialUsername = () => {
-    // @ts-expect-error add types
-    const data = window.Telegram.WebApp.initData
-    const params = new URLSearchParams(data)
-    const user = params.get('user')
+    try {
+        // @ts-expect-error add types
+        const data = window.Telegram.WebApp.initData
+        const params = new URLSearchParams(data)
+        const user = params.get('user')
 
-    const random = Math.floor(Math.random() * (9999 - 1000)) + 1000
+        if (user) {
+            const parsed = JSON.parse(user)
+            const name = parsed.username || parsed.first_name
+            if (!name) throw new Error('invalid user data')
 
-    return user ? JSON.parse(user).username : `Rover${random}`
+            return name
+        } else {
+            throw new Error('invalid user data')
+        }
+    } catch (e) {
+        const random = Math.floor(Math.random() * (9999 - 1000)) + 1000
+        return `Rover${random}`
+    }
 }
 
 export const SignUpNicknameScreen = () => {
