@@ -7,6 +7,7 @@ import { IGlobalChatRepository } from './globalChat'
 import { IReportRepository } from './reports'
 import { ITranslationRepository } from './translation'
 import { IErrorRepository } from './error'
+import { IProfileExportRepository } from './profileExport'
 
 export interface IRepositories {
     chatMessage: IChatMessageRepository
@@ -18,4 +19,5 @@ export interface IRepositories {
     profile: IProfileRepository
     translation: ITranslationRepository
     error: IErrorRepository
+    profileExport: IProfileExportRepository
 }

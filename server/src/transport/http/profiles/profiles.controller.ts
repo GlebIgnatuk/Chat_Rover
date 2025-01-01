@@ -173,6 +173,11 @@ export const createExport: IAuthorizedRequestHandler = async (req, res, next) =>
                 },
             )
 
+            await repositories.profileExport.create({
+                profileId: profileId,
+                userId: user._id,
+            })
+
             if (response.ok) {
                 res.json({ success: true })
             } else {

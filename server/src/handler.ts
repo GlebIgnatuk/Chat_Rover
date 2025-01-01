@@ -22,6 +22,7 @@ import { GlobalChatRepository } from './repositories/impl/globalChat'
 import { GlobalChatService } from './core/globalChatService'
 import { TranslationRepository } from './repositories/impl/translation'
 import { ErrorRepository } from './repositories/impl/error'
+import { ProfileExportRepository } from './repositories/impl/profileExport'
 
 const app = express()
 let server: http.Server | https.Server
@@ -54,6 +55,7 @@ const handler = async () => {
         profile: new ProfileRepository(userRepo),
         translation: new TranslationRepository(),
         error: new ErrorRepository(),
+        profileExport: new ProfileExportRepository(),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(
