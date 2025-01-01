@@ -2,10 +2,14 @@ import { useStore } from '@/context/app/useStore'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { api } from '@/services/api'
 import { IMessage } from '@/store/types'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { io } from 'socket.io-client'
 
+const ITEMS_PER_PAGE = 15
+
 export const useGlobalChat = (slug: string) => {
+    const page = useRef(1)
+
     const chatId = slug
 
     const user = useStore((state) => state.identity.user)
@@ -31,13 +35,16 @@ export const useGlobalChat = (slug: string) => {
         return messages.length - lastReadMessageIndex - 1
     }, [lastReadMessageIndex, messages])
 
+    const canMoveBackwards =
+        messages && messages.length !== 0 && messages.length % ITEMS_PER_PAGE === 0
+
     const loadMessages = async (chatId: string, signal?: AbortSignal) => {
         if (messagesLoading?.is) return
 
         try {
             chatsMessagesRef.current.loading.start(chatId)
             const response = await api<IMessage[]>(
-                `/globalChats/${chatId}/messages/?page=1&limit=15`,
+                `/globalChats/${chatId}/messages/?page=1&limit=${ITEMS_PER_PAGE}`,
                 {
                     signal,
                 },
@@ -46,6 +53,28 @@ export const useGlobalChat = (slug: string) => {
             if (response.success) {
                 // chatsMessagesRef.current.append(chatId, response.data)
                 chatsMessagesRef.current.set(chatId, response.data)
+                chatsMessagesRef.current.loading.stop(chatId)
+            } else {
+                chatsMessagesRef.current.loading.stopWithError(response.error, chatId)
+            }
+        } catch (e) {
+            console.error(e)
+            chatsMessagesRef.current.loading.stopWithError('Something went wrong', chatId)
+        }
+    }
+
+    const loadPreviousPage = async () => {
+        if (messagesLoading?.is || !canMoveBackwards) return
+
+        try {
+            chatsMessagesRef.current.loading.start(chatId)
+            const response = await api<IMessage[]>(
+                `/globalChats/${chatId}/messages/?page=${page.current + 1}&limit=${ITEMS_PER_PAGE}`,
+            )
+
+            if (response.success) {
+                page.current += 1
+                chatsMessagesRef.current.prepend(chatId, response.data)
                 chatsMessagesRef.current.loading.stop(chatId)
             } else {
                 chatsMessagesRef.current.loading.stopWithError(response.error, chatId)
@@ -158,5 +187,6 @@ export const useGlobalChat = (slug: string) => {
         },
         sendMessage,
         markMessageAsRead,
+        loadPreviousPage,
     }
 }

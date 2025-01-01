@@ -1,5 +1,5 @@
 import { ChatInput } from './ChatInput'
-import { UIEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
@@ -8,13 +8,15 @@ import { buildProtectedUrl } from '@/utils/url'
 import { useNavigate } from 'react-router-dom'
 import { ChatFloatingButton } from './ChatFloatingButton'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
 
 export interface GlobalChatProps {
     chatId: string
 }
 
 export const GlobalChat = ({ chatId }: GlobalChatProps) => {
-    const [scrollTop, setScrollTop] = useState(0)
+    const [showFloatingButton, setShowFloatingButton] = useState(false)
+    const [isFirstLoad, setIsFirstLoad] = useState(true)
 
     const user = useStore((state) => state.identity.user)
     const ref = useRef<HTMLInputElement | null>(null)
@@ -28,6 +30,7 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         messages,
         sendMessage,
         markMessageAsRead,
+        loadPreviousPage,
     } = useGlobalChat(chatId || '')
 
     const groupped = useMemo(() => {
@@ -44,7 +47,7 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
 
         return Object.entries(object)
             .map<[Date, IMessageWithStatus[]]>(([k, v]) => [new Date(k), v])
-            .sort(([a], [b]) => b.getTime() - a.getTime())
+            .sort(([a], [b]) => a.getTime() - b.getTime())
     }, [messages.messages])
 
     const submit = () => {
@@ -61,22 +64,36 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         }
     }
 
-    const onScroll: UIEventHandler = useCallback((e) => {
-        setScrollTop(e.currentTarget.scrollTop)
-    }, [])
-
     useEffect(() => {
-        if (!scrollRef.current) return
-
-        const hasScrolledEnough = scrollRef.current.scrollTop <= -300
-        if (hasScrolledEnough) return
-
-        scrollRef.current.scrollTo({
-            top: scrollRef.current.scrollHeight,
-            behavior: 'smooth',
-        })
+        if (messages.messages && messages.messages.length !== 0) {
+            setIsFirstLoad(false)
+        }
     }, [messages.messages])
 
+    // scroll to down on new message (ignore if scrolled to top manually)
+    useEffect(() => {
+        const scrollable = scrollRef.current
+        if (!scrollable) return
+
+        if (isFirstLoad) {
+            scrollable.scrollTo({
+                top: scrollable.scrollHeight,
+                behavior: 'instant',
+            })
+        } else {
+            const hasScrolledEnough =
+                scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >= 200
+
+            if (hasScrolledEnough) return
+
+            scrollable.scrollTo({
+                top: scrollable.scrollHeight,
+                behavior: 'smooth',
+            })
+        }
+    }, [messages.messages, isFirstLoad])
+
+    // display floating button depending on scroll
     useEffect(() => {
         const scrollable = scrollRef.current
         if (!scrollable) return
@@ -84,18 +101,52 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         let timeout: number | undefined
 
         const onScroll = () => {
-            const scrollTop = scrollable.scrollTop
+            const showFloatingButton =
+                scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >= 200
 
             window.clearTimeout(timeout)
             timeout = window.setTimeout(() => {
-                setScrollTop(scrollTop)
-            }, 300)
+                setShowFloatingButton(showFloatingButton)
+            }, 50)
         }
 
         scrollable.addEventListener('scroll', onScroll)
         return () => scrollable.removeEventListener('scroll', onScroll)
     }, [])
 
+    // display floating button depending on new messages
+    useEffect(() => {
+        const scrollable = scrollRef.current
+        if (!scrollable) return
+        const showFloatingButton =
+            scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >= 200
+        setShowFloatingButton(showFloatingButton)
+    }, [messages.messages])
+
+    // load chat history as you scroll to top
+    useEffect(() => {
+        const scrollable = scrollRef.current
+        if (!scrollable || messages.loading.is || isFirstLoad) return
+
+        const onScroll = () => {
+            const avgMessageHeight = 80
+            const messagesLeft = Math.floor(scrollable.scrollTop / avgMessageHeight)
+
+            if (messagesLeft <= 3 && !messages.loading.is && !messages.loading.error) {
+                const scrollHeight = scrollable.scrollHeight
+
+                loadPreviousPage().then(() => {
+                    const newScrollTop = scrollable.scrollHeight - scrollHeight - 80
+                    scrollable.scrollTo({ top: newScrollTop, behavior: 'instant' })
+                })
+            }
+        }
+
+        scrollable.addEventListener('scroll', onScroll)
+        return () => scrollable.removeEventListener('scroll', onScroll)
+    }, [loadPreviousPage, messages.loading, isFirstLoad])
+
+    // mark messages as read as you scroll
     useEffect(() => {
         const scrollable = scrollRef.current
         if (!scrollable || lastReadMessageIndex === messages.messages.length - 1) return
@@ -131,17 +182,16 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
     return (
         <div className="relative h-full grid grid-rows-[minmax(0,1fr),max-content]">
             <div className="overflow-hidden relative">
-                <div
-                    className="h-full flex flex-col-reverse overflow-auto gap-2 px-2 pb-2"
-                    ref={scrollRef}
-                    onScroll={onScroll}
-                >
-                    {messages.loading.is && <>Loading...</>}
-                    {messages.loading.is === false && messages.loading.error && (
-                        <>Failed to load: {messages.loading.error}</>
+                <div className="h-full flex flex-col overflow-auto gap-2 px-2 pb-2" ref={scrollRef}>
+                    {messages.loading.is && (
+                        <div className="flex justify-center py-2">
+                            <CircularLoaderIndicator size="lg" />
+                        </div>
                     )}
-                    {messages.loading.is === false &&
-                        messages.loading.error === undefined &&
+                    {messages.messages.length === 0 &&
+                        messages.loading.is === false &&
+                        messages.loading.error && <>Failed to load: {messages.loading.error}</>}
+                    {messages.messages.length !== 0 &&
                         groupped.map(([date, messages]) => (
                             <ChatMessageGroup
                                 key={date.toISOString()}
@@ -155,7 +205,7 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
                         ))}
                 </div>
 
-                {scrollTop <= -200 && (
+                {showFloatingButton && (
                     <ChatFloatingButton
                         icon={faArrowDown}
                         className="absolute bottom-2 right-2"
