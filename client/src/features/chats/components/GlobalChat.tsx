@@ -1,17 +1,21 @@
 import { ChatInput } from './ChatInput'
-import { useEffect, useMemo, useRef } from 'react'
+import { UIEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
 import { useGlobalChat } from '../hooks/useGlobalChat'
 import { buildProtectedUrl } from '@/utils/url'
 import { useNavigate } from 'react-router-dom'
+import { ChatFloatingButton } from './ChatFloatingButton'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 
 export interface GlobalChatProps {
     chatId: string
 }
 
 export const GlobalChat = ({ chatId }: GlobalChatProps) => {
+    const [scrollTop, setScrollTop] = useState(0)
+
     const user = useStore((state) => state.identity.user)
     const ref = useRef<HTMLInputElement | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -43,21 +47,48 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         }
     }
 
+    const onScroll: UIEventHandler = useCallback((e) => {
+        setScrollTop(e.currentTarget.scrollTop)
+    }, [])
+
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTo({
-                top: scrollRef.current.scrollHeight,
-                behavior: 'smooth',
-            })
-        }
+        if (!scrollRef.current) return
+
+        const hasScrolledEnough = scrollRef.current.scrollTop <= -300
+        if (hasScrolledEnough) return
+
+        scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: 'smooth',
+        })
     }, [messages.messages])
+
+    useEffect(() => {
+        const scrollable = scrollRef.current
+        if (!scrollable) return
+
+        let timeout: number | undefined
+
+        const onScroll = () => {
+            const scrollTop = scrollable.scrollTop
+
+            window.clearTimeout(timeout)
+            timeout = window.setTimeout(() => {
+                setScrollTop(scrollTop)
+            }, 300)
+        }
+
+        scrollable.addEventListener('scroll', onScroll)
+        return () => scrollable.removeEventListener('scroll', onScroll)
+    }, [])
 
     return (
         <div className="relative h-full grid grid-rows-[minmax(0,1fr),max-content]">
-            <div className="overflow-hidden">
+            <div className="overflow-hidden relative">
                 <div
                     className="h-full flex flex-col-reverse overflow-auto gap-2 px-2 pb-2"
                     ref={scrollRef}
+                    onScroll={onScroll}
                 >
                     {messages.loading.is && <>Loading...</>}
                     {messages.loading.is === false && messages.loading.error && (
@@ -77,6 +108,22 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
                             />
                         ))}
                 </div>
+
+                {scrollTop <= -200 && (
+                    <ChatFloatingButton
+                        icon={faArrowDown}
+                        className="absolute bottom-2 right-2"
+                        onClick={() => {
+                            const scrollable = scrollRef.current
+                            if (!scrollable) return
+
+                            scrollable.scrollTo({
+                                top: scrollable.scrollHeight,
+                                behavior: 'instant',
+                            })
+                        }}
+                    />
+                )}
             </div>
 
             <ChatInput
