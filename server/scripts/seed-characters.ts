@@ -3,7 +3,7 @@ import { MongoDBService } from '@/services/database'
 
 async function main() {
     await MongoDBService.lazy(process.env.MONGO_URI)
-    await WuwaCharacterModel.getCollection().deleteMany({})
+    // await WuwaCharacterModel.getCollection().deleteMany({})
 
     const now = new Date()
 
@@ -188,6 +188,27 @@ async function main() {
             accentColor: '#C2644C',
             photoPath: '/characters/mortefi.png',
         },
+        {
+            name: 'camellya',
+            element: 'havoc',
+            sex: 'female',
+            accentColor: '#FF8BCF',
+            photoPath: '/characters/camellya.png',
+        },
+        {
+            name: 'lumi',
+            element: 'electro',
+            sex: 'female',
+            accentColor: '#845BAE',
+            photoPath: '/characters/lumi.png',
+        },
+        {
+            name: 'youhu',
+            element: 'glacio',
+            sex: 'female',
+            accentColor: '#93E0FF',
+            photoPath: '/characters/youhu.png',
+        },
     ]
 
     const mapped = characters.map<IWuwaCharacterModel>((c) => ({
@@ -197,7 +218,20 @@ async function main() {
         updatedAt: now,
     }))
 
-    await WuwaCharacterModel.getCollection().insertMany(mapped)
+    const filtered: IWuwaCharacterModel[] = []
+
+    for (const c of mapped) {
+        const found = await WuwaCharacterModel.getCollection().findOne({
+            name: c.name,
+            element: c.element,
+            sex: c.sex,
+        })
+        if (found) continue
+
+        filtered.push(c)
+    }
+
+    if (filtered.length !== 0) await WuwaCharacterModel.getCollection().insertMany(filtered)
 
     console.log('Done!')
 }

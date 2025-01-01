@@ -4,7 +4,7 @@ import { MongoDBService } from '@/services/database'
 
 async function main() {
     await MongoDBService.lazy(process.env.MONGO_URI)
-    await GlobalChatModel.getCollection().deleteMany({ type: 'global' })
+    // await GlobalChatModel.getCollection().deleteMany({ type: 'global' })
 
     const now = new Date()
 
@@ -29,7 +29,19 @@ async function main() {
         updatedAt: now,
     }))
 
-    await GlobalChatModel.getCollection().insertMany(mapped)
+    const filtered: IGlobalChatModel[] = []
+
+    for (const c of mapped) {
+        const found = await GlobalChatModel.getCollection().findOne({
+            type: 'global',
+            slug: c.slug,
+        })
+        if (found) continue
+
+        filtered.push(c)
+    }
+
+    if (filtered.length !== 0) await GlobalChatModel.getCollection().insertMany(filtered)
 
     console.log('Done!')
 }

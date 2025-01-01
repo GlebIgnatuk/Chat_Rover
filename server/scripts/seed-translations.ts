@@ -6,7 +6,7 @@ async function main() {
     await MongoDBService.lazy(process.env.MONGO_URI)
 
     // Clear the existing translations
-    await TranslationModel.getCollection().deleteMany({})
+    // await TranslationModel.getCollection().deleteMany({})
 
     const now = new Date()
 
@@ -336,14 +336,28 @@ async function main() {
         }
     }
 
+    const filtered: Omit<ITranslationModel, 'createdAt' | 'updatedAt'>[] = []
+
     // Insert translations into the database
-    await TranslationModel.getCollection().insertMany(
-        mappedTranslations.map((t) => ({
-            ...t,
-            createdAt: now,
-            updatedAt: now,
-        })),
-    )
+    for (const t of mappedTranslations) {
+        const found = await TranslationModel.getCollection().findOne({
+            key: t.key,
+            language: t.language,
+        })
+        if (found) continue
+
+        filtered.push(t)
+    }
+
+    if (filtered.length !== 0) {
+        await TranslationModel.getCollection().insertMany(
+            filtered.map((t) => ({
+                ...t,
+                createdAt: now,
+                updatedAt: now,
+            })),
+        )
+    }
 
     console.log('All translations seeded successfully!')
 }
