@@ -13,7 +13,7 @@ import { useWebsocket } from './hooks/chats/useWebsocket'
 import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
-import { ISearchedProfile } from './store/types'
+import { IGlobalChatWithMetadata, ISearchedProfile } from './store/types'
 import { ITEMS_PER_PAGE } from './features/search/hooks/useSearch'
 
 // This component makes sure that we have a user authenticated, so we can initialize store
@@ -50,9 +50,19 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         }
     }
 
+    const loadGlobalChats = async () => {
+        const response = await api<IGlobalChatWithMetadata[]>(`/globalChats`)
+        if (response.success) {
+            return response.data
+        } else {
+            return []
+        }
+    }
+
     const loader = useBatchedLoader({
         values: [
             () => searchProfiles(),
+            () => loadGlobalChats(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
             () => new Promise((res) => setTimeout(res, 1000)),
@@ -70,9 +80,15 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        const [searchedProfiles] = loader.$unwrap()
+        const [searchedProfiles, globalChats] = loader.$unwrap()
 
-        return <StoreProvider identity={identity} searchedProfiles={searchedProfiles} />
+        return (
+            <StoreProvider
+                identity={identity}
+                searchedProfiles={searchedProfiles}
+                globalChats={globalChats}
+            />
+        )
     } else {
         return (
             <div className="pointer-events-none relative h-full flex justify-center items-center bg-[#131313]">
@@ -107,15 +123,17 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
 interface StoreProviderProps {
     identity: IIdentity
     searchedProfiles: ISearchedProfile[]
+    globalChats: IGlobalChatWithMetadata[]
 }
 
 // This component initializes store with initial data like user
-const StoreProvider = ({ identity, searchedProfiles }: StoreProviderProps) => {
+const StoreProvider = ({ identity, searchedProfiles, globalChats }: StoreProviderProps) => {
     const store = useRef<IStore>()
     if (!store.current) {
         store.current = createStore({
             identity,
             searchedProfiles,
+            globalChats,
         })
     }
 

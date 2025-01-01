@@ -2,11 +2,6 @@ export type IPrivateChat = {
     _id: string
 }
 
-export type IGlobalChat = {
-    _id: string
-    slug: string
-}
-
 export type IIntl = Record<string, string>
 
 export type IAppConfig = {
@@ -74,6 +69,17 @@ export type IMessage = {
     type: string
     createdAt: string
     updatedAt: string
+}
+
+export type IGlobalChat = {
+    _id: string
+    title: string
+    slug: string
+    description: string
+}
+
+export type IGlobalChatWithMetadata = IGlobalChat & {
+    activeSubscribers: number
 }
 
 export type IMessageWithStatus = {

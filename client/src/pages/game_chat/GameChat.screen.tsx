@@ -1,57 +1,45 @@
 import { Card } from '@/components/Card'
+import { useStore } from '@/context/app/useStore'
+import { api } from '@/services/api'
+import { IGlobalChatWithMetadata } from '@/store/types'
 import { buildProtectedUrl } from '@/utils/url'
-import { faCrown } from '@fortawesome/free-solid-svg-icons'
+import { faCrown, faPerson } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const servers = [
-    {
-        label: 'Global',
-        icon: faCrown,
-    },
-    {
-        label: 'SEA',
-        icon: faCrown,
-    },
-    {
-        label: 'Asia',
-        icon: faCrown,
-    },
-    {
-        label: 'Europe',
-        icon: faCrown,
-    },
-    {
-        label: 'HMT',
-        icon: faCrown,
-    },
-    {
-        label: 'America',
-        icon: faCrown,
-    },
-]
 
 export const GameChatScreen = () => {
     const navigate = useNavigate()
+    const globalChats = useStore((state) => state.globalChats)
+
+    useEffect(() => {
+        const timer = setInterval(async () => {
+            const response = await api<IGlobalChatWithMetadata[]>('/globalChats')
+            if (response.success) {
+                globalChats.setItems(response.data)
+            }
+        }, 5 * 1000)
+
+        return () => clearInterval(timer)
+    }, [])
 
     return (
         <div className="flex flex-col gap-2 p-1">
-            {servers.map((server) => (
+            {globalChats.items.map((chat) => (
                 <Card
-                    key={server.label}
+                    key={chat.slug}
                     className="cursor-pointer"
                     onClick={() => {
-                        navigate(buildProtectedUrl(`/game_chat/${server.label.toLowerCase()}`))
+                        navigate(buildProtectedUrl(`/game_chat/${chat.slug}`))
                     }}
                 >
-                    <div className="grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center p-2">
-                        <FontAwesomeIcon icon={server.icon} className="w-6 h-6 text-accent" />
+                    <div className="grid grid-cols-[max-content,minmax(0,1fr),max-content,max-content] items-center p-2">
+                        <FontAwesomeIcon icon={faCrown} className="w-6 h-6 text-accent" />
 
-                        <span className="text-lg text-primary-700 ml-2">{server.label}</span>
+                        <span className="text-lg text-primary-700 ml-2">{chat.title}</span>
 
-                        <span className="text-sm text-gray-300">
-                            {Math.floor(Math.random() * (9999 - 1000)) + 1000}
-                        </span>
+                        <span className="text-sm text-gray-300">{chat.activeSubscribers}</span>
+                        <FontAwesomeIcon icon={faPerson} className="ml-1 w-4 h-4" />
                     </div>
                 </Card>
             ))}

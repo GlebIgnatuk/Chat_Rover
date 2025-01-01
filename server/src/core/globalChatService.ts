@@ -23,6 +23,10 @@ export class GlobalChatService {
         this.chatRepo = chatRepo
     }
 
+    getSubscribersCount(slug: string) {
+        return this.NS.adapter.rooms.get(slug)?.size ?? 0
+    }
+
     async sendMessage(slug: string, text: string, ctx: ValidatedUserPayload) {
         if (text.length === 0) {
             throw new Error("Message can't be empty")

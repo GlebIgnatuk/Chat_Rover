@@ -2,7 +2,7 @@ import { IIdentity } from '@/context/auth/AuthContext'
 import { ILoading } from './common'
 import {
     IAppConfig,
-    IGlobalChat,
+    IGlobalChatWithMetadata,
     IIntl,
     IMessage,
     IMessageWithStatus,
@@ -45,7 +45,8 @@ export type IChatsState = {
 
 export type IGlobalChatsState = {
     globalChats: {
-        items: { [chatId: string]: IGlobalChat }
+        items: IGlobalChatWithMetadata[]
+        setItems: (chats: IGlobalChatWithMetadata[]) => void
     }
     globalChatsMessages: {
         items: { [chatId: string]: IMessageWithStatus[] }
