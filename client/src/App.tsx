@@ -1,3 +1,4 @@
+import { ErrorBoundary } from 'react-error-boundary'
 import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
@@ -24,15 +25,18 @@ import { SplashScreen } from './pages/Splash.screen'
 import { HomeLayout } from './pages/Home.layout'
 import { UserScreen } from './pages/user/User.screen'
 import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
+import { ErrorBoundaryScreen } from './pages/ErrorBoundary.screen'
 
 const router = createBrowserRouter([
     {
         index: true,
         element: <SplashScreen />,
+        errorElement: <ErrorBoundaryScreen />,
     },
     {
         path: PATH_PREFIX.substring(1),
         element: <PublicStoreProvider />,
+        errorElement: <ErrorBoundaryScreen />,
         children: [
             {
                 path: AUTH_PATH_PREFIX.substring(1),
@@ -154,11 +158,16 @@ const router = createBrowserRouter([
     {
         path: '*',
         element: <Navigate to={buildPublicUrl('/')} replace />,
+        errorElement: <ErrorBoundaryScreen />,
     },
 ])
 
 function EntryPoint() {
-    return <RouterProvider router={router} />
+    return (
+        <ErrorBoundary fallbackRender={ErrorBoundaryScreen}>
+            <RouterProvider router={router} />
+        </ErrorBoundary>
+    )
 }
 
 export default EntryPoint

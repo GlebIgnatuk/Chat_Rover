@@ -8,6 +8,7 @@ import * as WuwaCharactersController from './wuwaCharacters/wuwaCharacters.contr
 import * as ProfilesController from './profiles/profiles.controller'
 import * as AppConfigController from './appConfig/appConfig.controller'
 import * as TranslationsController from './translations/translations.controller'
+import * as ErrorsController from './errors/errors.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -55,6 +56,28 @@ export const setupHttpRouter = (
     })
 
     const unauthorized = Router({ mergeParams: true })
+    // optionally include authenticated user
+    unauthorized.use((req, res, next) => {
+        const initData = req.headers['x-telegram-init-data'] as string
+
+        let identity: ValidatedUserPayload
+        try {
+            if (config.ALLOW_FAKE_PROFILES === 'true') {
+                identity = validateUserPayloadMock(initData, config.TELEGRAM_BOT_TOKEN)
+            } else {
+                identity = validateUserPayload(initData, config.TELEGRAM_BOT_TOKEN)
+            }
+
+            res.locals = {
+                ...res.locals,
+                identity,
+            }
+
+            next()
+        } catch {
+            next()
+        }
+    })
 
     //
     // Public routes
@@ -71,6 +94,9 @@ export const setupHttpRouter = (
             },
         })
     })
+
+    // Errors
+    unauthorized.post('/errors', ErrorsController.create)
 
     // App config
     unauthorized.get('/appConfig', AppConfigController.get)
