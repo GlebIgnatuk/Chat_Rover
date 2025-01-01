@@ -2,7 +2,7 @@ import { useStore } from '@/context/app/useStore'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { api } from '@/services/api'
 import { IMessage } from '@/store/types'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { io } from 'socket.io-client'
 
 export const useGlobalChat = (slug: string) => {
@@ -15,6 +15,16 @@ export const useGlobalChat = (slug: string) => {
 
     const messages = chatsMessages.items[slug]
     const messagesLoading = chatsMessages.loading.items[slug]
+
+    const lastReadMessage = chatsMessages.lastReadMessages[chatId]
+    const notReadMessagesCount = useMemo(() => {
+        if (!messages || !lastReadMessage) return 0
+
+        const index = messages.findIndex((m) => m.message._id === lastReadMessage)
+        if (index === -1) return 0
+
+        return messages.length - index - 1
+    }, [lastReadMessage, messages])
 
     const loadMessages = async (chatId: string, signal?: AbortSignal) => {
         if (messagesLoading?.is) return
@@ -64,6 +74,7 @@ export const useGlobalChat = (slug: string) => {
                 error: null,
                 status: 'pending',
             })
+            chatsMessagesRef.current.setLastReadMessage(chatId, draft._id)
 
             const response = await api<IMessage>(`/globalChats/${chatId}/messages`, {
                 method: 'POST',
@@ -72,6 +83,7 @@ export const useGlobalChat = (slug: string) => {
             })
             if (response.success) {
                 chatsMessagesRef.current.replace(chatId, draft._id, response.data)
+                chatsMessagesRef.current.setLastReadMessage(chatId, response.data._id)
             } else {
                 chatsMessagesRef.current.put(chatId, {
                     message: draft,
@@ -127,6 +139,8 @@ export const useGlobalChat = (slug: string) => {
     }, [slug])
 
     return {
+        lastReadMessageId: lastReadMessage,
+        notReadMessagesCount,
         messages: {
             messages: messages ?? [],
             loading: messagesLoading ?? { is: false },

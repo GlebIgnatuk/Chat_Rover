@@ -2,6 +2,7 @@ import { Card } from '@/components/Card'
 import { cn } from 'tailwind-cn'
 
 export interface ChatMessageProps {
+    id: string
     status: 'sent' | 'pending' | 'errored'
     text: string
     sentAt: Date
@@ -11,6 +12,7 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage = ({
+    id,
     senderName,
     sentAt,
     status,
@@ -20,6 +22,7 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
     return (
         <Card
+            data-message-id={id}
             className={cn(
                 'px-2 py-1 rounded-md transition-colors duration-500 min-w-24 max-w-4/5',
                 {

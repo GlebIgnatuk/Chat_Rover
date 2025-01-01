@@ -56,6 +56,9 @@ export type IGlobalChatsState = {
         append: (chatId: string, items: IMessage[]) => void
         set: (chatId: string, items: IMessage[]) => void
 
+        lastReadMessages: { [chatId: string]: string }
+        setLastReadMessage: (chatId: string, messageId: string) => void
+
         loading: ILoadingState
     }
 }

@@ -1,14 +1,16 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ReactNode } from 'react'
 import { cn } from 'tailwind-cn'
 
 interface Props {
     className?: string
     icon: IconProp
     onClick: () => void
+    children?: ReactNode
 }
 
-export const ChatFloatingButton = ({ onClick, className, icon }: Props) => {
+export const ChatFloatingButton = ({ onClick, className, icon, children }: Props) => {
     return (
         <div
             className={cn(
@@ -18,6 +20,8 @@ export const ChatFloatingButton = ({ onClick, className, icon }: Props) => {
             onClick={onClick}
         >
             <FontAwesomeIcon icon={icon} className="w-full h-full" />
+
+            {children}
         </div>
     )
 }

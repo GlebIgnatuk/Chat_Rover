@@ -21,7 +21,9 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const navigate = useNavigate()
 
-    const { messages, sendMessage } = useGlobalChat(chatId || '')
+    const { lastReadMessageId, notReadMessagesCount, messages, sendMessage } = useGlobalChat(
+        chatId || '',
+    )
 
     const groupped = useMemo(() => {
         const object = messages.messages.reduce<Record<string, IMessageWithStatus[]>>((acc, n) => {
@@ -44,6 +46,13 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         if (ref.current && ref.current.value.trim() !== '') {
             sendMessage(ref.current.value)
             ref.current.value = ''
+
+            if (scrollRef.current) {
+                scrollRef.current.scrollTo({
+                    top: scrollRef.current.scrollHeight,
+                    behavior: 'instant',
+                })
+            }
         }
     }
 
@@ -117,12 +126,29 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
                             const scrollable = scrollRef.current
                             if (!scrollable) return
 
-                            scrollable.scrollTo({
-                                top: scrollable.scrollHeight,
-                                behavior: 'instant',
-                            })
+                            const target = scrollable.querySelector(
+                                `[data-message-id="${lastReadMessageId}"]`,
+                            )
+
+                            if (target) {
+                                target.scrollIntoView({
+                                    behavior: 'instant',
+                                    block: 'center',
+                                })
+                            } else {
+                                scrollable.scrollTo({
+                                    top: scrollable.scrollHeight,
+                                    behavior: 'instant',
+                                })
+                            }
                         }}
-                    />
+                    >
+                        {notReadMessagesCount !== 0 && (
+                            <div className="w-5 h-5 text-sm absolute -top-1 -right-1 flex items-center justify-center rounded-full bg-primary-700 text-stone-800">
+                                {notReadMessagesCount}
+                            </div>
+                        )}
+                    </ChatFloatingButton>
                 )}
             </div>
 

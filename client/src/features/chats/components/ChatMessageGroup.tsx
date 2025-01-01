@@ -33,6 +33,7 @@ export const ChatMessageGroup = ({
                     }}
                 >
                     <ChatMessage
+                        id={m._id}
                         senderName={m.createdBy.nickname}
                         isOwner={m.createdBy._id === user._id}
                         sentAt={new Date(m.createdAt)}

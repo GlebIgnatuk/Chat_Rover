@@ -99,8 +99,29 @@ export const createGlobalChatsSlice =
                         status: 'sent',
                     }))
 
-                    return R.assocPath(['globalChatsMessages', 'items', chatId], mapped, state)
+                    const updated = R.assocPath(
+                        ['globalChatsMessages', 'items', chatId],
+                        mapped,
+                        state,
+                    )
+
+                    return R.assocPath(
+                        ['globalChatsMessages', 'lastReadMessages', chatId],
+                        items[items.length - 1]?._id,
+                        updated,
+                    )
                 })
+            },
+
+            lastReadMessages: {},
+            setLastReadMessage: (chatId, messageId) => {
+                set((state) =>
+                    R.assocPath(
+                        ['globalChatsMessages', 'lastReadMessages', chatId],
+                        messageId,
+                        state,
+                    ),
+                )
             },
 
             loading: {
