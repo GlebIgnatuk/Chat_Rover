@@ -1,4 +1,5 @@
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { useStore } from '@/context/app/useStore'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
@@ -10,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export const UserScreen = () => {
+    const currentUser = useStore((state) => state.identity.user)
     const { userId } = useParams()
     const navigate = useNavigate()
 
@@ -51,6 +53,7 @@ export const UserScreen = () => {
 
     try {
         const [profiles, user] = loader.$unwrap()
+        const isCurrentUser = currentUser._id === user._id
 
         return (
             <div className="h-full p-1 gap-2 grid grid-rows-[max-content,minmax(0,1fr)] overflow-hidden">
@@ -63,13 +66,15 @@ export const UserScreen = () => {
                         </div>
                     </div>
                     <div className="flex flex-col items-end pr-3">
-                        <FontAwesomeIcon
-                            icon={faEnvelope}
-                            className="w-8 h-8 text-primary-700 cursor-pointer"
-                            onClick={() =>
-                                navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))
-                            }
-                        />
+                        {!isCurrentUser && (
+                            <FontAwesomeIcon
+                                icon={faEnvelope}
+                                className="w-8 h-8 text-primary-700 cursor-pointer"
+                                onClick={() =>
+                                    navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))
+                                }
+                            />
+                        )}
                     </div>
                 </div>
 
