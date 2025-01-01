@@ -2,7 +2,7 @@ import { useStore } from '@/context/app/useStore'
 import { useRecomputedRef } from '@/hooks/common/useRecomputedRef'
 import { api } from '@/services/api'
 import { IMessage } from '@/store/types'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { io } from 'socket.io-client'
 
 export const useGlobalChat = (slug: string) => {
@@ -16,15 +16,20 @@ export const useGlobalChat = (slug: string) => {
     const messages = chatsMessages.items[slug]
     const messagesLoading = chatsMessages.loading.items[slug]
 
-    const lastReadMessage = chatsMessages.lastReadMessages[chatId]
-    const notReadMessagesCount = useMemo(() => {
-        if (!messages || !lastReadMessage) return 0
+    const lastReadMessageId = chatsMessages.lastReadMessages[chatId]
+    const lastReadMessageIndex = useMemo(() => {
+        if (!messages || !lastReadMessageId) return 0
 
-        const index = messages.findIndex((m) => m.message._id === lastReadMessage)
+        const index = messages.findIndex((m) => m.message._id === lastReadMessageId)
         if (index === -1) return 0
 
-        return messages.length - index - 1
-    }, [lastReadMessage, messages])
+        return index
+    }, [messages, lastReadMessageId])
+    const notReadMessagesCount = useMemo(() => {
+        if (!messages) return 0
+
+        return messages.length - lastReadMessageIndex - 1
+    }, [lastReadMessageIndex, messages])
 
     const loadMessages = async (chatId: string, signal?: AbortSignal) => {
         if (messagesLoading?.is) return
@@ -100,6 +105,11 @@ export const useGlobalChat = (slug: string) => {
         }
     }
 
+    const markMessageAsRead = useCallback(
+        (messageId: string) => chatsMessagesRef.current.setLastReadMessage(chatId, messageId),
+        [chatId],
+    )
+
     useEffect(() => {
         const abortController = new AbortController()
         loadMessages(slug, abortController.signal)
@@ -139,12 +149,14 @@ export const useGlobalChat = (slug: string) => {
     }, [slug])
 
     return {
-        lastReadMessageId: lastReadMessage,
+        lastReadMessageId,
+        lastReadMessageIndex,
         notReadMessagesCount,
         messages: {
             messages: messages ?? [],
             loading: messagesLoading ?? { is: false },
         },
         sendMessage,
+        markMessageAsRead,
     }
 }

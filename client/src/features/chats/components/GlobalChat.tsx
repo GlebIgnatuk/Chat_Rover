@@ -21,9 +21,14 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const navigate = useNavigate()
 
-    const { lastReadMessageId, notReadMessagesCount, messages, sendMessage } = useGlobalChat(
-        chatId || '',
-    )
+    const {
+        lastReadMessageId,
+        lastReadMessageIndex,
+        notReadMessagesCount,
+        messages,
+        sendMessage,
+        markMessageAsRead,
+    } = useGlobalChat(chatId || '')
 
     const groupped = useMemo(() => {
         const object = messages.messages.reduce<Record<string, IMessageWithStatus[]>>((acc, n) => {
@@ -90,6 +95,38 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
         scrollable.addEventListener('scroll', onScroll)
         return () => scrollable.removeEventListener('scroll', onScroll)
     }, [])
+
+    useEffect(() => {
+        const scrollable = scrollRef.current
+        if (!scrollable || lastReadMessageIndex === messages.messages.length - 1) return
+
+        const observer = new IntersectionObserver(
+            (targets) => {
+                for (const target of targets) {
+                    if (target.intersectionRatio < 0.5) continue
+
+                    observer.unobserve(target.target)
+
+                    const messageId = (target.target as HTMLElement).dataset['messageId']
+                    if (!messageId) continue
+
+                    markMessageAsRead(messageId)
+                }
+            },
+            {
+                root: scrollable,
+                rootMargin: '0px',
+                threshold: [0, 0.5, 1.0],
+            },
+        )
+
+        const elements = Array.from(scrollable.querySelectorAll('[data-message-id]')).slice(
+            lastReadMessageIndex + 1,
+        )
+        elements.forEach((e) => observer.observe(e))
+
+        return () => observer.disconnect()
+    }, [messages.messages, lastReadMessageIndex, markMessageAsRead])
 
     return (
         <div className="relative h-full grid grid-rows-[minmax(0,1fr),max-content]">
