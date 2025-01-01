@@ -1,6 +1,7 @@
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
 import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { useSearch } from '@/features/search/hooks/useSearch'
+import { useScrollRestoration } from '@/hooks/common/useScrollRestoration'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
 import { buildProtectedUrl } from '@/utils/url'
@@ -16,6 +17,7 @@ export const CommunityScreen = () => {
     const [isOpen, setIsOpen] = useState(false)
     const localize = useLocalize()
     const navigate = useNavigate()
+    const scrollableRef = useScrollRestoration<HTMLDivElement>()
 
     const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const cardHeight = 200
@@ -99,7 +101,11 @@ export const CommunityScreen = () => {
                 </div>
             </div>
 
-            <div className="h-full overflow-auto p-1 shadow-inner space-y-2" onScroll={onScroll}>
+            <div
+                ref={scrollableRef}
+                className="h-full overflow-auto p-1 shadow-inner space-y-2"
+                onScroll={onScroll}
+            >
                 {search.items.map(({ user, ...profile }) => (
                     <ProfileCard
                         key={profile._id}
