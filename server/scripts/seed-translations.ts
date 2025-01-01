@@ -129,6 +129,10 @@ async function main() {
                 description: 'todo',
                 value: 'Dismiss',
             },
+            general__skip: {
+                description: 'todo',
+                value: 'Skip',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Filters',
@@ -278,6 +282,10 @@ async function main() {
             general__dismiss: {
                 description: 'todo',
                 value: 'Скрыть',
+            },
+            general__skip: {
+                description: 'todo',
+                value: 'Пропустить',
             },
             search__filters: {
                 description: 'todo',

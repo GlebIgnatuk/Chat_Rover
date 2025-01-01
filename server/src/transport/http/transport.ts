@@ -119,6 +119,7 @@ export const setupHttpRouter = (
     authorized.get('/users/:id', UsersController.get)
     authorized.delete('/users/me', UsersController.deleteAuthenticated)
     authorized.post('/users', UsersController.create)
+    authorized.patch('/users/me', UsersController.patch)
     authorized.post('/me/activities', UsersController.trackActivity)
 
     // Profiles

@@ -1,4 +1,4 @@
-import { IPublicUserDTO } from '@/models/user'
+import { IPublicUserDTO, IUserState, USER_STATES } from '@/models/user'
 import { IAuthorizedRequestHandler } from '../types'
 
 export const search: IAuthorizedRequestHandler = async (req, res, next) => {
@@ -80,6 +80,39 @@ export const deleteAuthenticated: IAuthorizedRequestHandler = async (_, res, nex
         const { identity, repositories } = res.locals
 
         await repositories.user.deleteByExternalId(identity.user.id)
+
+        res.json({ success: true })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const patch: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { repositories, identity } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(400).json({ success: false, error: 'User not found' })
+        }
+
+        // handle state updates
+        if (req.body.state !== undefined) {
+            const state: IUserState = req.body.state
+            if (USER_STATES.includes(state) === false) {
+                return res.status(400).json({ success: false, error: `Invalid state "${state}"` })
+            }
+
+            const allowedState: IUserState = 'created'
+
+            if (user.state !== allowedState) {
+                return res
+                    .status(400)
+                    .json({ success: false, error: `Invalid user state "${user.state}"` })
+            }
+
+            await repositories.user.patch(user._id, { state })
+        }
 
         res.json({ success: true })
     } catch (e) {

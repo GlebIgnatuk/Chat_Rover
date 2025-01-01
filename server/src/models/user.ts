@@ -1,7 +1,9 @@
 import mongoose, { mongo, Types } from 'mongoose'
 import { IBaseModel } from './base'
 
-export type IUserState = 'created' | 'complete'
+export const USER_STATES = ['created', 'complete'] as const
+
+export type IUserState = (typeof USER_STATES)[number]
 
 export interface IUserModel extends IBaseModel {
     externalId: number

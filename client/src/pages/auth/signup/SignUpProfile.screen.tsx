@@ -77,8 +77,37 @@ export const SignUpProfileScreen = () => {
         }
     }
 
+    const onSkip = async () => {
+        setIsLoading(true)
+
+        const response = await api('/users/me', {
+            method: 'PATCH',
+            body: JSON.stringify({ state: 'complete' }),
+        })
+
+        if (response.success) {
+            const response = await api<IIdentity>('/users/me')
+            if (response.success) {
+                setIsCardOpen(false)
+                setTimeout(() => {
+                    setIsLoading(false)
+                    navigate(buildProtectedUrl('/'), {
+                        replace: true,
+                        state: { user: response.data },
+                    })
+                }, 400)
+            } else {
+                setIsLoading(false)
+                console.error(response.error)
+            }
+        } else {
+            setIsLoading(false)
+            console.error(response.error)
+        }
+    }
+
     return (
-        <div className="relative h-full overflow-y-auto bg-stone-800">
+        <div className="relative h-full overflow-y-auto bg-[#131313]">
             <div
                 className="flex flex-col items-center h-full pt-4 pb-10 overflow-y-auto"
                 style={{ perspective: '1000px' }}
@@ -125,7 +154,15 @@ export const SignUpProfileScreen = () => {
             </div>
 
             {isCardOpen && (
-                <div className="absolute bottom-0 left-0 w-full">
+                <div className="absolute bottom-0 left-0 w-full flex">
+                    <button
+                        onClick={() => onSkip()}
+                        className="bg-stone-800 text-primary-700 w-full h-8 disabled:bg-gray-300 flex items-center justify-center gap-1"
+                        disabled={isLoading}
+                    >
+                        <span>{localize('general__skip')}</span>
+                    </button>
+
                     <button
                         onClick={() => onSubmit()}
                         className="bg-primary text-black w-full h-8 disabled:bg-gray-300 flex items-center justify-center gap-1"
