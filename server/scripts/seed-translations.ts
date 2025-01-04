@@ -161,6 +161,10 @@ async function main() {
                 description: 'todo',
                 value: 'Account',
             },
+            nav__giveaway: {
+                description: 'todo',
+                value: 'Giveaway',
+            },
             exports__error__bot_start: {
                 description: 'todo',
                 value: 'If you didn\'t receive the exported image make sure that you started the bot <a href="%url">%url</a>. Come back and repeat the export.',
@@ -314,6 +318,10 @@ async function main() {
             nav__account: {
                 description: 'todo',
                 value: 'Аккаунт',
+            },
+            nav__giveaway: {
+                description: 'todo',
+                value: 'Розыгрыш',
             },
             exports__error__bot_start: {
                 description: 'todo',

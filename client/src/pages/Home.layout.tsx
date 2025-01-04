@@ -2,8 +2,8 @@ import { ReactNode, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 
-import PlayLessonIcon from '@mui/icons-material/PlayLesson'
-import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
+// import PlayLessonIcon from '@mui/icons-material/PlayLesson'
+// import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
 import GroupIcon from '@mui/icons-material/Group'
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
 import ChatIcon from '@mui/icons-material/Chat'
@@ -13,6 +13,8 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import wuwaIcon from '@/assets/wuwa_icon.png'
 import { buildProtectedUrl } from '@/utils/url'
 import { useLocalize } from '@/hooks/intl/useLocalize'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 
 const navigation = [
     {
@@ -28,12 +30,31 @@ const navigation = [
             <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
         ),
     },
+    // {
+    //     path: buildProtectedUrl('/guides'),
+    //     label: 'nav__guides',
+    //     IconActive: PlayLessonIcon,
+    //     IconInactive: PlayLessonOutlinedIcon,
+    //     disabled: true,
+    // },
     {
-        path: buildProtectedUrl('/guides'),
-        label: 'nav__guides',
-        IconActive: PlayLessonIcon,
-        IconInactive: PlayLessonOutlinedIcon,
-        disabled: true,
+        path: buildProtectedUrl('/giveaway'),
+        label: 'nav__giveaway',
+        IconActive: () => (
+            <FontAwesomeIcon
+                icon={faDharmachakra}
+                className="w-6 h-6 animate-spin"
+                style={{ animationDuration: '3s' }}
+            />
+        ),
+        IconInactive: () => (
+            <FontAwesomeIcon
+                icon={faDharmachakra}
+                className="w-6 h-6 animate-spin text-cyan-200"
+                style={{ animationDuration: '3s' }}
+            />
+        ),
+        disabled: false,
     },
     {
         path: buildProtectedUrl('/'),

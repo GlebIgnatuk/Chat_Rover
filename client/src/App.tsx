@@ -26,6 +26,7 @@ import { HomeLayout } from './pages/Home.layout'
 import { UserScreen } from './pages/user/User.screen'
 import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
 import { ErrorBoundaryScreen } from './pages/ErrorBoundary.screen'
+import { GiveawayScreen } from './pages/giveaways/Giveaway.screen'
 
 const router = createBrowserRouter([
     {
@@ -146,6 +147,10 @@ const router = createBrowserRouter([
                                     {
                                         path: 'account/profiles/:id',
                                         element: <ProfileScreen />,
+                                    },
+                                    {
+                                        path: 'giveaway',
+                                        element: <GiveawayScreen />,
                                     },
                                 ],
                             },
