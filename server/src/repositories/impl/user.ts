@@ -50,6 +50,12 @@ export class UserRepository implements IUserRepository {
         if (payload.state) {
             update.state = payload.state
         }
+        if (payload.language) {
+            update.language = payload.language
+        }
+        if (payload.isPremium !== undefined) {
+            update.isPremium = payload.isPremium
+        }
 
         const user = await UserModel.getCollection().findOneAndUpdate(
             {

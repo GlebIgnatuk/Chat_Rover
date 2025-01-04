@@ -12,6 +12,7 @@ export interface IUserModel extends IBaseModel {
     avatarUrl?: string
     lastActivityAt: Date
     state: string
+    isPremium?: boolean
 }
 
 export type IUserDTO = mongo.WithId<IUserModel>

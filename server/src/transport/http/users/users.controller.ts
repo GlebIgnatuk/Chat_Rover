@@ -48,10 +48,16 @@ export const getAuthenticated: IAuthorizedRequestHandler = async (_, res, next) 
     try {
         const { repositories, identity } = res.locals
 
-        const user = await repositories.user.getByExternalId(identity.user.id)
+        let user = await repositories.user.getByExternalId(identity.user.id)
         if (!user) {
             return res.status(404).json({ success: false, error: 'NOT_FOUND' })
         }
+
+        // @todo is this correct? we are updating teh fields that change from time to time on login
+        user = await repositories.user.patch(user._id, {
+            isPremium: identity.user.is_premium,
+            language: identity.user.language_code,
+        })
 
         res.json({ success: true, data: { user, identity } })
     } catch (e) {

@@ -10,6 +10,8 @@ export interface IUserCreate {
 
 export interface IUserPatch {
     state?: IUserState
+    isPremium?: boolean
+    language?: string
 }
 
 export interface IUserRepository {
