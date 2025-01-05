@@ -14,6 +14,7 @@ export interface IUserModel extends IBaseModel {
     state: string
     balance: number
     isPremium?: boolean
+    role?: string
 }
 
 export type IUserDTO = mongo.WithId<IUserModel>
