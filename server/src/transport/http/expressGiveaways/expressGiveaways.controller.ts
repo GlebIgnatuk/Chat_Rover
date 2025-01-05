@@ -1,3 +1,4 @@
+import { RepositoryError } from '@/repositories/types'
 import { IAuthorizedRequestHandler } from '../types'
 
 export const list: IAuthorizedRequestHandler = async (req, res, next) => {
@@ -58,9 +59,16 @@ export const addParticipant: IAuthorizedRequestHandler = async (req, res, next) 
             return res.status(403).json({ success: false, error: 'No such user' })
         }
 
-        await repositories.expressGiveaway.addParticipant(user._id, req.params.id)
-
-        res.json({ success: true })
+        try {
+            await repositories.expressGiveaway.addParticipant(user._id, req.params.id)
+            res.json({ success: true })
+        } catch (e) {
+            if (e instanceof RepositoryError) {
+                res.status(400).json({ success: false, error: e.message })
+            } else {
+                throw e
+            }
+        }
     } catch (e) {
         next(e)
     }

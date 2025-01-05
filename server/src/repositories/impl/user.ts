@@ -1,5 +1,5 @@
 import { IUserDTO, IUserState, UserModel } from '@/models/user'
-import { ID } from '../types'
+import { ID, RepositoryError } from '../types'
 import { IUserCreate, IUserPatch, IUserRepository } from '../user'
 import mongoose, { ClientSession, Types } from 'mongoose'
 
@@ -90,7 +90,7 @@ export class UserRepository implements IUserRepository {
             }
 
             if (user.balance < value) {
-                throw new Error('Insufficient balance')
+                throw new RepositoryError('Insufficient balance')
             }
 
             return await UserModel.getCollection().findOneAndUpdate(

@@ -4,7 +4,7 @@ import {
     IExpressGiveawayRepository,
     IListingExpressGiveawayDTO,
 } from '../expressGiveaway'
-import { ID } from '../types'
+import { ID, RepositoryError } from '../types'
 import mongoose, { mongo, Types } from 'mongoose'
 import { IGiveawayItemRepository } from '../giveawayItem'
 import { GiveawayItemModel } from '@/models/giveawayItem'
@@ -31,7 +31,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
     async listInListing(userId: ID): Promise<IListingExpressGiveawayDTO[]> {
         return ExpressGiveawayModel.getCollection()
             .aggregate<IListingExpressGiveawayDTO>([
-                { $sort: { createdAt: 'desc' } },
+                { $sort: { createdAt: -1 } },
                 { $limit: 10 },
                 {
                     $lookup: {
@@ -77,6 +77,8 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                         winners: 1,
                         maxWinners: 1,
                         startedAt: 1,
+                        finishedAt: 1,
+                        createdAt: 1,
                         durationInSeconds: 1,
                     },
                 },
@@ -103,6 +105,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
             maxWinners: payload.maxWinners,
 
             startedAt: null,
+            finishedAt: null,
             durationInSeconds: payload.durationInSeconds,
 
             createdAt: now,
@@ -128,7 +131,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                     { $set: { updatedAt: now } },
                     { session },
                 )
-                if (!lockedGiveaway) throw new Error('Giveaway does not exist')
+                if (!lockedGiveaway) throw new RepositoryError('Giveaway does not exist')
 
                 // charge user
                 if (lockedGiveaway.cost !== 0) {
@@ -138,7 +141,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                         session,
                     )
                     if (!user) {
-                        throw new Error('No such user')
+                        throw new RepositoryError('No such user')
                     }
                 }
 
@@ -146,6 +149,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                     .aggregate<
                         mongo.WithId<{
                             participants: number
+                            minParticipants: number
                             maxParticipants: number
                             isParticipating: boolean
                             winners: number
@@ -175,6 +179,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                                     _id: 1,
                                     participants: 1,
                                     winners: 1,
+                                    minParticipants: 1,
                                     maxParticipants: 1,
                                     isParticipating: 1,
                                     startedAt: 1,
@@ -189,26 +194,26 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
 
                 // Verify giveaway is available
                 if (!giveaway) {
-                    throw new Error('Giveaway does not exist')
+                    throw new RepositoryError('Giveaway does not exist')
                 }
 
                 if (giveaway.finishedAt) {
-                    throw new Error('Giveaway has ended')
+                    throw new RepositoryError('Giveaway has ended')
                 }
 
                 if (
                     giveaway.startedAt &&
-                    Date.now() - giveaway.startedAt.getTime() >= giveaway.durationInSeconds - 60
+                    Date.now() - giveaway.startedAt.getTime() - giveaway.durationInSeconds >= -60
                 ) {
-                    throw new Error('Giveaway has been locked')
+                    throw new RepositoryError('Giveaway has been locked')
                 }
 
                 if (giveaway.participants >= giveaway.maxParticipants) {
-                    throw new Error('Participants limit has been reached')
+                    throw new RepositoryError('Participants limit has been reached')
                 }
 
                 if (giveaway.isParticipating) {
-                    throw new Error('Already participating')
+                    throw new RepositoryError('Already participating')
                 }
 
                 // add user to participants
@@ -219,6 +224,13 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                     {
                         $push: {
                             participants: new Types.ObjectId(userId),
+                        },
+                        $set: {
+                            startedAt:
+                                giveaway.startedAt ??
+                                (giveaway.participants + 1 >= giveaway.minParticipants
+                                    ? new Date()
+                                    : null),
                         },
                     },
                     { session },

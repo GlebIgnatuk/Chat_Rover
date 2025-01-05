@@ -15,14 +15,17 @@ import {
     IAppConfig,
     IGlobalChatWithMetadata,
     IIntl,
+    IListingExpressGiveaway,
     ISearchedProfile,
     IWuwaCharacter,
 } from './types'
+import { createExpressGiveawaysSlice } from './slices/expressGiveaways'
 
 export interface CreateStoreOptions {
     identity: IIdentity
     searchedProfiles: ISearchedProfile[]
     globalChats: IGlobalChatWithMetadata[]
+    expressGiveaways: IListingExpressGiveaway[]
 }
 
 export const createStore = (options: CreateStoreOptions) =>
@@ -34,6 +37,7 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createProfilesSlice(...a),
         ...createCommunitySlice(options.searchedProfiles)(...a),
         ...createIdentitySlice(options.identity)(...a),
+        ...createExpressGiveawaysSlice(options.expressGiveaways)(...a),
     }))
 
 export interface CreatePublicStoreOptions {

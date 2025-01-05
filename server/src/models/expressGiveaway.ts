@@ -14,6 +14,7 @@ export interface IExpressGiveawayModel extends IBaseModel {
     maxWinners: number
 
     startedAt: Date | null
+    finishedAt: Date | null
     durationInSeconds: number
 }
 

@@ -31,6 +31,8 @@ export type IListingExpressGiveawayDTO = mongo.WithId<{
     maxWinners: number
 
     startedAt: string | null
+    finishedAt: string | null
+    createdAt: string
     durationInSeconds: number
 }>
 

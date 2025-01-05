@@ -97,3 +97,29 @@ export type IWuwaCharacter = {
     photoPath: string
     photoUrl: string
 }
+
+export type IListingExpressGiveaway = {
+    _id: string
+    name: string
+    cost: number
+
+    participants: number
+    minParticipants: number
+    maxParticipants: number
+
+    maxWinners: number
+    winners: IPublicUser[]
+
+    giveawayItem: {
+        _id: string
+        name: string
+        photoUrl: string
+    }
+
+    durationInSeconds: number
+    startedAt: string | null
+    finishedAt: string | null
+    createdAt: string
+
+    isParticipating: boolean
+}

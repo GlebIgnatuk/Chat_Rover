@@ -4,6 +4,7 @@ import {
     IAppConfig,
     IGlobalChatWithMetadata,
     IIntl,
+    IListingExpressGiveaway,
     IMessage,
     IMessageWithStatus,
     IPrivateChatWithMetadata,
@@ -144,13 +145,21 @@ export type IIdentityState = {
     identity: IIdentity
 }
 
+export type IExpressGiveawaysState = {
+    expressGiveaways: {
+        items: IListingExpressGiveaway[]
+        setItems: (items: IListingExpressGiveaway[]) => void
+    }
+}
+
 export type IState = IChatsState &
     IGlobalChatsState &
     IP2PState &
     IOnlineState &
     IProfilesState &
     ICommunityState &
-    IIdentityState
+    IIdentityState &
+    IExpressGiveawaysState
 
 export type IAppConfigState = {
     appConfig: {

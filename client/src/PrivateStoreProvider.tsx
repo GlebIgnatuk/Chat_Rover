@@ -13,7 +13,7 @@ import { useWebsocket } from './hooks/chats/useWebsocket'
 import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
-import { IGlobalChatWithMetadata, ISearchedProfile } from './store/types'
+import { IGlobalChatWithMetadata, IListingExpressGiveaway, ISearchedProfile } from './store/types'
 import { ITEMS_PER_PAGE } from './features/search/hooks/useSearch'
 
 // This component makes sure that we have a user authenticated, so we can initialize store
@@ -59,10 +59,20 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         }
     }
 
+    const loadExpressGiveaways = async () => {
+        const response = await api<IListingExpressGiveaway[]>(`/expressGiveaways`)
+        if (response.success) {
+            return response.data
+        } else {
+            return []
+        }
+    }
+
     const loader = useBatchedLoader({
         values: [
             () => searchProfiles(),
             () => loadGlobalChats(),
+            () => loadExpressGiveaways(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
             () => new Promise((res) => setTimeout(res, 1000)),
@@ -80,13 +90,14 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        const [searchedProfiles, globalChats] = loader.$unwrap()
+        const [searchedProfiles, globalChats, expressGiveaways] = loader.$unwrap()
 
         return (
             <StoreProvider
                 identity={identity}
                 searchedProfiles={searchedProfiles}
                 globalChats={globalChats}
+                expressGiveaways={expressGiveaways}
             />
         )
     } else {
@@ -124,16 +135,23 @@ interface StoreProviderProps {
     identity: IIdentity
     searchedProfiles: ISearchedProfile[]
     globalChats: IGlobalChatWithMetadata[]
+    expressGiveaways: IListingExpressGiveaway[]
 }
 
 // This component initializes store with initial data like user
-const StoreProvider = ({ identity, searchedProfiles, globalChats }: StoreProviderProps) => {
+const StoreProvider = ({
+    identity,
+    searchedProfiles,
+    globalChats,
+    expressGiveaways,
+}: StoreProviderProps) => {
     const store = useRef<IStore>()
     if (!store.current) {
         store.current = createStore({
             identity,
             searchedProfiles,
             globalChats,
+            expressGiveaways,
         })
     }
 

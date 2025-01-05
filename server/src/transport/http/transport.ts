@@ -204,7 +204,7 @@ export const setupHttpRouter = (
     authorized.get('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.list)
     authorized.post('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.create)
     authorized.delete('/admin/expressGiveaways/:id', isAdmin, ExpressGiveawaysController.remove)
-    authorized.get('/expressGiveaways', isAdmin, ExpressGiveawaysController.listInListing)
+    authorized.get('/expressGiveaways', ExpressGiveawaysController.listInListing)
     authorized.post('/expressGiveaways/:id/participants', ExpressGiveawaysController.addParticipant)
 
     // Fallback
