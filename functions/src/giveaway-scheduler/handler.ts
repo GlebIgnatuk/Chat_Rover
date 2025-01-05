@@ -16,18 +16,27 @@ const giveawayScheduler = async () => {
             {
                 startedAt: { $ne: null },
                 finishedAt: null,
-                $expr: {
-                    $gte: [
-                        {
-                            $dateDiff: {
-                                startDate: '$startedAt',
-                                endDate: '$$NOW',
-                                unit: 'second',
-                            },
+                $or: [
+                    {
+                        $expr: {
+                            $gte: [{ $size: '$participants' }, '$maxParticipants'],
                         },
-                        { $subtract: ['$durationInSeconds', 60] },
-                    ],
-                },
+                    },
+                    {
+                        $expr: {
+                            $gte: [
+                                {
+                                    $dateDiff: {
+                                        startDate: '$startedAt',
+                                        endDate: '$$NOW',
+                                        unit: 'second',
+                                    },
+                                },
+                                { $subtract: ['$durationInSeconds', 60] },
+                            ],
+                        },
+                    },
+                ],
             },
             { projection: { _id: 1, participants: 1, maxWinners: 1, giveawayItemId: 1 } }
         )

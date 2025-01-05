@@ -19,8 +19,8 @@ const calculateTimeLeftInSeconds = (startedAt: Date | null, durationInS: number)
     return timeLeftInS
 }
 
-const formatClock = (timeLeftInS: number) => {
-    if (timeLeftInS === 0) {
+const formatClock = (timeLeftInS: number, reachedMaxParticipants: boolean) => {
+    if (timeLeftInS === 0 || reachedMaxParticipants) {
         return <span className="animate-pulse">Choosing the winner...</span>
     }
 
@@ -102,7 +102,12 @@ const Giveaway = ({
             </div>
 
             <div className="font-semibold text-white text-center text-3xl my-3">
-                {giveaway.finishedAt ? '' : formatClock(timeLeftInSeconds)}
+                {giveaway.finishedAt
+                    ? ''
+                    : formatClock(
+                          timeLeftInSeconds,
+                          giveaway.participants >= giveaway.maxParticipants,
+                      )}
             </div>
 
             <div className="flex flex-col items-center">

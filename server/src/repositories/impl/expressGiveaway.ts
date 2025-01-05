@@ -203,7 +203,9 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
 
                 if (
                     giveaway.startedAt &&
-                    Date.now() - giveaway.startedAt.getTime() - giveaway.durationInSeconds >= -60
+                    (Date.now() - giveaway.startedAt.getTime()) / 1000 -
+                        giveaway.durationInSeconds >=
+                        -60
                 ) {
                     throw new RepositoryError('Giveaway has been locked')
                 }
@@ -241,115 +243,6 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
                 }
             })
         })
-
-        // const result = await ExpressGiveawayModel.getCollection().updateOne(
-        //     {
-        //         _id: new Types.ObjectId(giveawayId),
-        //         finishedAt: null,
-        //         $and: [
-        //             { $expr: { $lt: [{ $size: '$participants' }, '$maxParticipants'] } },
-        //             {
-        //                 $expr: {
-        //                     $eq: [{ $in: [new Types.ObjectId(userId), '$participants'] }, false],
-        //                 },
-        //             },
-        //             {
-        //                 $expr: {
-        //                     $lt: [
-        //                         {
-        //                             $dateDiff: {
-        //                                 startDate: '$startedAt',
-        //                                 endDate: '$$NOW',
-        //                                 unit: 'second',
-        //                             },
-        //                         },
-        //                         { $subtract: ['$durationInSeconds', 60] },
-        //                     ],
-        //                 },
-        //             },
-        //         ],
-        //     },
-        //     {
-        //         $push: {
-        //             participants: new Types.ObjectId(userId),
-        //         },
-        //     },
-        //     {
-        //         hint: {
-        //             _id: 1,
-        //         },
-        //     },
-        // )
-
-        // if (result.modifiedCount > 0) {
-        //     return
-        // }
-
-        // const results = await ExpressGiveawayModel.getCollection()
-        //     .aggregate<
-        //         mongo.WithId<{
-        //             participants: number
-        //             maxParticipants: number
-        //             isParticipating: boolean
-        //             winners: number
-        //             startedAt: Date | null
-        //             finishedAt: Date | null
-        //             durationInSeconds: number
-        //         }>
-        //     >([
-        //         { $match: { _id: new Types.ObjectId(giveawayId) } },
-        //         {
-        //             $addFields: {
-        //                 participants: {
-        //                     $size: '$participants',
-        //                 },
-        //                 winners: {
-        //                     $size: '$winners',
-        //                 },
-        //                 isParticipating: {
-        //                     $in: [new Types.ObjectId(userId), '$participants'],
-        //                 },
-        //             },
-        //         },
-        //         { $limit: 1 },
-        //         {
-        //             $project: {
-        //                 _id: 1,
-        //                 participants: 1,
-        //                 winners: 1,
-        //                 maxParticipants: 1,
-        //                 isParticipating: 1,
-        //                 startedAt: 1,
-        //                 finishedAt: 1,
-        //                 durationInSeconds: 1,
-        //             },
-        //         },
-        //     ])
-        //     .toArray()
-
-        // const giveaway = results[0]
-        // if (!giveaway) {
-        //     throw new Error('Giveaway does not exist')
-        // }
-
-        // if (giveaway.finishedAt) {
-        //     throw new Error('Giveaway has ended')
-        // }
-
-        // if (
-        //     giveaway.startedAt &&
-        //     Date.now() - giveaway.startedAt.getTime() >= giveaway.durationInSeconds - 60
-        // ) {
-        //     throw new Error('Giveaway has been locked')
-        // }
-
-        // if (giveaway.participants >= giveaway.maxParticipants) {
-        //     throw new Error('Participants limit has been reached')
-        // }
-
-        // if (giveaway.isParticipating) {
-        //     throw new Error('Already participating')
-        // }
     }
 
     async delete(id: ID): Promise<void> {
