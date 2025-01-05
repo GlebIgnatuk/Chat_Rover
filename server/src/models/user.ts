@@ -12,6 +12,7 @@ export interface IUserModel extends IBaseModel {
     avatarUrl?: string
     lastActivityAt: Date
     state: string
+    balance: number
     isPremium?: boolean
 }
 

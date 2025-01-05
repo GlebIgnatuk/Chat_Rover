@@ -1,7 +1,7 @@
 import { IUserDTO, IUserState, UserModel } from '@/models/user'
 import { ID } from '../types'
 import { IUserCreate, IUserPatch, IUserRepository } from '../user'
-import { ClientSession, Types } from 'mongoose'
+import mongoose, { ClientSession, Types } from 'mongoose'
 
 export class UserRepository implements IUserRepository {
     async get(id: ID): Promise<IUserDTO | null> {
@@ -30,6 +30,7 @@ export class UserRepository implements IUserRepository {
             language: payload.language,
             nickname: payload.nickname,
             state: state,
+            balance: 5,
             createdAt: now,
             updatedAt: now,
             lastActivityAt: now,
@@ -73,6 +74,41 @@ export class UserRepository implements IUserRepository {
         )
 
         return user
+    }
+
+    async chargeBalance(id: ID, value: number, tx?: ClientSession): Promise<IUserDTO | null> {
+        const now = new Date()
+
+        const charge = async (session: ClientSession) => {
+            const user = await UserModel.getCollection().findOneAndUpdate(
+                { _id: new Types.ObjectId(id) },
+                { $set: { updatedAt: now } },
+                { session, returnDocument: 'after' },
+            )
+            if (!user) {
+                return null
+            }
+
+            if (user.balance < value) {
+                throw new Error('Insufficient balance')
+            }
+
+            return await UserModel.getCollection().findOneAndUpdate(
+                { _id: new Types.ObjectId(id) },
+                { $inc: { balance: -value } },
+                { session, returnDocument: 'after' },
+            )
+        }
+
+        if (tx) {
+            return charge(tx)
+        } else {
+            return mongoose.connection.withSession(async (session) => {
+                return session.withTransaction(async (session) => {
+                    return charge(session)
+                })
+            })
+        }
     }
 
     async trackActivity(id: ID): Promise<void> {
