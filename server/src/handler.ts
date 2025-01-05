@@ -23,6 +23,8 @@ import { GlobalChatService } from './core/globalChatService'
 import { TranslationRepository } from './repositories/impl/translation'
 import { ErrorRepository } from './repositories/impl/error'
 import { ProfileExportRepository } from './repositories/impl/profileExport'
+import { ExpressGiveawayRepository } from './repositories/impl/expressGiveaway'
+import { GiveawayItemRepository } from './repositories/impl/giveawayItem'
 
 const app = express()
 let server: http.Server | https.Server
@@ -45,6 +47,7 @@ const handler = async () => {
     const privateChat = new PrivateChatRepository()
     const globalChat = new GlobalChatRepository()
     const userRepo = new UserRepository()
+    const giveawayItemRepo = new GiveawayItemRepository()
     const repositories: IRepositories = {
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
@@ -56,6 +59,8 @@ const handler = async () => {
         translation: new TranslationRepository(),
         error: new ErrorRepository(),
         profileExport: new ProfileExportRepository(),
+        expressGiveaway: new ExpressGiveawayRepository(userRepo, giveawayItemRepo),
+        giveawayItem: giveawayItemRepo,
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

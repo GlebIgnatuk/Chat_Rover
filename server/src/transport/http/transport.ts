@@ -9,6 +9,8 @@ import * as ProfilesController from './profiles/profiles.controller'
 import * as AppConfigController from './appConfig/appConfig.controller'
 import * as TranslationsController from './translations/translations.controller'
 import * as ErrorsController from './errors/errors.controller'
+import * as GiveawayItemsController from './giveawayItems/giveawayItems.controller'
+import * as ExpressGiveawaysController from './expressGiveaways/expressGiveaways.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -21,6 +23,7 @@ import express from 'express'
 import cors from 'cors'
 import { IRepositories } from '@/repositories/repositories'
 import { IServices } from '@/core/types'
+import { isAdmin } from './_middlewares/admin.middleware'
 
 export const setupHttpRouter = (
     router: Router,
@@ -191,6 +194,18 @@ export const setupHttpRouter = (
     authorized.post('/translations', TranslationsController.create)
     authorized.patch('/translations/:id', TranslationsController.update)
     authorized.delete('/translations/:id', TranslationsController.remove)
+
+    // Giveaway items
+    authorized.get('/admin/giveawayItems', isAdmin, GiveawayItemsController.list)
+    authorized.post('/admin/giveawayItems', isAdmin, GiveawayItemsController.create)
+    authorized.delete('/admin/giveawayItems/:id', isAdmin, GiveawayItemsController.remove)
+
+    // Express giveaways
+    authorized.get('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.list)
+    authorized.post('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.create)
+    authorized.delete('/admin/expressGiveaways/:id', isAdmin, ExpressGiveawaysController.remove)
+    authorized.get('/expressGiveaways', isAdmin, ExpressGiveawaysController.listInListing)
+    authorized.post('/expressGiveaways/:id/participants', ExpressGiveawaysController.addParticipant)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))

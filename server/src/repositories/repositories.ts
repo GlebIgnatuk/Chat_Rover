@@ -8,6 +8,8 @@ import { IReportRepository } from './reports'
 import { ITranslationRepository } from './translation'
 import { IErrorRepository } from './error'
 import { IProfileExportRepository } from './profileExport'
+import { IGiveawayItemRepository } from './giveawayItem'
+import { IExpressGiveawayRepository } from './expressGiveaway'
 
 export interface IRepositories {
     chatMessage: IChatMessageRepository
@@ -20,4 +22,6 @@ export interface IRepositories {
     translation: ITranslationRepository
     error: IErrorRepository
     profileExport: IProfileExportRepository
+    giveawayItem: IGiveawayItemRepository
+    expressGiveaway: IExpressGiveawayRepository
 }
