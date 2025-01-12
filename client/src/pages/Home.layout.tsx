@@ -100,7 +100,9 @@ export const HomeLayout = () => {
     const localize = useLocalize()
 
     return (
-        <div className="h-full grid grid-rows-[minmax(0,1fr),max-content]">
+        <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
+            <div className=""></div>
+
             <WithTransition
                 key={location.pathname}
                 ignore
