@@ -209,6 +209,13 @@ async function main() {
             accentColor: '#93E0FF',
             photoPath: '/characters/youhu.png',
         },
+        {
+            name: 'carlotta',
+            element: 'glacio',
+            sex: 'female',
+            accentColor: '#93E0FF',
+            photoPath: '/characters/carlotta.png',
+        },
     ]
 
     const mapped = characters.map<IWuwaCharacterModel>((c) => ({
