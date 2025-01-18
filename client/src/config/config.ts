@@ -4,7 +4,7 @@ export const PATH_PREFIX = '/app'
 export const AUTH_PATH_PREFIX = '/auth'
 export const PROTECTED_PATH_PREFIX = '/'
 
-export const DEBUG = import.meta.env.DEV
+export const DEBUG = import.meta.env.VITE_DEBUG === 'true'
 export const SUPPORTED_SERVERS = ['SEA', 'Asia', 'Europe', 'HMT', 'America'] as const
 
 const names = [

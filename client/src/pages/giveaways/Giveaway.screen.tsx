@@ -2,8 +2,6 @@ import { useStore } from '@/context/app/useStore'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { api } from '@/services/api'
 import { IListingExpressGiveaway } from '@/store/types'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { cn } from 'tailwind-cn'
 
@@ -163,6 +161,26 @@ const Giveaway = ({
                         You are participating!
                     </div>
                 ) : (
+                    // <button
+                    //     disabled={
+                    //         giveaway.participants >= giveaway.maxParticipants ||
+                    //         giveaway.finishedAt !== null ||
+                    //         giveaway.isParticipating ||
+                    //         timeLeftInSeconds <= 60 ||
+                    //         isSubmitting
+                    //     }
+                    //     onClick={() => onParticipate()}
+                    //     className="mb-4 mt-6 self-center bg-primary-700 text-stone-800 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg px-2 py-2 font-semibold flex items-center justify-center gap-2"
+                    // >
+                    //     <span>Participate</span>
+
+                    //     {giveaway.participants < giveaway.maxParticipants && giveaway.cost > 0 && (
+                    //         <span className="inline-block bg-stone-800 text-yellow-500 rounded-md px-2">
+                    //             <span>{giveaway.cost}</span>
+                    //             <FontAwesomeIcon icon={faStar} className="w-4 h-4 ml-1" />
+                    //         </span>
+                    //     )}
+                    // </button>
                     <button
                         disabled={
                             giveaway.participants >= giveaway.maxParticipants ||
@@ -172,16 +190,16 @@ const Giveaway = ({
                             isSubmitting
                         }
                         onClick={() => onParticipate()}
-                        className="mb-4 mt-6 self-center bg-primary-700 text-stone-800 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg px-2 py-2 font-semibold flex items-center justify-center gap-2"
+                        className="mb-4 mt-6 self-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md overflow-hidden font-semibold flex items-center justify-center"
                     >
-                        <span>Participate</span>
+                        <span className="text-sm bg-primary-700 text-stone-800 px-5 py-2">
+                            Participate
+                        </span>
 
-                        {giveaway.participants < giveaway.maxParticipants && giveaway.cost > 0 && (
-                            <span className="inline-block bg-stone-800 text-yellow-500 rounded-md px-2">
-                                <span>{giveaway.cost}</span>
-                                <FontAwesomeIcon icon={faStar} className="w-4 h-4 ml-1" />
-                            </span>
-                        )}
+                        <span className="flex items-center gap-1 px-2 py-2 bg-stone-800 text-primary-700">
+                            <img src="/currency/lunite.png" className="w-5 h-5" />
+                            <span className="text-sm">{giveaway.cost}</span>
+                        </span>
                     </button>
                 )}
 

@@ -21,6 +21,7 @@ export type IUser = {
     avatarUrl: string | null
     lastActivityAt: string
     state: 'created' | 'complete'
+    balance: number
 }
 
 export type IPublicUser = Pick<

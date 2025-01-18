@@ -10,11 +10,14 @@ import ChatIcon from '@mui/icons-material/Chat'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
+import PlayLessonIcon from '@mui/icons-material/PlayLesson'
+import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
 import wuwaIcon from '@/assets/wuwa_icon.png'
 import { buildProtectedUrl } from '@/utils/url'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
+import { useStore } from '@/context/app/useStore'
 
 const navigation = [
     {
@@ -30,13 +33,6 @@ const navigation = [
             <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
         ),
     },
-    // {
-    //     path: buildProtectedUrl('/guides'),
-    //     label: 'nav__guides',
-    //     IconActive: PlayLessonIcon,
-    //     IconInactive: PlayLessonOutlinedIcon,
-    //     disabled: true,
-    // },
     {
         path: buildProtectedUrl('/giveaway'),
         label: 'nav__giveaway',
@@ -44,13 +40,13 @@ const navigation = [
             <FontAwesomeIcon
                 icon={faDharmachakra}
                 className="w-6 h-6 animate-spin"
-                style={{ animationDuration: '3s' }}
+                style={{ animationDuration: '2s' }}
             />
         ),
         IconInactive: () => (
             <FontAwesomeIcon
                 icon={faDharmachakra}
-                className="w-6 h-6 animate-spin text-cyan-200"
+                className="w-6 h-6 animate-spin"
                 style={{ animationDuration: '3s' }}
             />
         ),
@@ -70,11 +66,18 @@ const navigation = [
         IconInactive: ChatOutlinedIcon,
     },
     {
-        path: buildProtectedUrl('/account/profiles'),
-        label: 'nav__account',
-        IconActive: AccountCircleIcon,
-        IconInactive: AccountCircleOutlinedIcon,
+        path: buildProtectedUrl('/guides'),
+        label: 'nav__guides',
+        IconActive: PlayLessonIcon,
+        IconInactive: PlayLessonOutlinedIcon,
+        disabled: true,
     },
+    // {
+    //     path: buildProtectedUrl('/account/profiles'),
+    //     label: 'nav__account',
+    //     IconActive: AccountCircleIcon,
+    //     IconInactive: AccountCircleOutlinedIcon,
+    // },
 ]
 
 const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: boolean }) => {
@@ -98,10 +101,35 @@ const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: bo
 export const HomeLayout = () => {
     const location = useLocation()
     const localize = useLocalize()
+    const user = useStore((state) => state.identity.user)
 
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
-            <div className=""></div>
+            <div className="bg-stone-800 border-b border-primary-700 grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center p-2">
+                <div className="font-bold">Rover Chat</div>
+
+                <div className="flex gap-1 items-center justify-end mr-4">
+                    <img src="/currency/lunite.png" className="w-6 h-6" />
+                    <span className="font-medium text-sm">{user.balance}</span>
+                </div>
+
+                <NavLink
+                    to={buildProtectedUrl('/account/profiles')}
+                    className={({ isActive }) =>
+                        cn('py-2 flex flex-col items-center justify-end relative', {
+                            'text-primary-700': isActive,
+                            'text-gray-300': !isActive,
+                        })
+                    }
+                >
+                    {({ isActive }) => (
+                        <>
+                            {isActive && <AccountCircleIcon />}
+                            {!isActive && <AccountCircleOutlinedIcon />}
+                        </>
+                    )}
+                </NavLink>
+            </div>
 
             <WithTransition
                 key={location.pathname}

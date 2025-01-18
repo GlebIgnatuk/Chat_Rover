@@ -17,8 +17,11 @@ export default {
       },
       colors: {
         primary: {
-          700: '#c9ac67',
-          DEFAULT: '#c9ac67'
+          700: '#EEC550',
+          DEFAULT: '#EEC550'
+        },
+        stone: {
+          800: '#1D1919',
         },
         accent: {
           DEFAULT: '#f6cb66'
