@@ -15,7 +15,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import PlayLessonIcon from '@mui/icons-material/PlayLesson'
 import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
 import wuwaIcon from '@/assets/wuwa_icon.png'
-import { buildProtectedUrl } from '@/utils/url'
+import { buildImageUrl, buildProtectedUrl } from '@/utils/url'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
@@ -128,7 +128,10 @@ export const HomeLayout = () => {
                 <div className="font-bold">Rover Chat</div>
 
                 <div className="flex gap-1 items-center justify-end">
-                    <img src="/currency/lunite.png" className="w-6 h-6" />
+                    <img
+                        src={buildImageUrl(import.meta.env.BASE_URL + '/currency/lunite.png')}
+                        className="w-6 h-6"
+                    />
                     <span className="font-medium text-sm">{user.balance}</span>
                 </div>
 

@@ -181,7 +181,12 @@ const Giveaway = ({
                         </span>
 
                         <span className="flex items-center gap-1 px-2 py-2 bg-stone-800 text-primary-700 group-disabled:w-0 group-disabled:px-0 transition-all">
-                            <img src="/currency/lunite.png" className="w-5 h-5" />
+                            <img
+                                src={buildImageUrl(
+                                    import.meta.env.BASE_URL + '/currency/lunite.png',
+                                )}
+                                className="w-5 h-5"
+                            />
                             <span className="text-sm">{giveaway.cost}</span>
                         </span>
                     </button>

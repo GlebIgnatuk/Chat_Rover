@@ -3,6 +3,7 @@ import { Timer } from '@/components/Timer'
 import { useStore } from '@/context/app/useStore'
 import { api } from '@/services/api'
 import { IUser } from '@/store/types'
+import { buildImageUrl } from '@/utils/url'
 import { useState } from 'react'
 
 export const GiftsScreen = () => {
@@ -43,7 +44,10 @@ export const GiftsScreen = () => {
     return (
         <div className="px-2 py-2 grid grid-cols-2">
             <Card className="flex flex-col py-3 px-2">
-                <img src="/currency/lunite.png" className="w-40 h-40 mx-auto animate-pulse" />
+                <img
+                    src={buildImageUrl(import.meta.env.BASE_URL + '/currency/lunite.png')}
+                    className="w-40 h-40 mx-auto animate-pulse"
+                />
 
                 <div className="text-primary-700 text-xl mx-auto mb-3">1x Lunite</div>
 
