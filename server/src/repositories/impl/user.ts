@@ -30,7 +30,7 @@ export class UserRepository implements IUserRepository {
             language: payload.language,
             nickname: payload.nickname,
             state: state,
-            balance: 5,
+            balance: 10,
             createdAt: now,
             updatedAt: now,
             lastActivityAt: now,
