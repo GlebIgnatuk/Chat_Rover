@@ -3,6 +3,7 @@ import { IIdentity } from '@/context/auth/AuthContext'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { api } from '@/services/api'
 import { IListingExpressGiveaway } from '@/store/types'
+import { buildImageUrl } from '@/utils/url'
 import { useEffect, useState } from 'react'
 import { cn } from 'tailwind-cn'
 
@@ -113,7 +114,7 @@ const Giveaway = ({
 
             <div className="flex flex-col items-center">
                 <img
-                    src={giveaway.giveawayItem.photoUrl}
+                    src={buildImageUrl(giveaway.giveawayItem.photoPath)}
                     className="w-3/5 aspect-square"
                     alt={giveaway.giveawayItem.name}
                 />

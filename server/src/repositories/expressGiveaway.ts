@@ -15,6 +15,7 @@ export interface IExpressGiveawayCreate {
     maxWinners: number
 
     durationInSeconds: number
+    scheduledAt: Date
 }
 
 export type IListingExpressGiveawayDTO = mongo.WithId<{

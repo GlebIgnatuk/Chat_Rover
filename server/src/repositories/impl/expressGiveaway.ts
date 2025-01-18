@@ -129,7 +129,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
 
             startedAt: null,
             finishedAt: null,
-            scheduledAt: null,
+            scheduledAt: payload.scheduledAt,
             durationInSeconds: payload.durationInSeconds,
 
             createdAt: now,

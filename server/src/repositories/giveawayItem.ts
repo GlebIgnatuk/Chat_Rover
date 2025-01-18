@@ -3,7 +3,7 @@ import { IGiveawayItemDTO } from '@/models/giveawayItem'
 
 export interface IGiveawayItemCreate {
     name: string
-    photoUrl: string
+    photoPath: string
 }
 
 export interface IGiveawayItemRepository {

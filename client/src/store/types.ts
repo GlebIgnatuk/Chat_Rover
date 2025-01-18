@@ -115,7 +115,7 @@ export type IListingExpressGiveaway = {
     giveawayItem: {
         _id: string
         name: string
-        photoUrl: string
+        photoPath: string
     }
 
     durationInSeconds: number

@@ -3,7 +3,7 @@ import { IBaseModel } from './base'
 
 export interface IGiveawayItemModel extends IBaseModel {
     name: string
-    photoUrl: string
+    photoPath: string
 }
 
 export type IGiveawayItemDTO = mongo.WithId<IGiveawayItemModel>

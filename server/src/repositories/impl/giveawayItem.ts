@@ -17,7 +17,7 @@ export class GiveawayItemRepository implements IGiveawayItemRepository {
 
         const result = await GiveawayItemModel.getCollection().insertOne({
             name: payload.name,
-            photoUrl: payload.photoUrl,
+            photoPath: payload.photoPath,
             createdAt: now,
             updatedAt: now,
         })
