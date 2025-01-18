@@ -15,6 +15,7 @@ export interface IExpressGiveawayModel extends IBaseModel {
 
     startedAt: Date | null
     finishedAt: Date | null
+    scheduledAt: Date | null
     durationInSeconds: number
 }
 

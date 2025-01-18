@@ -27,6 +27,7 @@ import { UserScreen } from './pages/user/User.screen'
 import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
 import { ErrorBoundaryScreen } from './pages/ErrorBoundary.screen'
 import { GiveawayScreen } from './pages/giveaways/Giveaway.screen'
+import { GiftsScreen } from './pages/gifts/Gifts.screen'
 
 const router = createBrowserRouter([
     {
@@ -151,6 +152,10 @@ const router = createBrowserRouter([
                                     {
                                         path: 'giveaway',
                                         element: <GiveawayScreen />,
+                                    },
+                                    {
+                                        path: 'gifts',
+                                        element: <GiftsScreen />,
                                     },
                                 ],
                             },

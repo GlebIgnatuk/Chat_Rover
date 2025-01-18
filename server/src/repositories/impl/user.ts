@@ -34,6 +34,8 @@ export class UserRepository implements IUserRepository {
             createdAt: now,
             updatedAt: now,
             lastActivityAt: now,
+            // Make it available right away, set to some value to omit nulls
+            dailyBonusCollectedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000),
         })
 
         const user = await this.get(result.insertedId)
@@ -109,6 +111,33 @@ export class UserRepository implements IUserRepository {
                 })
             })
         }
+    }
+
+    async redeemDailyBonus(id: ID): Promise<IUserDTO | null> {
+        const now = new Date()
+
+        return mongoose.connection.withSession(async (session) => {
+            return session.withTransaction(async (session) => {
+                const user = await UserModel.getCollection().findOneAndUpdate(
+                    { _id: new Types.ObjectId(id) },
+                    { $set: { updatedAt: now } },
+                    { session, returnDocument: 'after' },
+                )
+                if (!user) {
+                    return null
+                }
+
+                if (Date.now() - user.dailyBonusCollectedAt.getTime() < 12 * 60 * 60 * 1000) {
+                    throw new RepositoryError('Bonus not available')
+                }
+
+                return await UserModel.getCollection().findOneAndUpdate(
+                    { _id: new Types.ObjectId(id) },
+                    { $set: { dailyBonusCollectedAt: now }, $inc: { balance: 1 } },
+                    { session, returnDocument: 'after' },
+                )
+            })
+        })
     }
 
     async trackActivity(id: ID): Promise<void> {

@@ -11,6 +11,7 @@ export interface IUserModel extends IBaseModel {
     language: string
     avatarUrl?: string
     lastActivityAt: Date
+    dailyBonusCollectedAt: Date
     state: string
     balance: number
     isPremium?: boolean

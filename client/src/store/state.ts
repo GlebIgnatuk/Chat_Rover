@@ -1,4 +1,3 @@
-import { IIdentity } from '@/context/auth/AuthContext'
 import { ILoading } from './common'
 import {
     IAppConfig,
@@ -142,7 +141,19 @@ export type ICommunityState = {
 }
 
 export type IIdentityState = {
-    identity: IIdentity
+    identity: {
+        identity: {
+            id: number
+            username: string
+            first_name?: string
+            last_name?: string
+            language_code: string
+            is_premium: boolean
+            allows_write_to_pm: boolean
+        }
+        user: IUser
+        setUser: (user: IUser) => void
+    }
 }
 
 export type IExpressGiveawaysState = {

@@ -29,61 +29,84 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
     }
 
     async listInListing(userId: ID): Promise<IListingExpressGiveawayDTO[]> {
-        return ExpressGiveawayModel.getCollection()
-            .aggregate<IListingExpressGiveawayDTO>([
-                { $sort: { createdAt: -1 } },
-                { $limit: 10 },
-                {
-                    $lookup: {
-                        from: GiveawayItemModel.getCollection().name,
-                        localField: 'giveawayItemId',
-                        foreignField: '_id',
-                        as: 'giveawayItem',
+        const common = [
+            {
+                $lookup: {
+                    from: GiveawayItemModel.getCollection().name,
+                    localField: 'giveawayItemId',
+                    foreignField: '_id',
+                    as: 'giveawayItem',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$giveawayItem',
+                },
+            },
+            {
+                $lookup: {
+                    from: UserModel.getCollection().name,
+                    localField: 'winners',
+                    foreignField: '_id',
+                    as: 'winners',
+                },
+            },
+            {
+                $addFields: {
+                    participants: {
+                        $size: '$participants',
+                    },
+                    isParticipating: {
+                        $in: [new Types.ObjectId(userId), '$participants'],
                     },
                 },
-                {
-                    $unwind: {
-                        path: '$giveawayItem',
-                    },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    cost: 1,
+                    giveawayItem: 1,
+                    participants: 1,
+                    minParticipants: 1,
+                    maxParticipants: 1,
+                    isParticipating: 1,
+                    winners: 1,
+                    maxWinners: 1,
+                    startedAt: 1,
+                    finishedAt: 1,
+                    createdAt: 1,
+                    durationInSeconds: 1,
                 },
+            },
+        ]
+
+        const [result] = await ExpressGiveawayModel.getCollection()
+            .aggregate<{
+                previous: IListingExpressGiveawayDTO[]
+                actual: IListingExpressGiveawayDTO[]
+            }>([
+                { $match: { scheduledAt: { $lte: new Date() } } },
                 {
-                    $lookup: {
-                        from: UserModel.getCollection().name,
-                        localField: 'winners',
-                        foreignField: '_id',
-                        as: 'winners',
-                    },
-                },
-                {
-                    $addFields: {
-                        participants: {
-                            $size: '$participants',
-                        },
-                        isParticipating: {
-                            $in: [new Types.ObjectId(userId), '$participants'],
-                        },
-                    },
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        name: 1,
-                        cost: 1,
-                        giveawayItem: 1,
-                        participants: 1,
-                        minParticipants: 1,
-                        maxParticipants: 1,
-                        isParticipating: 1,
-                        winners: 1,
-                        maxWinners: 1,
-                        startedAt: 1,
-                        finishedAt: 1,
-                        createdAt: 1,
-                        durationInSeconds: 1,
+                    $facet: {
+                        previous: [
+                            { $match: { finishedAt: { $ne: null } } },
+                            { $sort: { scheduledAt: -1 } },
+                            { $limit: 10 },
+                            ...common,
+                        ],
+                        actual: [
+                            { $match: { finishedAt: null } },
+                            { $sort: { scheduledAt: 1 } },
+                            { $limit: 1 },
+                            ...common,
+                        ],
                     },
                 },
             ])
             .toArray()
+
+        return result.actual.concat(result.previous)
     }
 
     async create(payload: IExpressGiveawayCreate): Promise<IExpressGiveawayDTO> {
@@ -106,6 +129,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
 
             startedAt: null,
             finishedAt: null,
+            scheduledAt: null,
             durationInSeconds: payload.durationInSeconds,
 
             createdAt: now,

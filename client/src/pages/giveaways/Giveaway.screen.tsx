@@ -1,4 +1,5 @@
 import { useStore } from '@/context/app/useStore'
+import { IIdentity } from '@/context/auth/AuthContext'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { api } from '@/services/api'
 import { IListingExpressGiveaway } from '@/store/types'
@@ -79,28 +80,30 @@ const Giveaway = ({
     )
     const participantsRequired = giveaway.minParticipants - giveaway.participants
 
+    const hasEnded =
+        (timeLeftInSeconds <= 0 || giveaway.participants >= giveaway.maxParticipants) &&
+        !!giveaway.finishedAt
+
     useEffect(() => {
-        if (!giveaway.startedAt || giveaway.finishedAt) return
+        if (!giveaway.startedAt || hasEnded) return
 
         const interval = window.setInterval(() => setClock((prev) => prev + 1), 1000)
 
         return () => window.clearInterval(interval)
-    }, [giveaway.startedAt, giveaway.finishedAt])
+    }, [giveaway.startedAt, hasEnded])
 
     return (
         <div className="bg-stone-800/90 border border-primary-700 rounded-xl p-2">
             <div className="flex justify-between items-center">
                 <div className="font-semibold text-primary-700">
                     {giveaway.name}
-                    <span className="text-xs text-white">
-                        {giveaway.finishedAt ? ' (ended)' : ''}
-                    </span>
+                    <span className="text-xs text-white">{hasEnded ? ' (ended)' : ''}</span>
                 </div>
                 <div className="text-xs">{new Date(giveaway.createdAt).toDateString()}</div>
             </div>
 
             <div className="font-semibold text-white text-center text-3xl my-3">
-                {giveaway.finishedAt
+                {hasEnded
                     ? ''
                     : formatClock(
                           timeLeftInSeconds,
@@ -135,7 +138,7 @@ const Giveaway = ({
                     </div>
                 </div>
 
-                {giveaway.finishedAt ? (
+                {hasEnded ? (
                     <div>
                         <div className="text-primary-700 font-semibold mt-2">Winners</div>
                         <div className="grid grid-cols-3 gap-2 auto-rows-max mt-2">
@@ -161,26 +164,6 @@ const Giveaway = ({
                         You are participating!
                     </div>
                 ) : (
-                    // <button
-                    //     disabled={
-                    //         giveaway.participants >= giveaway.maxParticipants ||
-                    //         giveaway.finishedAt !== null ||
-                    //         giveaway.isParticipating ||
-                    //         timeLeftInSeconds <= 60 ||
-                    //         isSubmitting
-                    //     }
-                    //     onClick={() => onParticipate()}
-                    //     className="mb-4 mt-6 self-center bg-primary-700 text-stone-800 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg px-2 py-2 font-semibold flex items-center justify-center gap-2"
-                    // >
-                    //     <span>Participate</span>
-
-                    //     {giveaway.participants < giveaway.maxParticipants && giveaway.cost > 0 && (
-                    //         <span className="inline-block bg-stone-800 text-yellow-500 rounded-md px-2">
-                    //             <span>{giveaway.cost}</span>
-                    //             <FontAwesomeIcon icon={faStar} className="w-4 h-4 ml-1" />
-                    //         </span>
-                    //     )}
-                    // </button>
                     <button
                         disabled={
                             giveaway.participants >= giveaway.maxParticipants ||
@@ -190,13 +173,13 @@ const Giveaway = ({
                             isSubmitting
                         }
                         onClick={() => onParticipate()}
-                        className="mb-4 mt-6 self-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md overflow-hidden font-semibold flex items-center justify-center"
+                        className="mb-4 mt-6 self-center group disabled:cursor-not-allowed rounded-md overflow-hidden font-semibold flex items-center justify-center"
                     >
-                        <span className="text-sm bg-primary-700 text-stone-800 px-5 py-2">
+                        <span className="text-sm bg-primary-700 text-stone-800 px-5 py-2 group-disabled:bg-gray-400">
                             Participate
                         </span>
 
-                        <span className="flex items-center gap-1 px-2 py-2 bg-stone-800 text-primary-700">
+                        <span className="flex items-center gap-1 px-2 py-2 bg-stone-800 text-primary-700 group-disabled:w-0 group-disabled:px-0 transition-all">
                             <img src="/currency/lunite.png" className="w-5 h-5" />
                             <span className="text-sm">{giveaway.cost}</span>
                         </span>
@@ -222,12 +205,22 @@ const Giveaway = ({
 }
 
 export const GiveawayScreen = () => {
+    const { setUser } = useStore((state) => state.identity)
     const { items, setItems } = useStore((state) => state.expressGiveaways)
 
     const onParticipateSuccess = async () => {
-        const response = await api<IListingExpressGiveaway[]>('/expressGiveaways')
-        if (response.success) {
-            setItems(response.data)
+        {
+            const response = await api<IListingExpressGiveaway[]>('/expressGiveaways')
+            if (response.success) {
+                setItems(response.data)
+            }
+        }
+
+        {
+            const response = await api<IIdentity>('/users/me')
+            if (response.success) {
+                setUser(response.data.user)
+            }
         }
     }
 
@@ -245,7 +238,7 @@ export const GiveawayScreen = () => {
     }, [])
 
     return (
-        <div className="h-full overflow-auto space-y-2">
+        <div className="h-full overflow-auto space-y-2 p-1 py-2">
             {items.map((item) => (
                 <Giveaway giveaway={item} onParticipateSuccess={onParticipateSuccess} />
             ))}

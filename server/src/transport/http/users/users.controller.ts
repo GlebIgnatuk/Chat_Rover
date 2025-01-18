@@ -134,3 +134,20 @@ export const trackActivity: IAuthorizedRequestHandler = async (_, res, next) => 
         next(e)
     }
 }
+
+export const redeemDailyBonus: IAuthorizedRequestHandler = async (_, res, next) => {
+    try {
+        const { identity, repositories } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(404).json({ success: false })
+        }
+
+        const updated = await repositories.user.redeemDailyBonus(user._id)
+
+        res.json({ success: true, data: updated })
+    } catch (e) {
+        next(e)
+    }
+}

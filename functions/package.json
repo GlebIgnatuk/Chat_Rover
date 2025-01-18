@@ -11,7 +11,7 @@
     "giveaway-scheduler": "yarn build && node dist/giveaway-scheduler/handler.local.js"
   },
   "engines": {
-    "node": ">= 20"
+    "node": "20"
   },
   "main": "dist/function-entrypoint.js",
   "dependencies": {

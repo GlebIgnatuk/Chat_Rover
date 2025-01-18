@@ -20,6 +20,7 @@ export type IUser = {
     language: string
     avatarUrl: string | null
     lastActivityAt: string
+    dailyBonusCollectedAt: string
     state: 'created' | 'complete'
     balance: number
 }
