@@ -3,11 +3,18 @@ import { cn } from 'tailwind-cn'
 export interface CharacterAvatarProps {
     size: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
     level?: number
+    constellation?: number
     url?: string | null
     bordered?: boolean
 }
 
-export const CharacterAvatar = ({ size, bordered, url, level }: CharacterAvatarProps) => {
+export const CharacterAvatar = ({
+    size,
+    bordered,
+    url,
+    level,
+    constellation,
+}: CharacterAvatarProps) => {
     return (
         <div
             className={cn(
@@ -42,6 +49,30 @@ export const CharacterAvatar = ({ size, bordered, url, level }: CharacterAvatarP
                     )}
                 >
                     {level}
+                </div>
+            )}
+
+            {constellation !== undefined && (
+                <div
+                    className={cn(
+                        'absolute flex items-center justify-center bg-primary-700 text-stone-800 rounded-full border border-transparent',
+                        {
+                            // 'w-5 h-5 text-xs font-bold': size === 'xl',
+                            // 'w-5 h-5 text-xs font-medium': size === 'lg',
+                            // 'w-5 h-5 text-xs font-medium': size === 'md',
+                            // 'w-4 h-4 text-[10px] font-medium': size === 'sm',
+                            // 'w-3 h-3 text-[8px] font-medium': size === 'xs',
+                            // 'w-5 h-5 -bottom-[2px] -left-[2px] text-sm font-medium': size === 'xl',
+                            'w-5 h-5 -bottom-[2px] -left-[2px] text-xs font-medium': size === 'xl',
+                            'w-5 h-5 -bottom-[3px] -left-[3px] text-xs font-medium': size === 'lg',
+                            'w-4 h-4 -bottom-[3px] -left-[3px] text-[10px] font-medium':
+                                size === 'md',
+                            'w-3 h-3 -bottom-[3px] -left-[3px] text-[8px] font-medium':
+                                size === 'sm' || size === 'xs',
+                        },
+                    )}
+                >
+                    {constellation}
                 </div>
             )}
         </div>

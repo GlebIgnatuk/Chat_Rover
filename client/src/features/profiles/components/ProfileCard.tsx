@@ -67,6 +67,7 @@ export const ProfileCard = ({ profile, user, onClick, onNicknameClick }: Profile
                                 t ? buildImageUrl(characters[t.characterId]?.photoPath ?? '') : null
                             }
                             level={t ? t.level : undefined}
+                            constellation={t ? t.constellation : undefined}
                         />
                     ))}
                 </div>
