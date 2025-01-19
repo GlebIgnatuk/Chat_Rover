@@ -25,5 +25,11 @@ export const buildAuthUrl = (path: string) => {
 }
 
 export const buildImageUrl = (path: string) => {
-    return _buildUrl(path, window.location.origin)
+    // @todo remove after deployed
+    if (path.startsWith(import.meta.env.BASE_URL)) {
+        return _buildUrl(path, window.location.origin)
+    }
+
+    const publicUrl = _buildUrl(import.meta.env.BASE_URL, window.location.origin)
+    return _buildUrl(path, publicUrl)
 }

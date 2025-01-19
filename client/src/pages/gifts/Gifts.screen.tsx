@@ -45,7 +45,7 @@ export const GiftsScreen = () => {
         <div className="px-2 py-2 grid grid-cols-2">
             <Card className="flex flex-col py-3 px-2">
                 <img
-                    src={buildImageUrl(import.meta.env.BASE_URL + '/currency/lunite.png')}
+                    src={buildImageUrl('/currency/lunite.png')}
                     className="w-40 h-40 mx-auto animate-pulse"
                 />
 
