@@ -142,7 +142,7 @@ const Giveaway = ({
                 {hasEnded ? (
                     <div>
                         <div className="text-primary-700 font-semibold mt-2">Winners</div>
-                        <div className="grid grid-cols-3 gap-2 auto-rows-max mt-2">
+                        <div className="grid grid-cols-2 gap-2 auto-rows-max mt-2">
                             {giveaway.winners.map((winner) => (
                                 <div
                                     key={winner._id}
