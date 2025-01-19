@@ -109,6 +109,7 @@ export const GiftsScreen = () => {
                         const code = promocodeRef.current.value.trim()
                         if (code.length === 0) return
 
+                        promocodeRef.current.value = ''
                         promocodeActivation.send(code)
                     }}
                 >

@@ -177,6 +177,13 @@ export class UserRepository implements IUserRepository {
                     throw new Error('No such promocode')
                 }
 
+                if (
+                    balancePromocode.expiresAt &&
+                    balancePromocode.expiresAt.getTime() <= Date.now()
+                ) {
+                    throw new Error('Promocode has expired')
+                }
+
                 await this.balancePromocodeActivationRepo.create(
                     {
                         balancePromocodeId: balancePromocode._id,
