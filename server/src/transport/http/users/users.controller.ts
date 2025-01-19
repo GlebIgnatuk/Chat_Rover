@@ -151,3 +151,21 @@ export const redeemDailyBonus: IAuthorizedRequestHandler = async (_, res, next) 
         next(e)
     }
 }
+
+export const claimBalancePromocode: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { code } = req.params
+        const { identity, repositories } = res.locals
+
+        const user = await repositories.user.getByExternalId(identity.user.id)
+        if (!user) {
+            return res.status(404).json({ success: false })
+        }
+
+        const updated = await repositories.user.claimBalancePromocode(user._id, code)
+
+        res.json({ success: true, data: updated })
+    } catch (e) {
+        next(e)
+    }
+}

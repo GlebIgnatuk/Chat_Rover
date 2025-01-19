@@ -151,6 +151,10 @@ export const setupHttpRouter = (
     authorized.patch('/users/me', UsersController.patch)
     authorized.post('/me/activities', UsersController.trackActivity)
     authorized.post('/me/bonuses/daily/redeems', UsersController.redeemDailyBonus)
+    authorized.post(
+        '/me/balancePromocodes/:code/activations',
+        UsersController.claimBalancePromocode,
+    )
 
     // Profiles
     authorized.post('/profiles', ProfilesController.create)

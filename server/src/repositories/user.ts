@@ -21,7 +21,8 @@ export interface IUserRepository {
     create(payload: IUserCreate): Promise<IUserDTO>
     patch(id: ID, payload: IUserPatch, tx?: ClientSession): Promise<IUserDTO | null>
     chargeBalance(id: ID, value: number, tx?: ClientSession): Promise<IUserDTO | null>
-    redeemDailyBonus(id: ID): Promise<IUserDTO | null>
+    redeemDailyBonus(id: ID): Promise<IUserDTO>
+    claimBalancePromocode(id: ID, promocode: string): Promise<IUserDTO>
     delete(id: ID): Promise<void>
     deleteByExternalId(id: number): Promise<void>
     trackActivity(id: ID): Promise<void>

@@ -10,8 +10,10 @@ import { IErrorRepository } from './error'
 import { IProfileExportRepository } from './profileExport'
 import { IGiveawayItemRepository } from './giveawayItem'
 import { IExpressGiveawayRepository } from './expressGiveaway'
+import { IBalancePromocodeRepository } from './balancePromocode'
 
 export interface IRepositories {
+    balancePromocode: IBalancePromocodeRepository
     chatMessage: IChatMessageRepository
     privateChat: IPrivateChatRepository
     globalChat: IGlobalChatRepository

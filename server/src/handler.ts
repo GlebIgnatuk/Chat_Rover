@@ -25,6 +25,8 @@ import { ErrorRepository } from './repositories/impl/error'
 import { ProfileExportRepository } from './repositories/impl/profileExport'
 import { ExpressGiveawayRepository } from './repositories/impl/expressGiveaway'
 import { GiveawayItemRepository } from './repositories/impl/giveawayItem'
+import { BalancePromocodeRepository } from './repositories/impl/balancePromocode'
+import { BalancePromocodeActivationRepository } from './repositories/impl/balancePromocodeActivation'
 
 const app = express()
 let server: http.Server | https.Server
@@ -46,9 +48,12 @@ const handler = async () => {
 
     const privateChat = new PrivateChatRepository()
     const globalChat = new GlobalChatRepository()
-    const userRepo = new UserRepository()
+    const balancePromocodeRepo = new BalancePromocodeRepository()
+    const balancePromocodeActivationRepo = new BalancePromocodeActivationRepository()
+    const userRepo = new UserRepository(balancePromocodeRepo, balancePromocodeActivationRepo)
     const giveawayItemRepo = new GiveawayItemRepository()
     const repositories: IRepositories = {
+        balancePromocode: balancePromocodeRepo,
         chatMessage: new ChatMessageRepository(privateChat),
         privateChat: privateChat,
         globalChat: globalChat,

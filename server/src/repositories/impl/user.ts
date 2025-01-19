@@ -2,8 +2,21 @@ import { IUserDTO, IUserState, UserModel } from '@/models/user'
 import { ID, RepositoryError } from '../types'
 import { IUserCreate, IUserPatch, IUserRepository } from '../user'
 import mongoose, { ClientSession, Types } from 'mongoose'
+import { IBalancePromocodeActivationRepository } from '../balancePromocodeActivation'
+import { IBalancePromocodeRepository } from '../balancePromocode'
 
 export class UserRepository implements IUserRepository {
+    private readonly balancePromocodeRepo: IBalancePromocodeRepository
+    private readonly balancePromocodeActivationRepo: IBalancePromocodeActivationRepository
+
+    constructor(
+        balancePromocodeRepo: IBalancePromocodeRepository,
+        balancePromocodeActivationRepo: IBalancePromocodeActivationRepository,
+    ) {
+        this.balancePromocodeRepo = balancePromocodeRepo
+        this.balancePromocodeActivationRepo = balancePromocodeActivationRepo
+    }
+
     async get(id: ID): Promise<IUserDTO | null> {
         return UserModel.getCollection().findOne({ _id: new Types.ObjectId(id) })
     }
@@ -113,7 +126,7 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    async redeemDailyBonus(id: ID): Promise<IUserDTO | null> {
+    async redeemDailyBonus(id: ID): Promise<IUserDTO> {
         const now = new Date()
 
         return mongoose.connection.withSession(async (session) => {
@@ -124,18 +137,64 @@ export class UserRepository implements IUserRepository {
                     { session, returnDocument: 'after' },
                 )
                 if (!user) {
-                    return null
+                    throw new RepositoryError('No such user')
                 }
 
                 if (Date.now() - user.dailyBonusCollectedAt.getTime() < 12 * 60 * 60 * 1000) {
                     throw new RepositoryError('Bonus not available')
                 }
 
-                return await UserModel.getCollection().findOneAndUpdate(
+                const updated = await UserModel.getCollection().findOneAndUpdate(
                     { _id: new Types.ObjectId(id) },
                     { $set: { dailyBonusCollectedAt: now }, $inc: { balance: 1 } },
                     { session, returnDocument: 'after' },
                 )
+                if (!updated) {
+                    throw new RepositoryError('Failed to update user')
+                }
+
+                return updated
+            })
+        })
+    }
+
+    async claimBalancePromocode(id: ID, code: string): Promise<IUserDTO> {
+        const now = new Date()
+
+        return mongoose.connection.withSession(async (session) => {
+            return session.withTransaction(async (session) => {
+                const user = await UserModel.getCollection().findOneAndUpdate(
+                    { _id: new Types.ObjectId(id) },
+                    { $set: { updatedAt: now } },
+                    { session, returnDocument: 'after' },
+                )
+                if (!user) {
+                    throw new RepositoryError('No such user')
+                }
+
+                const balancePromocode = await this.balancePromocodeRepo.findByCode(code, session)
+                if (!balancePromocode) {
+                    throw new Error('No such promocode')
+                }
+
+                await this.balancePromocodeActivationRepo.create(
+                    {
+                        balancePromocodeId: balancePromocode._id,
+                        userId: user._id,
+                    },
+                    session,
+                )
+
+                const updated = await UserModel.getCollection().findOneAndUpdate(
+                    { _id: new Types.ObjectId(id) },
+                    { $inc: { balance: balancePromocode.value } },
+                    { session, returnDocument: 'after' },
+                )
+                if (!updated) {
+                    throw new RepositoryError('Failed to update user')
+                }
+
+                return updated
             })
         })
     }
