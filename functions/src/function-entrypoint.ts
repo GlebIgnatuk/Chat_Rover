@@ -8,7 +8,8 @@
  */
 
 import { onSchedule } from 'firebase-functions/v2/scheduler'
+import giveawayHandler from './giveaway-scheduler/handler.js'
 
 export const giveawayScheduler = onSchedule('*/1 * * * *', () => {
-    import('./giveaway-scheduler/handler.js').then((m) => m.default)
+    return giveawayHandler()
 })
