@@ -10,6 +10,7 @@ export interface IExpressGiveawayModel extends IBaseModel {
     minParticipants: number
     maxParticipants: number
 
+    processedWinners: Types.ObjectId[]
     winners: Types.ObjectId[]
     maxWinners: number
 

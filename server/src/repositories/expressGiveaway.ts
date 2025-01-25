@@ -37,9 +37,27 @@ export type IListingExpressGiveawayDTO = mongo.WithId<{
     durationInSeconds: number
 }>
 
+export type IAdminExpressGiveawayListItem = mongo.WithId<{
+    _id: string
+    name: string
+
+    participants: number
+    maxParticipants: number
+
+    winners: (Pick<IPublicUserDTO, '_id' | 'nickname'> & { processed: boolean })[]
+
+    giveawayItem: IGiveawayItemDTO
+
+    finishedAt: string
+}>
+
 export interface IExpressGiveawayRepository {
     list(): Promise<IExpressGiveawayDTO[]>
     listInListing(userId: ID): Promise<IListingExpressGiveawayDTO[]>
+    listAdmin(): Promise<IAdminExpressGiveawayListItem[]>
+    markWinnerAsProcessed(giveawayId: ID, winnerId: ID): Promise<IAdminExpressGiveawayListItem>
+    markWinnerAsPending(giveawayId: ID, winnerId: ID): Promise<IAdminExpressGiveawayListItem>
+    rerollWinner(giveawayId: ID, winnerId: ID): Promise<IAdminExpressGiveawayListItem>
     create(payload: IExpressGiveawayCreate): Promise<IExpressGiveawayDTO>
     addParticipant(userId: ID, giveawayId: ID): Promise<void>
     // patch(payload: IExpressGiveawayCreate): Promise<IExpressGiveawayDTO>

@@ -21,6 +21,10 @@ export const buildAuthPath = (path: string) => {
     return createPath(APP_PATH, APP_AUTH_PATH, path)
 }
 
+export const buildAdminPath = (path: string) => {
+    return createPath(APP_PATH, APP_PROTECTED_PATH, APP_ADMIN_PATH, path)
+}
+
 export const buildImagePath = (path: string) => {
     return createPath(import.meta.env.BASE_URL, path)
 }

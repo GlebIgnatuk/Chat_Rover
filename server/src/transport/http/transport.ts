@@ -11,6 +11,7 @@ import * as TranslationsController from './translations/translations.controller'
 import * as ErrorsController from './errors/errors.controller'
 import * as GiveawayItemsController from './giveawayItems/giveawayItems.controller'
 import * as ExpressGiveawaysController from './expressGiveaways/expressGiveaways.controller'
+import * as TelegramUsersController from './telegramUsers/telegramUsers.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -206,11 +207,34 @@ export const setupHttpRouter = (
     authorized.delete('/admin/giveawayItems/:id', isAdmin, GiveawayItemsController.remove)
 
     // Express giveaways
-    authorized.get('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.list)
+    authorized.get(
+        '/admin/expressGiveaways',
+        isAdmin,
+        ExpressGiveawaysController.listAdminListItems,
+    )
     authorized.post('/admin/expressGiveaways', isAdmin, ExpressGiveawaysController.create)
+    authorized.post(
+        '/admin/expressGiveaways/:id/processedWinners',
+        isAdmin,
+        ExpressGiveawaysController.markWinnerAsProcessed,
+    )
+    authorized.post(
+        '/admin/expressGiveaways/:id/rerolledWinners',
+        isAdmin,
+        ExpressGiveawaysController.rerollWinner,
+    )
     authorized.delete('/admin/expressGiveaways/:id', isAdmin, ExpressGiveawaysController.remove)
+    authorized.delete(
+        '/admin/expressGiveaways/:id/processedWinners/:winnerId',
+        isAdmin,
+        ExpressGiveawaysController.markWinnerAsPending,
+    )
+
     authorized.get('/expressGiveaways', ExpressGiveawaysController.listInListing)
     authorized.post('/expressGiveaways/:id/participants', ExpressGiveawaysController.addParticipant)
+
+    // Telegram users
+    authorized.get('/admin/users/:id/telegramUsers', isAdmin, TelegramUsersController.list)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))

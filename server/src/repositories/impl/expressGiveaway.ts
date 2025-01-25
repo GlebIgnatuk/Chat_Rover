@@ -1,5 +1,6 @@
 import { ExpressGiveawayModel, IExpressGiveawayDTO } from '@/models/expressGiveaway'
 import {
+    IAdminExpressGiveawayListItem,
     IExpressGiveawayCreate,
     IExpressGiveawayRepository,
     IListingExpressGiveawayDTO,
@@ -109,6 +110,87 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
         return result.actual.concat(result.previous)
     }
 
+    async listAdmin(giveawayId?: ID): Promise<IAdminExpressGiveawayListItem[]> {
+        const filter: Record<string, any> = {
+            finishedAt: { $ne: null },
+        }
+        if (giveawayId) {
+            filter._id = new Types.ObjectId(giveawayId)
+        }
+
+        const result = await ExpressGiveawayModel.getCollection()
+            .aggregate<IAdminExpressGiveawayListItem>([
+                { $match: filter },
+                { $limit: 20 },
+                {
+                    $lookup: {
+                        from: GiveawayItemModel.getCollection().name,
+                        localField: 'giveawayItemId',
+                        foreignField: '_id',
+                        as: 'giveawayItem',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$giveawayItem',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'winners',
+                        foreignField: '_id',
+                        as: 'winners',
+                        let: { processedWinners: '$processedWinners' },
+                        pipeline: [
+                            {
+                                $addFields: {
+                                    processed: { $in: ['$_id', '$$processedWinners'] },
+                                },
+                            },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    nickname: 1,
+                                    processed: 1,
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    $addFields: {
+                        participants: {
+                            $size: '$participants',
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+
+                        participants: 1,
+                        maxParticipants: 1,
+
+                        winners: 1,
+
+                        giveawayItem: 1,
+
+                        finishedAt: 1,
+                    },
+                },
+                {
+                    $sort: {
+                        finishedAt: -1,
+                    },
+                },
+            ])
+            .toArray()
+
+        return result
+    }
+
     async create(payload: IExpressGiveawayCreate): Promise<IExpressGiveawayDTO> {
         const now = new Date()
 
@@ -124,6 +206,7 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
             minParticipants: payload.minParticipants,
             maxParticipants: payload.maxParticipants,
 
+            processedWinners: [],
             winners: [],
             maxWinners: payload.maxWinners,
 
@@ -271,5 +354,93 @@ export class ExpressGiveawayRepository implements IExpressGiveawayRepository {
 
     async delete(id: ID): Promise<void> {
         await ExpressGiveawayModel.getCollection().deleteOne({ _id: new Types.ObjectId(id) })
+    }
+
+    async markWinnerAsPending(
+        giveawayId: ID,
+        winnerId: ID,
+    ): Promise<IAdminExpressGiveawayListItem> {
+        await ExpressGiveawayModel.getCollection().updateOne(
+            { _id: new Types.ObjectId(giveawayId) },
+            {
+                $pull: {
+                    processedWinners: new Types.ObjectId(winnerId),
+                },
+            },
+        )
+
+        const items = await this.listAdmin(giveawayId)
+        if (items.length === 0) {
+            throw new Error('No such giveaway')
+        }
+
+        return items[0]
+    }
+
+    async markWinnerAsProcessed(
+        giveawayId: ID,
+        winnerId: ID,
+    ): Promise<IAdminExpressGiveawayListItem> {
+        await ExpressGiveawayModel.getCollection().updateOne(
+            { _id: new Types.ObjectId(giveawayId) },
+            {
+                $push: {
+                    processedWinners: new Types.ObjectId(winnerId),
+                },
+            },
+        )
+
+        const items = await this.listAdmin(giveawayId)
+        if (items.length === 0) {
+            throw new Error('No such giveaway')
+        }
+
+        return items[0]
+    }
+
+    async rerollWinner(giveawayId: ID, winnerId: ID): Promise<IAdminExpressGiveawayListItem> {
+        const giveaway = await ExpressGiveawayModel.getCollection().findOneAndUpdate(
+            { _id: new Types.ObjectId(giveawayId) },
+            {
+                $pull: {
+                    winners: new Types.ObjectId(winnerId),
+                    processedWinners: new Types.ObjectId(winnerId),
+                },
+            },
+            {
+                returnDocument: 'after',
+            },
+        )
+        if (!giveaway) {
+            throw new Error('No such giveaway')
+        }
+
+        const candidates = giveaway.participants.filter(
+            (p) =>
+                p._id.equals(winnerId) === false &&
+                giveaway.winners.some((w) => p.equals(w)) === false,
+        )
+        if (candidates.length === 0) {
+            throw new Error('Not enough participants')
+        }
+
+        const randomIndex = Math.floor(Math.random() * (candidates.length - 1 - 0)) + 0
+        const newWinnerId = candidates[randomIndex]
+
+        await ExpressGiveawayModel.getCollection().updateOne(
+            { _id: new Types.ObjectId(giveawayId) },
+            {
+                $push: {
+                    winners: new Types.ObjectId(newWinnerId),
+                },
+            },
+        )
+
+        const items = await this.listAdmin(giveawayId)
+        if (items.length === 0) {
+            throw new Error('No such giveaway')
+        }
+
+        return items[0]
     }
 }

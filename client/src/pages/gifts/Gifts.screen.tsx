@@ -2,54 +2,11 @@ import { Card } from '@/components/Card'
 import { Timer } from '@/components/Timer'
 import { buildImageUrl } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
-import { api, APIResponse } from '@/services/api'
+import { useMutation } from '@/hooks/common/useMutation'
+import { api } from '@/services/api'
 import { IUser } from '@/store/types'
 import { useRef, useState } from 'react'
 import { cn } from 'tailwind-cn'
-
-interface UseMutationProps<T, A extends unknown[]> {
-    fn: (...args: A) => Promise<APIResponse<T>>
-    onSuccess?: (data: T) => void
-    errorTimerMs?: number
-}
-
-const useMutation = <T, A extends unknown[] = []>({
-    fn,
-    onSuccess,
-    errorTimerMs,
-}: UseMutationProps<T, A>) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
-    const [data, setData] = useState<T | null>(null)
-
-    const send = async (...args: A) => {
-        try {
-            setError('')
-            setIsLoading(true)
-
-            const response = await fn(...args)
-            if (response.success) {
-                setData(response.data)
-                onSuccess?.(response.data)
-            } else {
-                setError(response.error)
-                if (errorTimerMs !== undefined) {
-                    setTimeout(() => setError(''), errorTimerMs)
-                }
-            }
-
-            setIsLoading(false)
-        } catch {
-            setError('Something went wrong')
-            if (errorTimerMs !== undefined) {
-                setTimeout(() => setError(''), errorTimerMs)
-            }
-            setIsLoading(false)
-        }
-    }
-
-    return { isLoading, error, data, send }
-}
 
 export const GiftsScreen = () => {
     const promocodeRef = useRef<HTMLInputElement>(null)

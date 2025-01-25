@@ -3,7 +3,7 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { CommunityScreen } from './pages/community/Community.screen'
@@ -27,6 +27,7 @@ import { ErrorBoundaryScreen } from './pages/ErrorBoundary.screen'
 import { GiveawayScreen } from './pages/giveaways/Giveaway.screen'
 import { GiftsScreen } from './pages/gifts/Gifts.screen'
 import { AdminScreen } from './pages/admin/Admin.screen'
+import { AdminGiveawaysScreen } from './pages/admin/giveaways/AdminGiveaways.screen'
 import {
     APP_ADMIN_PATH,
     APP_AUTH_PATH,
@@ -34,6 +35,7 @@ import {
     APP_PROTECTED_PATH,
     buildPublicPath,
 } from './config/path'
+import { AdminRoute } from './context/auth/AdminRoute'
 
 const router = createBrowserRouter([
     {
@@ -165,11 +167,15 @@ const router = createBrowserRouter([
                                     },
                                     {
                                         path: APP_ADMIN_PATH,
-                                        element: <Outlet />,
+                                        element: <AdminRoute />,
                                         children: [
                                             {
                                                 path: '',
                                                 element: <AdminScreen />,
+                                            },
+                                            {
+                                                path: 'giveaways',
+                                                element: <AdminGiveawaysScreen />,
                                             },
                                         ],
                                     },

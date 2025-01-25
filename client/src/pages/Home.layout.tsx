@@ -125,16 +125,20 @@ export const HomeLayout = () => {
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
             <div className="bg-stone-800 border-b border-primary-700 grid grid-cols-[max-content,minmax(0,1fr),max-content,max-content] items-center p-2 gap-3">
-                <NavLink
-                    to={buildProtectedPath('/admin')}
-                    className={({ isActive }) =>
-                        cn('font-bold', {
-                            'text-primary-700': isActive,
-                        })
-                    }
-                >
-                    Rover Chat
-                </NavLink>
+                {user.role === 'admin' ? (
+                    <NavLink
+                        to={buildProtectedPath('/admin')}
+                        className={({ isActive }) =>
+                            cn('font-bold', {
+                                'text-primary-700': isActive,
+                            })
+                        }
+                    >
+                        Rover Chat
+                    </NavLink>
+                ) : (
+                    <div className="font-bold">Rover Chat</div>
+                )}
 
                 <div className="flex gap-1 items-center justify-end">
                     <img src={buildImageUrl('/currency/lunite.png')} className="w-6 h-6" />

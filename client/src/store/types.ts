@@ -16,6 +16,7 @@ export type IAppConfig = {
 
 export type IUser = {
     _id: string
+    externalId: number
     nickname: string
     language: string
     avatarUrl: string | null
@@ -23,6 +24,7 @@ export type IUser = {
     dailyBonusCollectedAt: string
     state: 'created' | 'complete'
     balance: number
+    role: string
 }
 
 export type IPublicUser = Pick<
@@ -124,4 +126,22 @@ export type IListingExpressGiveaway = {
     createdAt: string
 
     isParticipating: boolean
+}
+
+export type IAdminExpressGiveawayListItem = {
+    _id: string
+    name: string
+
+    participants: number
+    maxParticipants: number
+
+    winners: (Pick<IUser, '_id' | 'nickname'> & { processed: boolean })[]
+
+    giveawayItem: {
+        _id: string
+        name: string
+        photoPath: string
+    }
+
+    finishedAt: string
 }
