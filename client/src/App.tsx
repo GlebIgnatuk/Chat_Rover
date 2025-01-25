@@ -3,8 +3,7 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
-import { buildPublicUrl } from '@/utils/url'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { CommunityScreen } from './pages/community/Community.screen'
@@ -18,7 +17,6 @@ import { GlobalChatScreen } from './pages/game_chat/GlobalChat.screen'
 import { RegionalChatScreen } from './pages/game_chat/RegionalChat.screen'
 import { SignUpProfileScreen } from './pages/auth/signup/SignUpProfile.screen'
 import { ProfileStateRoute } from './context/auth/ProfileStateRoute'
-import { AUTH_PATH_PREFIX, PATH_PREFIX, PROTECTED_PATH_PREFIX } from './config/config'
 import { PublicStoreProvider } from './PublicStoreProvider'
 import { PrivateStoreProvider } from './PrivateStoreProvider'
 import { SplashScreen } from './pages/Splash.screen'
@@ -28,6 +26,14 @@ import { RenderedProfileScreen } from './pages/profiles/RenderedProfile.screen'
 import { ErrorBoundaryScreen } from './pages/ErrorBoundary.screen'
 import { GiveawayScreen } from './pages/giveaways/Giveaway.screen'
 import { GiftsScreen } from './pages/gifts/Gifts.screen'
+import { AdminScreen } from './pages/admin/Admin.screen'
+import {
+    APP_ADMIN_PATH,
+    APP_AUTH_PATH,
+    APP_PATH,
+    APP_PROTECTED_PATH,
+    buildPublicPath,
+} from './config/path'
 
 const router = createBrowserRouter([
     {
@@ -36,12 +42,12 @@ const router = createBrowserRouter([
         errorElement: <ErrorBoundaryScreen />,
     },
     {
-        path: PATH_PREFIX.substring(1),
+        path: APP_PATH,
         element: <PublicStoreProvider />,
         errorElement: <ErrorBoundaryScreen />,
         children: [
             {
-                path: AUTH_PATH_PREFIX.substring(1),
+                path: APP_AUTH_PATH,
                 element: <AuthLayout />,
                 children: [
                     {
@@ -71,7 +77,7 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                path: PROTECTED_PATH_PREFIX.substring(1),
+                path: APP_PROTECTED_PATH,
                 element: <PrivateStoreProvider />,
                 children: [
                     {
@@ -157,6 +163,16 @@ const router = createBrowserRouter([
                                         path: 'gifts',
                                         element: <GiftsScreen />,
                                     },
+                                    {
+                                        path: APP_ADMIN_PATH,
+                                        element: <Outlet />,
+                                        children: [
+                                            {
+                                                path: '',
+                                                element: <AdminScreen />,
+                                            },
+                                        ],
+                                    },
                                 ],
                             },
                         ],
@@ -167,7 +183,7 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <Navigate to={buildPublicUrl('/')} replace />,
+        element: <Navigate to={buildPublicPath('/')} replace />,
         errorElement: <ErrorBoundaryScreen />,
     },
 ])

@@ -1,9 +1,9 @@
+import { buildImageUrl } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { api } from '@/services/api'
 import { IListingExpressGiveaway } from '@/store/types'
-import { buildImageUrl } from '@/utils/url'
 import { useEffect, useState } from 'react'
 import { cn } from 'tailwind-cn'
 

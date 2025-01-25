@@ -1,6 +1,5 @@
 import { api } from '@/services/api'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { buildProtectedUrl } from '@/utils/url'
 import { useProfileForm } from '@/features/profiles/hooks/useProfileForm'
 import { ProfileForm } from '@/features/profiles/components/ProfileForm'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
@@ -12,6 +11,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useAccount } from '@/context/account'
 import * as R from 'ramda'
 import { useStore } from '@/context/app/useStore'
+import { buildProtectedPath } from '@/config/path'
 
 export const ProfileScreen = () => {
     const { id: profileId } = useParams()
@@ -52,7 +52,7 @@ export const ProfileScreen = () => {
         if (response.success) {
             setIsLoading(false)
             account.refresh()
-            navigate(buildProtectedUrl('/account/profiles'), { replace: true })
+            navigate(buildProtectedPath('/account/profiles'), { replace: true })
         } else {
             const errors = response.details?.map((d) => ({
                 key: d.path.join('.'),
@@ -66,13 +66,13 @@ export const ProfileScreen = () => {
         }
     }
 
-    if (!profile) return <Navigate to={buildProtectedUrl('/account/profiles')} />
+    if (!profile) return <Navigate to={buildProtectedPath('/account/profiles')} />
 
     return (
         <div className="h-full overflow-y-auto">
             <div
                 onClick={() =>
-                    navigate(buildProtectedUrl(`/u/${user._id}/profiles/${profile._id}`))
+                    navigate(buildProtectedPath(`/u/${user._id}/profiles/${profile._id}`))
                 }
                 className="bg-stone-800 text-primary-700 py-1 text-center cursor-pointer rounded-full border border-primary-700 mx-1 my-1"
             >

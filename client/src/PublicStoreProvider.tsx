@@ -4,7 +4,7 @@ import { InitializerContext } from './context/initializer/InitializerContext'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useLocation } from './hooks/common/useLocation'
 import { IAppConfig, IIntl, IWuwaCharacter } from './store/types'
-import { buildPublicUrl } from './utils/url'
+import { buildPublicPath } from './config/path'
 
 export const PublicStoreProvider = () => {
     const { state } = useLocation<{
@@ -22,7 +22,7 @@ export const PublicStoreProvider = () => {
         if (state && state.__splash) {
             store.current = createPublicStore(state.__splash)
         } else {
-            return <Navigate to={buildPublicUrl('/')} replace />
+            return <Navigate to={buildPublicPath('/')} replace />
         }
     }
 

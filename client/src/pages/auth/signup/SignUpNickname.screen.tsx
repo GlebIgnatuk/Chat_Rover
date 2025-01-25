@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { cn } from 'tailwind-cn'
 import { useNavigate } from 'react-router-dom'
-import { buildAuthUrl } from '@/utils/url'
 import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { useLocalize } from '@/hooks/intl/useLocalize'
+import { buildAuthPath } from '@/config/path'
 
 const getInitialUsername = () => {
     try {
@@ -57,7 +57,7 @@ export const SignUpNicknameScreen = () => {
             })
 
             if (response.success) {
-                navigate(buildAuthUrl('/signup/profile'), {
+                navigate(buildAuthPath('/signup/profile'), {
                     replace: true,
                     state: { user: response.data },
                 })

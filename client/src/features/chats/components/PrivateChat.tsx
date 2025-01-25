@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
-import { buildProtectedUrl } from '@/utils/url'
 import { useNavigate } from 'react-router-dom'
+import { buildProtectedPath } from '@/config/path'
 
 export interface PrivateChatProps {
     chatId: string
@@ -73,7 +73,7 @@ export const PrivateChat = ({ chatId, shouldLoad }: PrivateChatProps) => {
                                 messages={messages}
                                 user={user}
                                 onNicknameClick={(user) => {
-                                    navigate(buildProtectedUrl(`/u/${user._id}`))
+                                    navigate(buildProtectedPath(`/u/${user._id}`))
                                 }}
                             />
                         ))}

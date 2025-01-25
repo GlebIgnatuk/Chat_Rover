@@ -1,5 +1,5 @@
+import { buildImageUrl } from '@/config/path'
 import { IWuwaCharacter } from '@/store/types'
-import { buildImageUrl } from '@/utils/url'
 import { faPlus, faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@material-ui/core'

@@ -1,9 +1,5 @@
 export const ACTIVITY_POLLING_INTERVAL = 30 * 1000
 
-export const PATH_PREFIX = '/app'
-export const AUTH_PATH_PREFIX = '/auth'
-export const PROTECTED_PATH_PREFIX = '/'
-
 export const DEBUG = import.meta.env.VITE_DEBUG === 'true'
 export const SUPPORTED_SERVERS = ['SEA', 'Asia', 'Europe', 'HMT', 'America'] as const
 

@@ -1,10 +1,10 @@
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { buildProtectedPath } from '@/config/path'
 import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { useSearch } from '@/features/search/hooks/useSearch'
 import { useScrollRestoration } from '@/hooks/common/useScrollRestoration'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FiltersModal } from '@/modules/community/FiltersModal'
-import { buildProtectedUrl } from '@/utils/url'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Modal } from '@mui/material'
@@ -111,9 +111,9 @@ export const CommunityScreen = () => {
                         key={profile._id}
                         user={user}
                         profile={profile}
-                        onClick={() => navigate(buildProtectedUrl(`/u/${user._id}`))}
+                        onClick={() => navigate(buildProtectedPath(`/u/${user._id}`))}
                         onNicknameClick={() =>
-                            navigate(buildProtectedUrl(`/u/${user._id}/profiles/${profile._id}`))
+                            navigate(buildProtectedPath(`/u/${user._id}/profiles/${profile._id}`))
                         }
                     />
                 ))}

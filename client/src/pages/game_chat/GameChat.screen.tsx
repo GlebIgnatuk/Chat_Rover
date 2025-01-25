@@ -1,8 +1,8 @@
 import { Card } from '@/components/Card'
+import { buildProtectedPath } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
 import { api } from '@/services/api'
 import { IGlobalChatWithMetadata } from '@/store/types'
-import { buildProtectedUrl } from '@/utils/url'
 import { faCrown, faPerson } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect } from 'react'
@@ -30,7 +30,7 @@ export const GameChatScreen = () => {
                     key={chat.slug}
                     className="cursor-pointer"
                     onClick={() => {
-                        navigate(buildProtectedUrl(`/game_chat/${chat.slug}`))
+                        navigate(buildProtectedPath(`/game_chat/${chat.slug}`))
                     }}
                 >
                     <div className="grid grid-cols-[max-content,minmax(0,1fr),max-content,max-content] items-center p-2">

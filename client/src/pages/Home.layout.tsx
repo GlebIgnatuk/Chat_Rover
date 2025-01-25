@@ -15,15 +15,15 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import PlayLessonIcon from '@mui/icons-material/PlayLesson'
 import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
 import wuwaIcon from '@/assets/wuwa_icon.png'
-import { buildImageUrl, buildProtectedUrl } from '@/utils/url'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '@/context/app/useStore'
+import { buildImageUrl, buildProtectedPath } from '@/config/path'
 
 const navigation = [
     {
-        path: buildProtectedUrl('/game_chat'),
+        path: buildProtectedPath('/game_chat'),
         label: 'nav__chat',
         IconActive: () => (
             <img
@@ -36,7 +36,7 @@ const navigation = [
         ),
     },
     {
-        path: buildProtectedUrl('/giveaway'),
+        path: buildProtectedPath('/giveaway'),
         label: 'nav__giveaway',
         IconActive: () => (
             <FontAwesomeIcon
@@ -55,20 +55,20 @@ const navigation = [
         disabled: false,
     },
     {
-        path: buildProtectedUrl('/'),
+        path: buildProtectedPath('/'),
         label: 'nav__search',
         end: true,
         IconActive: GroupIcon,
         IconInactive: GroupOutlinedIcon,
     },
     {
-        path: buildProtectedUrl('/chats'),
+        path: buildProtectedPath('/chats'),
         label: 'nav__messages',
         IconActive: ChatIcon,
         IconInactive: ChatOutlinedIcon,
     },
     {
-        path: buildProtectedUrl('/guides'),
+        path: buildProtectedPath('/guides'),
         label: 'nav__guides',
         IconActive: PlayLessonIcon,
         IconInactive: PlayLessonOutlinedIcon,
@@ -125,7 +125,16 @@ export const HomeLayout = () => {
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">
             <div className="bg-stone-800 border-b border-primary-700 grid grid-cols-[max-content,minmax(0,1fr),max-content,max-content] items-center p-2 gap-3">
-                <div className="font-bold">Rover Chat</div>
+                <NavLink
+                    to={buildProtectedPath('/admin')}
+                    className={({ isActive }) =>
+                        cn('font-bold', {
+                            'text-primary-700': isActive,
+                        })
+                    }
+                >
+                    Rover Chat
+                </NavLink>
 
                 <div className="flex gap-1 items-center justify-end">
                     <img src={buildImageUrl('/currency/lunite.png')} className="w-6 h-6" />
@@ -133,7 +142,7 @@ export const HomeLayout = () => {
                 </div>
 
                 <NavLink
-                    to={buildProtectedUrl('/gifts')}
+                    to={buildProtectedPath('/gifts')}
                     className={({ isActive }) =>
                         cn('py-2 flex flex-col items-center justify-end relative', {
                             'text-primary-700': isActive,
@@ -152,7 +161,7 @@ export const HomeLayout = () => {
                     )}
                 </NavLink>
                 <NavLink
-                    to={buildProtectedUrl('/account/profiles')}
+                    to={buildProtectedPath('/account/profiles')}
                     className={({ isActive }) =>
                         cn('py-2 flex flex-col items-center justify-end relative', {
                             'text-primary-700': isActive,

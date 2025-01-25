@@ -1,8 +1,8 @@
 import { Card } from '@/components/Card'
+import { buildProtectedPath } from '@/config/path'
 import { useOnline } from '@/context/online/useOnline'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { useChats } from '@/hooks/chats/useChats'
-import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -31,7 +31,7 @@ export const ChatsScreen = () => {
                         key={chat._id}
                         className="grid grid-cols-[max-content,minmax(0,1fr)] gap-4 p-2 cursor-pointer"
                         onClick={() => {
-                            navigate(buildProtectedUrl(`/chats/${chat._id}`))
+                            navigate(buildProtectedPath(`/chats/${chat._id}`))
                         }}
                     >
                         <AccountAvatar

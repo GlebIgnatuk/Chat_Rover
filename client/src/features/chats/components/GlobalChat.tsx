@@ -4,11 +4,11 @@ import { useStore } from '@/context/app/useStore'
 import { IMessageWithStatus } from '@/store/types'
 import { ChatMessageGroup } from './ChatMessageGroup'
 import { useGlobalChat } from '../hooks/useGlobalChat'
-import { buildProtectedUrl } from '@/utils/url'
 import { useNavigate } from 'react-router-dom'
 import { ChatFloatingButton } from './ChatFloatingButton'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { buildProtectedPath } from '@/config/path'
 
 export interface GlobalChatProps {
     chatId: string
@@ -199,7 +199,7 @@ export const GlobalChat = ({ chatId }: GlobalChatProps) => {
                                 messages={messages}
                                 user={user}
                                 onNicknameClick={(user) => {
-                                    navigate(buildProtectedUrl(`/u/${user._id}`))
+                                    navigate(buildProtectedPath(`/u/${user._id}`))
                                 }}
                             />
                         ))}

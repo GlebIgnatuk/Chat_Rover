@@ -1,6 +1,5 @@
 import { api } from '@/services/api'
 import { useNavigate } from 'react-router-dom'
-import { buildProtectedUrl } from '@/utils/url'
 import { useProfileForm } from '@/features/profiles/hooks/useProfileForm'
 import { ProfileForm } from '@/features/profiles/components/ProfileForm'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
@@ -10,6 +9,7 @@ import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useAccount } from '@/context/account'
+import { buildProtectedPath } from '@/config/path'
 
 export const ProfileNewScreen = () => {
     const navigate = useNavigate()
@@ -45,7 +45,7 @@ export const ProfileNewScreen = () => {
         if (response.success) {
             setIsLoading(false)
             account.refresh()
-            navigate(buildProtectedUrl('/account/profiles'), { replace: true })
+            navigate(buildProtectedPath('/account/profiles'), { replace: true })
         } else {
             const errors = response.details?.map((d) => ({
                 key: d.path.join('.'),

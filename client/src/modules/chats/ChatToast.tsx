@@ -1,5 +1,5 @@
+import { buildProtectedPath } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
-import { buildProtectedUrl } from '@/utils/url'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
@@ -41,7 +41,7 @@ export const ChatToast = () => {
             )}
             onClick={() => {
                 if (lastReceivedMessage) {
-                    navigate(buildProtectedUrl(`/chats/${lastReceivedMessage.chatId}`))
+                    navigate(buildProtectedPath(`/chats/${lastReceivedMessage.chatId}`))
                     resetLastReceivedMessage()
                 }
             }}

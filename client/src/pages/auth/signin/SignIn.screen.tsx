@@ -1,7 +1,6 @@
 import backgroundImage from '@/assets/auth.jpeg'
 import { FAKE_PROFILES, generateFakeProfile } from '@/config/config'
 
-import { buildAuthUrl, buildProtectedUrl, buildPublicUrl } from '@/utils/url'
 import { faHeartPulse } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
@@ -11,6 +10,7 @@ import { api } from '@/services/api'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { buildAuthPath, buildProtectedPath, buildPublicPath } from '@/config/path'
 
 export const SignInScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -35,7 +35,7 @@ export const SignInScreen = () => {
                 switch (state) {
                     case 'complete':
                         {
-                            navigate(buildProtectedUrl('/'), {
+                            navigate(buildProtectedPath('/'), {
                                 replace: true,
                                 state: { user: identity },
                             })
@@ -44,7 +44,7 @@ export const SignInScreen = () => {
 
                     case 'created':
                         {
-                            navigate(buildAuthUrl('/signup/profile'), {
+                            navigate(buildAuthPath('/signup/profile'), {
                                 replace: true,
                                 state: { user: identity },
                             })
@@ -57,7 +57,7 @@ export const SignInScreen = () => {
                 }
             } else {
                 if (response.error === 'NOT_FOUND') {
-                    navigate(buildAuthUrl('/signup/nickname'), { replace: true })
+                    navigate(buildAuthPath('/signup/nickname'), { replace: true })
                 } else {
                     setError(response.error)
                 }
@@ -114,7 +114,7 @@ export const SignInScreen = () => {
                             {FAKE_PROFILES.map((p, idx) => (
                                 <a
                                     key={p.profile.username}
-                                    href={buildPublicUrl(
+                                    href={buildPublicPath(
                                         `/#tgWebAppData=${encodeURIComponent(p.encoded)}`,
                                     )}
                                     className="p-2 rounded-md cursor-pointer"
@@ -127,7 +127,7 @@ export const SignInScreen = () => {
                             ))}
 
                             <a
-                                href={buildPublicUrl(
+                                href={buildPublicPath(
                                     `/#tgWebAppData=${encodeURIComponent(random.encoded)}`,
                                 )}
                                 className="p-2 rounded-md cursor-pointer bg-black text-white col-span-2"

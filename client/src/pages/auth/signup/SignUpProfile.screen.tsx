@@ -5,7 +5,6 @@ import { ProfileForm } from '@/features/profiles/components/ProfileForm'
 import { useProfileForm } from '@/features/profiles/hooks/useProfileForm'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { api } from '@/services/api'
-import { buildProtectedUrl } from '@/utils/url'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +12,7 @@ import cardBgImage from '@/assets/profile-card-bg.webp'
 import { cn } from 'tailwind-cn'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { buildProtectedPath } from '@/config/path'
 
 export const SignUpProfileScreen = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +53,7 @@ export const SignUpProfileScreen = () => {
                 setIsCardOpen(false)
                 setTimeout(() => {
                     setIsLoading(false)
-                    navigate(buildProtectedUrl('/'), {
+                    navigate(buildProtectedPath('/'), {
                         replace: true,
                         state: { user: response.data },
                     })
@@ -91,7 +91,7 @@ export const SignUpProfileScreen = () => {
                 setIsCardOpen(false)
                 setTimeout(() => {
                     setIsLoading(false)
-                    navigate(buildProtectedUrl('/'), {
+                    navigate(buildProtectedPath('/'), {
                         replace: true,
                         state: { user: response.data },
                     })

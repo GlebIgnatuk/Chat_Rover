@@ -2,7 +2,6 @@ import { FlagIcon, FLAGS_MAP } from '@/components/FlagIcon'
 import { SUPPORTED_SERVERS } from '@/config/config'
 import { useStore } from '@/context/app/useStore'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
-import { buildImageUrl } from '@/utils/url'
 import {
     faMicrophoneAlt,
     faMicrophoneAltSlash,
@@ -13,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { forwardRef, useMemo, useState } from 'react'
 import { cn } from 'tailwind-cn'
 import { ConstellationPicker } from './ConstellationPicker'
+import { buildImageUrl } from '@/config/path'
 
 interface Props {
     onSubmit: () => void

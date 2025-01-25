@@ -3,7 +3,6 @@ import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
 import { loadAssetAsync } from '@/services/AssetsCache'
 import { IAppConfig, IIntl, IWuwaCharacter } from '@/store/types'
-import { buildAuthUrl, buildImageUrl } from '@/utils/url'
 
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
@@ -19,6 +18,7 @@ import frFlag from '@/assets/fr.svg'
 import jpFlag from '@/assets/jp.svg'
 import krFlag from '@/assets/kr.svg'
 import usFlag from '@/assets/us.svg'
+import { buildAuthPath, buildImageUrl } from '@/config/path'
 
 const getSourceLanguage = (data: string) => {
     try {
@@ -145,7 +145,7 @@ export const SplashScreen = () => {
 
             return (
                 <Navigate
-                    to={buildAuthUrl('/signin')}
+                    to={buildAuthPath('/signin')}
                     state={{
                         __splash: {
                             appConfig,

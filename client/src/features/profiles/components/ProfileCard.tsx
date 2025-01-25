@@ -3,11 +3,11 @@ import { IProfile } from '@/context/account/AccountContext'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { IUser } from '@/store/types'
 import { CharacterAvatar } from './ProfileForm/CharacterAvatar'
-import { buildImageUrl } from '@/utils/url'
 import { FlagIcon } from '@/components/FlagIcon'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { useWuwaCharacters } from '@/context/initializer/useWuwaCharacters'
 import { cn } from 'tailwind-cn'
+import { buildImageUrl } from '@/config/path'
 
 export interface ProfileCardProps {
     profile: Pick<

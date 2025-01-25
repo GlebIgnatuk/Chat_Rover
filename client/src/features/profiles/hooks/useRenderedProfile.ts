@@ -10,10 +10,10 @@ import frFlag from '@/assets/fr.svg'
 import jpFlag from '@/assets/jp.svg'
 import krFlag from '@/assets/kr.svg'
 import usFlag from '@/assets/us.svg'
-import { buildImageUrl } from '@/utils/url'
 import { api } from '@/services/api'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { loadAssetAsync } from '@/services/AssetsCache'
+import { buildImageUrl } from '@/config/path'
 
 export interface UseRenderedProfileProps {
     profile: ISearchedProfile

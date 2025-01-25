@@ -1,9 +1,9 @@
 import { Card } from '@/components/Card'
 import { Timer } from '@/components/Timer'
+import { buildImageUrl } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
 import { api, APIResponse } from '@/services/api'
 import { IUser } from '@/store/types'
-import { buildImageUrl } from '@/utils/url'
 import { useRef, useState } from 'react'
 import { cn } from 'tailwind-cn'
 

@@ -1,11 +1,11 @@
 import { CircularLoaderIndicator } from '@/components/LoaderIndicator'
+import { buildProtectedPath } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
 import { ProfileCard } from '@/features/profiles/components/ProfileCard'
 import { useBatchedLoader } from '@/hooks/common/useBatchedLoader'
 import { api } from '@/services/api'
 import { IPublicUser, ISearchedProfile } from '@/store/types'
-import { buildProtectedUrl } from '@/utils/url'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -71,7 +71,7 @@ export const UserScreen = () => {
                                 icon={faEnvelope}
                                 className="w-8 h-8 text-primary-700 cursor-pointer"
                                 onClick={() =>
-                                    navigate(buildProtectedUrl(`/chats/new?peerId=${user._id}`))
+                                    navigate(buildProtectedPath(`/chats/new?peerId=${user._id}`))
                                 }
                             />
                         )}
@@ -86,7 +86,7 @@ export const UserScreen = () => {
                             profile={profile}
                             onClick={() =>
                                 navigate(
-                                    buildProtectedUrl(`/u/${user._id}/profiles/${profile._id}`),
+                                    buildProtectedPath(`/u/${user._id}/profiles/${profile._id}`),
                                 )
                             }
                         />
