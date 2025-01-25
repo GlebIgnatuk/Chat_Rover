@@ -10,8 +10,8 @@
     "build": "yarn build:server && yarn build:client",
     "build:dev": "yarn build:server:dev && yarn build:client",
     "start": "cd server && yarn start",
-    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\"",
-    "dev:mobile": "concurrently \"cd server && yarn dev:mobile\" \"cd client && yarn dev:mobile\""
+    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\" \"cd functions && yarn giveaway-scheduler\"",
+    "dev:mobile": "concurrently \"cd server && yarn dev:mobile\" \"cd client && yarn dev:mobile\" \"cd functions && yarn giveaway-scheduler\""
   },
   "keywords": [],
   "author": "",
