@@ -65,7 +65,7 @@ export const AdminGiveawaysScreen = () => {
     }, [])
 
     return (
-        <div className="flex flex-col p-2">
+        <div className="h-full overflow-auto flex flex-col p-2 gap-4">
             {giveaways.map((g) => (
                 <Card key={g._id} className="px-2 pt-3 divide-y-2 space-y-2">
                     <div className="grid grid-cols-[max-content,minmax(0,1fr),max-content] items-center">
@@ -74,8 +74,11 @@ export const AdminGiveawaysScreen = () => {
                             alt={g.giveawayItem.name}
                             className="w-12 h-12 mr-2 bg-white p-1 rounded-full"
                         />
-                        <div className="text-sm">
-                            {g.name} | {g.participants} / {g.maxParticipants}
+                        <div className="flex flex-col text-sm">
+                            <span className="text-primary-700">{g.name}</span>
+                            <span>
+                                {g.participants} / {g.maxParticipants}
+                            </span>
                         </div>
                         <div className="text-sm">{new Date(g.finishedAt).toDateString()}</div>
                     </div>
