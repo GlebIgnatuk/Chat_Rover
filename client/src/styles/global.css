@@ -38,6 +38,8 @@ body {
   scrollbar-width: none;
   /* for Firefox */
   overflow-y: scroll;
+
+  -webkit-overflow-scrolling: touch;
 }
 
 .scrollbar-none::-webkit-scrollbar {

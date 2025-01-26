@@ -36,6 +36,7 @@ import {
     buildPublicPath,
 } from './config/path'
 import { AdminRoute } from './context/auth/AdminRoute'
+import { ShopScreen } from './pages/shop/Shop.screen'
 
 const router = createBrowserRouter([
     {
@@ -164,6 +165,10 @@ const router = createBrowserRouter([
                                     {
                                         path: 'gifts',
                                         element: <GiftsScreen />,
+                                    },
+                                    {
+                                        path: 'shop',
+                                        element: <ShopScreen />,
                                     },
                                     {
                                         path: APP_ADMIN_PATH,

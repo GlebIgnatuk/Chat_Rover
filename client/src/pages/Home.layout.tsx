@@ -12,8 +12,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import RedeemIcon from '@mui/icons-material/Redeem'
 import RedeemOutlinedIcon from '@mui/icons-material/RedeemOutlined'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
-import PlayLessonIcon from '@mui/icons-material/PlayLesson'
-import PlayLessonOutlinedIcon from '@mui/icons-material/PlayLessonOutlined'
+import StorefronIcon from '@mui/icons-material/Storefront'
+import StorefronOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
 import wuwaIcon from '@/assets/wuwa_icon.png'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,7 +21,7 @@ import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '@/context/app/useStore'
 import { buildImageUrl, buildProtectedPath } from '@/config/path'
 
-const navigation = [
+const createNavigation = (userRole: string) => [
     {
         path: buildProtectedPath('/game_chat'),
         label: 'nav__chat',
@@ -68,12 +68,19 @@ const navigation = [
         IconInactive: ChatOutlinedIcon,
     },
     {
-        path: buildProtectedPath('/guides'),
-        label: 'nav__guides',
-        IconActive: PlayLessonIcon,
-        IconInactive: PlayLessonOutlinedIcon,
-        disabled: true,
+        path: buildProtectedPath('/shop'),
+        label: 'nav__shop',
+        IconActive: StorefronIcon,
+        IconInactive: StorefronOutlinedIcon,
+        disabled: userRole !== 'admin',
     },
+    // {
+    //     path: buildProtectedPath('/guides'),
+    //     label: 'nav__guides',
+    //     IconActive: PlayLessonIcon,
+    //     IconInactive: PlayLessonOutlinedIcon,
+    //     disabled: true,
+    // },
     // {
     //     path: buildProtectedUrl('/account/profiles'),
     //     label: 'nav__account',
@@ -121,6 +128,8 @@ export const HomeLayout = () => {
 
         return () => window.clearTimeout(timer)
     }, [user])
+
+    const navigation = createNavigation(user.role)
 
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">

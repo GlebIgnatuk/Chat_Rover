@@ -145,3 +145,18 @@ export type IAdminExpressGiveawayListItem = {
 
     finishedAt: string
 }
+
+export type IShopProduct = {
+    _id: string
+    name: string
+    photoPath: string
+    category: string
+
+    prices: {
+        currency: 'XLNT' | 'RUB'
+        price: number
+        discount: number
+        discountEndsAt: Date | null
+    }[]
+    mode: 'request' | 'instant'
+}
