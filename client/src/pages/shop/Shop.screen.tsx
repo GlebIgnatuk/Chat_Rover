@@ -1,91 +1,21 @@
-import { buildImageUrl } from '@/config/path'
+import { FloatingCartButton } from '@/features/shop/components/FloatingCartButton'
+import { MultiCategoryList } from '@/features/shop/components/MultiCategoryList'
+import { OrderModal } from '@/features/shop/components/OrderModal'
+import { SingleCategoryList } from '@/features/shop/components/SingleCategoryList'
+import { SuccessOrderModal } from '@/features/shop/components/SuccessOrderModal'
+import { useCart } from '@/features/shop/hooks/useCart'
+import { useMutation } from '@/hooks/common/useMutation'
 import { IShopProduct } from '@/store/types'
-import { faCartPlus } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from 'tailwind-cn'
 
-const Currency = ({ currency }: { currency: 'XLNT' | 'RUB' }) => {
-    if (currency === 'XLNT') {
-        return (
-            <img src={buildImageUrl('/currency/lunite.png')} alt={currency} className="w-6 h-6" />
-        )
-    } else {
-        return <span className="uppercase text-sm font-medium">{currency}</span>
-    }
-}
-
-const ProductCard = ({ product }: { product: IShopProduct }) => {
-    return (
-        <div className="shadow-sm rounded-lg overflow-hidden bg-stone-800/80">
-            <div className="relative">
-                <img
-                    src={buildImageUrl(product.photoPath)}
-                    alt={product.name}
-                    className="aspect-square object-contain object-center w-full pt-8 pb-3"
-                />
-                <div className="absolute left-1 top-1 font-semibold px-2 pb-2">{product.name}</div>
-            </div>
-
-            <div className="px-1 bg-primary-700/50 text-white flex items-center justify-center h-6">
-                {product.prices.map((p, idx) => (
-                    <>
-                        <div className="flex gap-1 items-center px-1">
-                            <Currency currency={p.currency} />
-                            <span className="text-sm">{p.price}</span>
-                        </div>
-                        {idx !== product.prices.length - 1 && <div>/</div>}
-                    </>
-                ))}
-            </div>
-
-            <div className="grid grid-cols-[minmax(0,1fr),max-content] divide-x divide-primary-700">
-                <button className="text-center text-stone-800 bg-primary-700 py-2 font-medium">
-                    Buy now
-                </button>
-                <button className="text-center text-primary-700 bg-stone-800 pt-1 px-3 font-medium">
-                    <FontAwesomeIcon icon={faCartPlus} className="w-5 h-5" />
-                </button>
-            </div>
-        </div>
-    )
-}
-
-const MultiCategoryList = ({ products }: { products: Record<string, IShopProduct[]> }) => {
-    return (
-        <div className="pb-1 flex flex-col">
-            {Object.keys(products).map((category) => (
-                <div key={category}>
-                    <div className="font-semibold text-2xl text-white bg-gradient-to-r from-primary-700/80 to-transparent px-1 py-1">
-                        {category}
-                    </div>
-
-                    <div className="p-1 grid grid-cols-2 gap-1">
-                        {products[category]!.map((p) => (
-                            <ProductCard key={p._id} product={p} />
-                        ))}
-                    </div>
-                </div>
-            ))}
-        </div>
-    )
-}
-
-const SingleCategoryList = ({ products }: { products: IShopProduct[] }) => {
-    return (
-        <div className="p-1 grid grid-cols-2 gap-1">
-            {products.map((p) => (
-                <ProductCard key={p._id} product={p} />
-            ))}
-        </div>
-    )
-}
-
 export const ShopScreen = () => {
+    const [isCartOpen, setIsCartOpen] = useState(false)
+    const [isSuccessOrderMessageShown, setIsSuccessOrderMessageShown] = useState(false)
     const [products, setProducts] = useState<IShopProduct[]>([
         {
             _id: '1',
-            name: "Traveler' Tube Aid",
+            name: 'Lunite subscription',
             photoPath: '/products/lunite_subscription.png',
             category: 'Bundles',
             prices: [
@@ -106,6 +36,14 @@ export const ShopScreen = () => {
             mode: 'request',
         },
         {
+            _id: '2.2',
+            name: 'Lunite x100',
+            photoPath: '/currency/lunite.png',
+            category: 'Purchase',
+            prices: [{ currency: 'XLNT', discount: 0, discountEndsAt: null, price: 100 }],
+            mode: 'request',
+        },
+        {
             _id: '3',
             name: 'Lunite x300',
             photoPath: '/currency/lunite.png',
@@ -118,12 +56,12 @@ export const ShopScreen = () => {
         },
         {
             _id: '4',
-            name: 'Lunite x3280',
+            name: 'Lunite x980',
             photoPath: '/currency/lunite.png',
             category: 'Purchase',
             prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 4490 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 3280 },
+                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 1290 },
+                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 980 },
             ],
             mode: 'request',
         },
@@ -140,12 +78,12 @@ export const ShopScreen = () => {
         },
         {
             _id: '6',
-            name: 'Lunite x3280',
+            name: 'Lunite x6480',
             photoPath: '/currency/lunite.png',
             category: 'Purchase',
             prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 4490 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 3280 },
+                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 8990 },
+                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 6480 },
             ],
             mode: 'request',
         },
@@ -158,6 +96,7 @@ export const ShopScreen = () => {
         acc[n.category]!.push(n)
         return acc
     }, {})
+
     const categories = [
         { key: null, label: 'All' },
         ...Object.keys(grouped)
@@ -165,8 +104,29 @@ export const ShopScreen = () => {
             .map((c) => ({ key: c, label: c })),
     ]
 
+    const cart = useCart({ allProducts: products })
+
+    const createOrder = useMutation<null>({
+        fn: async () => {
+            await new Promise((res) => setTimeout(res, 3000))
+
+            return { success: true, data: null, error: null }
+        },
+        onSuccess: () => {
+            cart.reset()
+            setIsCartOpen(false)
+            setIsSuccessOrderMessageShown(true)
+        },
+    })
+
+    useEffect(() => {
+        if (cart.isEmpty) {
+            setIsCartOpen(false)
+        }
+    }, [cart.isEmpty])
+
     return (
-        <div className="h-full grid grid-rows-[max-content,minmax(0,1fr)]">
+        <div className="relative h-full grid grid-rows-[max-content,minmax(0,1fr)]">
             <div className="grid grid-cols-[max-content,minmax(0,1fr)] bg-stone-800">
                 <button className="w-12 bg-stone-800 text-primary-700 text-lg">( ? )</button>
 
@@ -185,13 +145,45 @@ export const ShopScreen = () => {
                 </div>
             </div>
 
-            <div className="overflow-y-auto">
-                {category ? (
-                    <SingleCategoryList products={grouped[category]!} />
-                ) : (
-                    <MultiCategoryList products={grouped} />
-                )}
+            <div className="relative">
+                <div className="h-full overflow-y-auto">
+                    {category ? (
+                        <SingleCategoryList
+                            products={grouped[category]!}
+                            onAddProductToCart={cart.addProduct}
+                            onRemoveProductToCart={cart.removeProduct}
+                            cartItems={cart.items}
+                        />
+                    ) : (
+                        <MultiCategoryList
+                            products={grouped}
+                            onAddProductToCart={cart.addProduct}
+                            onRemoveProductToCart={cart.removeProduct}
+                            cartItems={cart.items}
+                        />
+                    )}
+                </div>
+
+                {!cart.isEmpty && <FloatingCartButton onClick={() => setIsCartOpen(true)} />}
             </div>
+
+            <SuccessOrderModal
+                open={isSuccessOrderMessageShown}
+                onContinue={() => setIsSuccessOrderMessageShown(false)}
+                onShowOrder={() => {}}
+            />
+
+            <OrderModal
+                open={isCartOpen}
+                loading={createOrder.isLoading}
+                cart={cart}
+                onClose={() => setIsCartOpen(false)}
+                onCancel={() => {
+                    cart.reset()
+                    setIsCartOpen(false)
+                }}
+                onConfirm={createOrder.send}
+            />
         </div>
     )
 }
