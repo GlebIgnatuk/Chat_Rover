@@ -1,3 +1,4 @@
+import { useStore } from '@/context/app/useStore'
 import { FloatingCartButton } from '@/features/shop/components/FloatingCartButton'
 import { MultiCategoryList } from '@/features/shop/components/MultiCategoryList'
 import { OrderModal } from '@/features/shop/components/OrderModal'
@@ -91,6 +92,7 @@ export const ShopScreen = () => {
     void setProducts
     const [category, setCategory] = useState<string | null>(null)
 
+    const user = useStore((state) => state.identity.user)
     const grouped = products.reduce<Record<string, IShopProduct[]>>((acc, n) => {
         if (!acc[n.category]) acc[n.category] = []
         acc[n.category]!.push(n)
@@ -104,7 +106,7 @@ export const ShopScreen = () => {
             .map((c) => ({ key: c, label: c })),
     ]
 
-    const cart = useCart({ allProducts: products })
+    const cart = useCart({ allProducts: products, userBalance: user.balance })
 
     const createOrder = useMutation<null>({
         fn: async () => {
@@ -146,7 +148,7 @@ export const ShopScreen = () => {
             </div>
 
             <div className="relative">
-                <div className="h-full overflow-y-auto">
+                <div className="h-full overflow-y-auto pb-20">
                     {category ? (
                         <SingleCategoryList
                             products={grouped[category]!}

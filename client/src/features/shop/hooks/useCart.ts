@@ -1,16 +1,17 @@
 import { IShopProduct } from '@/store/types'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as R from 'ramda'
 
 const LOCAL_STORAGE_KEY = '@shop/cart'
 
 interface UseCartOptions {
     allProducts: IShopProduct[]
+    userBalance: number
 }
 
 export type Cart = Record<string, { currency: 'XLNT' | 'RUB' }[]>
 
-export const useCart = ({ ...props }: UseCartOptions) => {
+export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
     const isFirstRender = useRef(true)
     const [productIds, setProductIds] = useState<Cart>({})
 
@@ -44,6 +45,31 @@ export const useCart = ({ ...props }: UseCartOptions) => {
 
         return total
     }, [productsIndexed, productIds])
+
+    const canSelectCurrencyAsPaymentMethod = useCallback(
+        (currency: 'XLNT' | 'RUB', value: number) => {
+            if (currency !== 'XLNT') return true
+
+            let total = value
+
+            for (const productId in productIds) {
+                const product = productsIndexed[productId]!
+                const items = productIds[productId]!
+
+                for (const item of items) {
+                    if (item.currency !== 'XLNT') continue
+
+                    const price = product.prices.find((p) => p.currency === item.currency)
+                    if (!price) return false
+
+                    total += price.price
+                }
+            }
+
+            return userBalance - total > 0
+        },
+        [productsIndexed, productIds, userBalance],
+    )
 
     const addProduct = (id: string) => {
         setProductIds((prev) => {
@@ -165,6 +191,7 @@ export const useCart = ({ ...props }: UseCartOptions) => {
         productsIndexed: productsIndexed,
         products: props.allProducts,
         items: productIds,
+        canSelectCurrencyAsPaymentMethod,
     }
 }
 
