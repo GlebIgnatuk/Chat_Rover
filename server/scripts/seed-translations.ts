@@ -173,6 +173,18 @@ async function main() {
                 description: 'todo',
                 value: 'If you didn\'t receive the exported image make sure that you started the bot <a href="%url">%url</a>. Come back and repeat the export.',
             },
+            shop__order_created: {
+                description: 'todo',
+                value: 'Order has been created!',
+            },
+            shop__order_thank: {
+                description: 'todo',
+                value: 'Thanks for selecting our service. Please contact us at this account for further instructions',
+            },
+            shop__order_process_note: {
+                description: 'todo',
+                value: 'We will process your request soon',
+            },
         },
         ru: {
             auth__greeting: {
@@ -334,6 +346,18 @@ async function main() {
             exports__error__bot_start: {
                 description: 'todo',
                 value: 'Если вы не получили картинку проверьте что вы начали беседу с ботом <a href="%url">%url</a>. Попробуйте еще раз.',
+            },
+            shop__order_created: {
+                description: 'todo',
+                value: 'Заказ был успешно создан!',
+            },
+            shop__order_thank: {
+                description: 'todo',
+                value: 'Спасибо, что выбрали наш сервис. Пожалуйста, напишите нам на этот аккаунт для дальнейших инструкций',
+            },
+            shop__order_process_note: {
+                description: 'todo',
+                value: 'Мы обработаем ваш заказ в скором времени',
             },
         },
     }
