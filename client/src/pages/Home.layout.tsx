@@ -21,73 +21,77 @@ import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '@/context/app/useStore'
 import { buildImageUrl, buildProtectedPath } from '@/config/path'
 
-const createNavigation = (userRole: string) => [
-    {
-        path: buildProtectedPath('/game_chat'),
-        label: 'nav__chat',
-        IconActive: () => (
-            <img
-                src={wuwaIcon}
-                className="w-6 h-6 rounded-full object-cover object-center border-primary-700 border"
-            />
-        ),
-        IconInactive: () => (
-            <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
-        ),
-    },
-    {
-        path: buildProtectedPath('/giveaway'),
-        label: 'nav__giveaway',
-        IconActive: () => (
-            <FontAwesomeIcon
-                icon={faDharmachakra}
-                className="w-6 h-6 animate-spin"
-                style={{ animationDuration: '2s' }}
-            />
-        ),
-        IconInactive: () => (
-            <FontAwesomeIcon
-                icon={faDharmachakra}
-                className="w-6 h-6 animate-spin"
-                style={{ animationDuration: '3s' }}
-            />
-        ),
-        disabled: false,
-    },
-    {
-        path: buildProtectedPath('/'),
-        label: 'nav__search',
-        end: true,
-        IconActive: GroupIcon,
-        IconInactive: GroupOutlinedIcon,
-    },
-    {
-        path: buildProtectedPath('/chats'),
-        label: 'nav__messages',
-        IconActive: ChatIcon,
-        IconInactive: ChatOutlinedIcon,
-    },
-    {
-        path: buildProtectedPath('/shop'),
-        label: 'nav__shop',
-        IconActive: StorefronIcon,
-        IconInactive: StorefronOutlinedIcon,
-        disabled: userRole !== 'admin',
-    },
-    // {
-    //     path: buildProtectedPath('/guides'),
-    //     label: 'nav__guides',
-    //     IconActive: PlayLessonIcon,
-    //     IconInactive: PlayLessonOutlinedIcon,
-    //     disabled: true,
-    // },
-    // {
-    //     path: buildProtectedUrl('/account/profiles'),
-    //     label: 'nav__account',
-    //     IconActive: AccountCircleIcon,
-    //     IconInactive: AccountCircleOutlinedIcon,
-    // },
-]
+const createNavigation = (userRole: string) => {
+    void userRole
+
+    return [
+        {
+            path: buildProtectedPath('/game_chat'),
+            label: 'nav__chat',
+            IconActive: () => (
+                <img
+                    src={wuwaIcon}
+                    className="w-6 h-6 rounded-full object-cover object-center border-primary-700 border"
+                />
+            ),
+            IconInactive: () => (
+                <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
+            ),
+        },
+        {
+            path: buildProtectedPath('/giveaway'),
+            label: 'nav__giveaway',
+            IconActive: () => (
+                <FontAwesomeIcon
+                    icon={faDharmachakra}
+                    className="w-6 h-6 animate-spin"
+                    style={{ animationDuration: '2s' }}
+                />
+            ),
+            IconInactive: () => (
+                <FontAwesomeIcon
+                    icon={faDharmachakra}
+                    className="w-6 h-6 animate-spin"
+                    style={{ animationDuration: '3s' }}
+                />
+            ),
+            disabled: false,
+        },
+        {
+            path: buildProtectedPath('/'),
+            label: 'nav__search',
+            end: true,
+            IconActive: GroupIcon,
+            IconInactive: GroupOutlinedIcon,
+        },
+        {
+            path: buildProtectedPath('/chats'),
+            label: 'nav__messages',
+            IconActive: ChatIcon,
+            IconInactive: ChatOutlinedIcon,
+        },
+        {
+            path: buildProtectedPath('/shop'),
+            label: 'nav__shop',
+            IconActive: StorefronIcon,
+            IconInactive: StorefronOutlinedIcon,
+            // disabled: userRole !== 'admin',
+        },
+        // {
+        //     path: buildProtectedPath('/guides'),
+        //     label: 'nav__guides',
+        //     IconActive: PlayLessonIcon,
+        //     IconInactive: PlayLessonOutlinedIcon,
+        //     disabled: true,
+        // },
+        // {
+        //     path: buildProtectedUrl('/account/profiles'),
+        //     label: 'nav__account',
+        //     IconActive: AccountCircleIcon,
+        //     IconInactive: AccountCircleOutlinedIcon,
+        // },
+    ]
+}
 
 const WithTransition = ({ children, ignore }: { children: ReactNode; ignore?: boolean }) => {
     const [isLoaded, setIsLoaded] = useState(ignore === true)

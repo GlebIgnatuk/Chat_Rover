@@ -10,8 +10,9 @@ export const InstructionsModal = ({ open, onClose }: { open: boolean; onClose: (
                 <div className="p-2 text-primary-700 font-semibold text-2xl">Instructions</div>
                 <ol className="list-decimal text-white text-md w-4/5">
                     <li>{localize('shop__instructions_1')}</li>
+                    <li>{localize('shop__instructions_2')}</li>
                     <li>
-                        {localize('shop__instructions_2')}{' '}
+                        {localize('shop__instructions_3')}{' '}
                         <a
                             href="https://t.me/WuWa007"
                             className="text-blue-500 underline underline-offset-2"
@@ -19,9 +20,17 @@ export const InstructionsModal = ({ open, onClose }: { open: boolean; onClose: (
                             @WuWa007
                         </a>
                     </li>
-                    <li>{localize('shop__instructions_3')}</li>
                     <li>{localize('shop__instructions_4')}</li>
                 </ol>
+                <div className="text-white mt-6 px-2 text-center">
+                    P.S. {localize('shop__p_s')}{' '}
+                    <a
+                        href="https://t.me/Donation_Changli"
+                        className="text-blue-500 underline underline-offset-2"
+                    >
+                        @Donation_Changli
+                    </a>
+                </div>
                 <button
                     className="text-stone-800 bg-primary-700 px-6 py-2 rounded-full mt-6"
                     onClick={onClose}

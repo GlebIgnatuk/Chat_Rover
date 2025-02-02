@@ -201,6 +201,10 @@ async function main() {
                 description: 'todo',
                 value: 'We will process your order as soon as possible',
             },
+            shop__p_s: {
+                description: 'todo',
+                value: 'Shop reviews can be found here',
+            },
             shop__how_it_works: {
                 description: 'todo',
                 value: 'How does this work?',
@@ -385,15 +389,19 @@ async function main() {
             },
             shop__instructions_2: {
                 description: 'todo',
-                value: 'Завершите покупку в корзине выбрав валюту',
+                value: 'Завершите покупку в корзине, выбрав валюту',
             },
             shop__instructions_3: {
                 description: 'todo',
-                value: 'После того как заказ создан отправьте нас сообщение на этот аккаунт',
+                value: 'После того как заказ создан отправьте нам сообщение на этот аккаунт',
             },
             shop__instructions_4: {
                 description: 'todo',
                 value: 'Мы обработаем ваш заказ как можно скорее',
+            },
+            shop__p_s: {
+                description: 'todo',
+                value: 'Отзывы о покупках можно посмотреть здесь',
             },
             shop__how_it_works: {
                 description: 'todo',
