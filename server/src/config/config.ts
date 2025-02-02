@@ -32,3 +32,6 @@ export const SUPPORTED_LANGUAGES = [
     'es',
 ] as const
 export type ILanguageKey = (typeof SUPPORTED_LANGUAGES)[number]
+
+export const SHOP_CURRENCIES = ['XLNT', 'RUB'] as const
+export type IShopCurrency = (typeof SHOP_CURRENCIES)[number]

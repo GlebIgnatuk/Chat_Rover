@@ -11,6 +11,8 @@ import { IProfileExportRepository } from './profileExport'
 import { IGiveawayItemRepository } from './giveawayItem'
 import { IExpressGiveawayRepository } from './expressGiveaway'
 import { IBalancePromocodeRepository } from './balancePromocode'
+import { IShopProductRepository } from './shopProduct'
+import { IShopOrderRepository } from './shopOrder'
 
 export interface IRepositories {
     balancePromocode: IBalancePromocodeRepository
@@ -26,4 +28,6 @@ export interface IRepositories {
     profileExport: IProfileExportRepository
     giveawayItem: IGiveawayItemRepository
     expressGiveaway: IExpressGiveawayRepository
+    shopProduct: IShopProductRepository
+    shopOrder: IShopOrderRepository
 }

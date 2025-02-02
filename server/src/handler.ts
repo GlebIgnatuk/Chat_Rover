@@ -27,6 +27,8 @@ import { ExpressGiveawayRepository } from './repositories/impl/expressGiveaway'
 import { GiveawayItemRepository } from './repositories/impl/giveawayItem'
 import { BalancePromocodeRepository } from './repositories/impl/balancePromocode'
 import { BalancePromocodeActivationRepository } from './repositories/impl/balancePromocodeActivation'
+import { ShopProductRepository } from './repositories/impl/shopProduct'
+import { ShopOrderRepository } from './repositories/impl/shopOrder'
 
 const app = express()
 let server: http.Server | https.Server
@@ -52,6 +54,7 @@ const handler = async () => {
     const balancePromocodeActivationRepo = new BalancePromocodeActivationRepository()
     const userRepo = new UserRepository(balancePromocodeRepo, balancePromocodeActivationRepo)
     const giveawayItemRepo = new GiveawayItemRepository()
+    const shopProductRepo = new ShopProductRepository()
     const repositories: IRepositories = {
         balancePromocode: balancePromocodeRepo,
         chatMessage: new ChatMessageRepository(privateChat),
@@ -66,6 +69,8 @@ const handler = async () => {
         profileExport: new ProfileExportRepository(),
         expressGiveaway: new ExpressGiveawayRepository(userRepo, giveawayItemRepo),
         giveawayItem: giveawayItemRepo,
+        shopProduct: shopProductRepo,
+        shopOrder: new ShopOrderRepository(shopProductRepo),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(
