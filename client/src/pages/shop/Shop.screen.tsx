@@ -1,12 +1,14 @@
 import { useStore } from '@/context/app/useStore'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { FloatingCartButton } from '@/features/shop/components/FloatingCartButton'
+import { InstructionsModal } from '@/features/shop/components/InstructionsModal'
 import { MultiCategoryList } from '@/features/shop/components/MultiCategoryList'
 import { OrderModal } from '@/features/shop/components/OrderModal'
 import { SingleCategoryList } from '@/features/shop/components/SingleCategoryList'
 import { SuccessOrderModal } from '@/features/shop/components/SuccessOrderModal'
 import { useCart } from '@/features/shop/hooks/useCart'
 import { useMutation } from '@/hooks/common/useMutation'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 import { api } from '@/services/api'
 import { IShopOrder, IShopProduct } from '@/store/types'
 import { useEffect, useMemo, useState } from 'react'
@@ -15,8 +17,10 @@ import { cn } from 'tailwind-cn'
 export const ShopScreen = () => {
     const productsIndexed = useStore((state) => state.products.items)
     const products = useMemo(() => Object.values(productsIndexed), [productsIndexed])
+    const localize = useLocalize()
 
     const [isCartOpen, setIsCartOpen] = useState(false)
+    const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false)
     const [completedOrder, setCompletedOrder] = useState<IShopOrder | null>(null)
     const [category, setCategory] = useState<string | null>(null)
 
@@ -79,10 +83,15 @@ export const ShopScreen = () => {
     }, [cart.isEmpty])
 
     return (
-        <div className="relative h-full grid grid-rows-[max-content,minmax(0,1fr)]">
-            <div className="grid grid-cols-[max-content,minmax(0,1fr)] bg-stone-800">
-                <button className="w-12 bg-stone-800 text-primary-700 text-lg">( ? )</button>
+        <div className="relative h-full grid grid-rows-[max-content,max-content,minmax(0,1fr)]">
+            <button
+                className="bg-stone-800 border border-primary-700 px-2 py-2 text-center font-semibold"
+                onClick={() => setIsInstructionsModalOpen(true)}
+            >
+                --- {localize('shop__how_it_works')} ---
+            </button>
 
+            <div className="grid grid-cols-[max-content,minmax(0,1fr)] bg-stone-800">
                 <div className="space-x-2 whitespace-nowrap overflow-x-scroll overflow-y-hidden w-full px-1 py-1 scrollbar-none ">
                     {categories.map((c) => (
                         <button
@@ -138,6 +147,11 @@ export const ShopScreen = () => {
                     setIsCartOpen(false)
                 }}
                 onConfirm={createOrder.send}
+            />
+
+            <InstructionsModal
+                open={isInstructionsModalOpen}
+                onClose={() => setIsInstructionsModalOpen(false)}
             />
         </div>
     )

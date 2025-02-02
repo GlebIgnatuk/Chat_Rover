@@ -185,6 +185,26 @@ async function main() {
                 description: 'todo',
                 value: 'We will process your request soon',
             },
+            shop__instructions_1: {
+                description: 'todo',
+                value: 'Select the products you are insterested in',
+            },
+            shop__instructions_2: {
+                description: 'todo',
+                value: 'Complete the order in the cart by selecting the currency',
+            },
+            shop__instructions_3: {
+                description: 'todo',
+                value: 'After the order is created send as a message at',
+            },
+            shop__instructions_4: {
+                description: 'todo',
+                value: 'We will process your order as soon as possible',
+            },
+            shop__how_it_works: {
+                description: 'todo',
+                value: 'How does this work?',
+            },
         },
         ru: {
             auth__greeting: {
@@ -358,6 +378,26 @@ async function main() {
             shop__order_process_note: {
                 description: 'todo',
                 value: 'Мы обработаем ваш заказ в скором времени',
+            },
+            shop__instructions_1: {
+                description: 'todo',
+                value: 'Выберете товар который вас интересует',
+            },
+            shop__instructions_2: {
+                description: 'todo',
+                value: 'Завершите покупку в корзине выбрав валюту',
+            },
+            shop__instructions_3: {
+                description: 'todo',
+                value: 'После того как заказ создан отправьте нас сообщение на этот аккаунт',
+            },
+            shop__instructions_4: {
+                description: 'todo',
+                value: 'Мы обработаем ваш заказ как можно скорее',
+            },
+            shop__how_it_works: {
+                description: 'todo',
+                value: 'Как это работает?',
             },
         },
     }
