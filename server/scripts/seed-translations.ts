@@ -201,6 +201,10 @@ async function main() {
                 description: 'todo',
                 value: 'We will process your order as soon as possible',
             },
+            shop__instructions_5: {
+                description: 'todo',
+                value: 'You can buy products for the Rover Chat currency (Lunites)',
+            },
             shop__p_s: {
                 description: 'todo',
                 value: 'Shop reviews can be found here',
@@ -398,6 +402,10 @@ async function main() {
             shop__instructions_4: {
                 description: 'todo',
                 value: 'Мы обработаем ваш заказ как можно скорее',
+            },
+            shop__instructions_5: {
+                description: 'todo',
+                value: 'Вы можете покупать донат за валюту Rover Chat (Lunites)',
             },
             shop__p_s: {
                 description: 'todo',

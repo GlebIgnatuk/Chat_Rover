@@ -11,6 +11,7 @@ export const InstructionsModal = ({ open, onClose }: { open: boolean; onClose: (
                 <ol className="list-decimal text-white text-md w-4/5">
                     <li>{localize('shop__instructions_1')}</li>
                     <li>{localize('shop__instructions_2')}</li>
+                    <li>{localize('shop__instructions_5')}</li>
                     <li>
                         {localize('shop__instructions_3')}{' '}
                         <a
