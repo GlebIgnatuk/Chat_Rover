@@ -15,6 +15,7 @@ import {
     IShopOrderModel,
 } from '@/models/shopOrder'
 import { IUserRepository } from '../user'
+import { UserModel } from '@/models/user'
 
 export class ShopOrderRepository implements IShopOrderRepository {
     private readonly shopProductRepo: IShopProductRepository
@@ -27,10 +28,10 @@ export class ShopOrderRepository implements IShopOrderRepository {
 
     async create(payload: IShopOrderCreate): Promise<IShopOrderDTO> {
         return await mongoose.connection.withSession(async (tx) => {
-            const productsIds = payload.products.map((p) => p.productId)
-            const products = await this.shopProductRepo.findMany(productsIds)
+            const productsIds = Array.from(new Set(payload.products.map((p) => p.productId)))
+            const products = await this.shopProductRepo.findMany(productsIds, tx)
 
-            if (products.length !== payload.products.length) {
+            if (products.length !== productsIds.length) {
                 throw new Error('Some products were not found')
             }
 
@@ -58,20 +59,19 @@ export class ShopOrderRepository implements IShopOrderRepository {
                         break
 
                     default:
-                        {
-                            orderedProducts.push({
-                                _id: new Types.ObjectId(),
-                                productId: product._id,
-                                name: product.name,
-                                category: product.category,
-                                photoPath: product.photoPath,
-                                currency: price.currency,
-                                price: price.price,
-                                processed: false,
-                            })
-                        }
                         break
                 }
+
+                orderedProducts.push({
+                    _id: new Types.ObjectId(),
+                    productId: product._id,
+                    name: product.name,
+                    category: product.category,
+                    photoPath: product.photoPath,
+                    currency: price.currency,
+                    price: price.price,
+                    processed: false,
+                })
             }
 
             if (toCharge > 0) {
@@ -107,12 +107,7 @@ export class ShopOrderRepository implements IShopOrderRepository {
             filter.status = status
         }
 
-        // status: IShopOrderStatus
-        // processedCount: number
-        // totalCount: number
-        // price: Record<IShopCurrency, number>
-
-        return await ShopOrderModel.getCollection()
+        const orders = await ShopOrderModel.getCollection()
             .aggregate<IShopOrderListItemDTO & { products: IShopOrderModel['products'] }>([
                 { $match: filter },
                 {
@@ -149,10 +144,89 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 },
             ])
             .toArray()
+
+        return orders.map((o) => {
+            return {
+                ...o,
+                products: undefined,
+                price: o.products.reduce<Record<string, number>>((acc, n) => {
+                    if (acc[n.currency] === undefined) acc[n.currency] = 0
+                    acc[n.currency] += n.price
+                    return acc
+                }, {}),
+            }
+        })
     }
 
-    listAdmin(status?: IShopOrderStatus): Promise<IShopOrderAdminListItemDTO[]> {
-        throw new Error('Method not implemented.')
+    async listAdmin(status?: IShopOrderStatus): Promise<IShopOrderAdminListItemDTO[]> {
+        const filter: Record<string, any> = {}
+        if (status !== undefined) {
+            filter.status = status
+        }
+
+        const orders = await ShopOrderModel.getCollection()
+            .aggregate<IShopOrderAdminListItemDTO & { products: IShopOrderModel['products'] }>([
+                { $match: filter },
+                {
+                    $sort: {
+                        createdAt: -1,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'userId',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$user',
+                    },
+                },
+                {
+                    $addFields: {
+                        processedCount: {
+                            $size: {
+                                $filter: {
+                                    input: '$products',
+                                    as: 'p',
+                                    cond: {
+                                        $eq: ['$$p.processed', true],
+                                    },
+                                },
+                            },
+                        },
+                        totalCount: {
+                            $size: '$products',
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        status: 1,
+                        user: 1,
+                        processedCount: 1,
+                        totalCount: 1,
+                        products: 1,
+                    },
+                },
+            ])
+            .toArray()
+
+        return orders.map((o) => {
+            return {
+                ...o,
+                products: undefined,
+                price: o.products.reduce<Record<string, number>>((acc, n) => {
+                    if (acc[n.currency] === undefined) acc[n.currency] = 0
+                    acc[n.currency] += n.price
+                    return acc
+                }, {}),
+            }
+        })
     }
 
     async cancel(id: ID): Promise<IShopOrderDTO | null> {

@@ -1,7 +1,7 @@
 import { IIdentity } from './context/auth/AuthContext'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from './hooks/common/useLocation'
-import { createStore, IStore } from './store/store'
+import { createStore, CreateStoreOptions, IStore } from './store/store'
 import { AppContext } from './context/app/AppContext'
 import { Outlet } from 'react-router-dom'
 import { clearTelegramData, inferProfileState } from './context/auth/auth'
@@ -13,7 +13,12 @@ import { useWebsocket } from './hooks/chats/useWebsocket'
 import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
-import { IGlobalChatWithMetadata, IListingExpressGiveaway, ISearchedProfile } from './store/types'
+import {
+    IGlobalChatWithMetadata,
+    IListingExpressGiveaway,
+    ISearchedProfile,
+    IShopProduct,
+} from './store/types'
 import { ITEMS_PER_PAGE } from './features/search/hooks/useSearch'
 
 // This component makes sure that we have a user authenticated, so we can initialize store
@@ -68,11 +73,21 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         }
     }
 
+    const loadShopProducts = async () => {
+        const response = await api<IShopProduct[]>(`/shopProducts`)
+        if (response.success) {
+            return response.data
+        } else {
+            return []
+        }
+    }
+
     const loader = useBatchedLoader({
         values: [
             () => searchProfiles(),
             () => loadGlobalChats(),
             () => loadExpressGiveaways(),
+            () => loadShopProducts(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
             () => new Promise((res) => setTimeout(res, 1000)),
@@ -90,7 +105,7 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        const [searchedProfiles, globalChats, expressGiveaways] = loader.$unwrap()
+        const [searchedProfiles, globalChats, expressGiveaways, shopProducts] = loader.$unwrap()
 
         return (
             <StoreProvider
@@ -98,6 +113,7 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
                 searchedProfiles={searchedProfiles}
                 globalChats={globalChats}
                 expressGiveaways={expressGiveaways}
+                products={shopProducts}
             />
         )
     } else {
@@ -131,28 +147,11 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }
 }
 
-interface StoreProviderProps {
-    identity: IIdentity
-    searchedProfiles: ISearchedProfile[]
-    globalChats: IGlobalChatWithMetadata[]
-    expressGiveaways: IListingExpressGiveaway[]
-}
-
 // This component initializes store with initial data like user
-const StoreProvider = ({
-    identity,
-    searchedProfiles,
-    globalChats,
-    expressGiveaways,
-}: StoreProviderProps) => {
+const StoreProvider = (options: CreateStoreOptions) => {
     const store = useRef<IStore>()
     if (!store.current) {
-        store.current = createStore({
-            identity,
-            searchedProfiles,
-            globalChats,
-            expressGiveaways,
-        })
+        store.current = createStore(options)
     }
 
     return (

@@ -17,15 +17,18 @@ import {
     IIntl,
     IListingExpressGiveaway,
     ISearchedProfile,
+    IShopProduct,
     IWuwaCharacter,
 } from './types'
 import { createExpressGiveawaysSlice } from './slices/expressGiveaways'
+import { createShopSlice } from './slices/shop'
 
 export interface CreateStoreOptions {
     identity: IIdentity
     searchedProfiles: ISearchedProfile[]
     globalChats: IGlobalChatWithMetadata[]
     expressGiveaways: IListingExpressGiveaway[]
+    products: IShopProduct[]
 }
 
 export const createStore = (options: CreateStoreOptions) =>
@@ -38,6 +41,7 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createCommunitySlice(options.searchedProfiles)(...a),
         ...createIdentitySlice(options.identity)(...a),
         ...createExpressGiveawaysSlice(options.expressGiveaways)(...a),
+        ...createShopSlice(options.products)(...a),
     }))
 
 export interface CreatePublicStoreOptions {

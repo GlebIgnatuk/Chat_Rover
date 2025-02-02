@@ -8,6 +8,7 @@ import {
     IMessageWithStatus,
     IPrivateChatWithMetadata,
     ISearchedProfile,
+    IShopProduct,
     IUser,
     IWuwaCharacter,
 } from './types'
@@ -170,7 +171,8 @@ export type IState = IChatsState &
     IProfilesState &
     ICommunityState &
     IIdentityState &
-    IExpressGiveawaysState
+    IExpressGiveawaysState &
+    IShopState
 
 export type IAppConfigState = {
     appConfig: {
@@ -192,6 +194,12 @@ export type ISettingsState = {
 export type IWuwaCharactersState = {
     wuwaCharacters: {
         items: Record<string, IWuwaCharacter>
+    }
+}
+
+export type IShopState = {
+    products: {
+        items: Record<string, IShopProduct>
     }
 }
 

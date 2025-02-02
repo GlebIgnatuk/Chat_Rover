@@ -17,14 +17,14 @@ export const SuccessOrderModal = ({ open, onContinue, onShowOrder }: Props) => {
                 </div>
 
                 <div className="mt-4 text-white text-center">
-                    Thanks for selecting our service. We will contact you soon from this account{' '}
+                    Thanks for selecting our service. Please contact us at this account{' '}
                     <a
                         href="https://t.me/WuWa007"
                         className="text-blue-500 underline underline-offset-2"
                     >
                         @WuWa007
                     </a>
-                    .
+                    . We will process your request soon.
                 </div>
 
                 <button

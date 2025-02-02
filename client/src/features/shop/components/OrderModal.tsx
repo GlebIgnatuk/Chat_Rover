@@ -6,11 +6,14 @@ import { Cart, UseCartReturn } from '../hooks/useCart'
 import { Price } from './Price'
 import { cn } from 'tailwind-cn'
 import { IShopProduct } from '@/store/types'
+import { Fragment } from 'react/jsx-runtime'
 
 interface Props {
     open: boolean
     loading: boolean
+    error?: string
     cart: UseCartReturn
+    products: Record<string, IShopProduct>
     onClose: () => void
     onCancel: () => void
     onConfirm: () => void
@@ -45,7 +48,7 @@ const Product = ({
                     </div>
                     <div className="flex items-center gap-1 text-white">
                         {product.prices.map((p, idx) => (
-                            <>
+                            <Fragment key={idx}>
                                 <div className="flex gap-1 items-center px-1">
                                     <Price
                                         currency={p.currency}
@@ -56,7 +59,7 @@ const Product = ({
                                     />
                                 </div>
                                 {idx !== product.prices.length - 1 && <div>/</div>}
-                            </>
+                            </Fragment>
                         ))}
                     </div>
                 </div>
@@ -126,7 +129,16 @@ const SubProduct = ({
     )
 }
 
-export const OrderModal = ({ open, cart, loading, onClose, onCancel, onConfirm }: Props) => {
+export const OrderModal = ({
+    open,
+    cart,
+    loading,
+    error,
+    products,
+    onClose,
+    onCancel,
+    onConfirm,
+}: Props) => {
     return (
         <Modal open={open}>
             <div className="bg-stone-800/90 h-full p-2 grid grid-rows-[max-content,max-content,minmax(0,1fr),max-content]">
@@ -149,7 +161,7 @@ export const OrderModal = ({ open, cart, loading, onClose, onCancel, onConfirm }
                         return (
                             <Product
                                 key={productId}
-                                product={cart.productsIndexed[productId]!}
+                                product={products[productId]!}
                                 items={cart.items[productId]!}
                                 canSelectCurrencyAsPaymentMethod={
                                     cart.canSelectCurrencyAsPaymentMethod
@@ -172,6 +184,8 @@ export const OrderModal = ({ open, cart, loading, onClose, onCancel, onConfirm }
                             )}
                         </div>
                     </div>
+
+                    <div className="text-red-500 text-right">{error}</div>
 
                     <div className="grid grid-cols-[max-content,minmax(0,1fr)] mt-2 py-2 gap-2">
                         <button

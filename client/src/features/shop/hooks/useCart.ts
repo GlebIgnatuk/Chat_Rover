@@ -1,24 +1,18 @@
 import { IShopProduct } from '@/store/types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import * as R from 'ramda'
 
 const LOCAL_STORAGE_KEY = '@shop/cart'
 
 interface UseCartOptions {
-    allProducts: IShopProduct[]
+    products: Record<string, IShopProduct>
     userBalance: number
 }
 
 export type Cart = Record<string, { currency: 'XLNT' | 'RUB' }[]>
 
-export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
+export const useCart = ({ userBalance, products }: UseCartOptions) => {
     const isFirstRender = useRef(true)
     const [productIds, setProductIds] = useState<Cart>({})
-
-    const productsIndexed = useMemo(
-        () => R.indexBy(R.prop('_id'), props.allProducts),
-        [props.allProducts],
-    )
 
     const totalCount = useMemo(
         () => Object.values(productIds).reduce((acc, n) => acc + n.length, 0),
@@ -30,7 +24,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
         let total = 0
 
         for (const productId in productIds) {
-            const product = productsIndexed[productId]!
+            const product = products[productId]!
             const items = productIds[productId]!
 
             for (const item of items) {
@@ -44,7 +38,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
         }
 
         return total
-    }, [productsIndexed, productIds])
+    }, [products, productIds])
 
     const canSelectCurrencyAsPaymentMethod = useCallback(
         (currency: 'XLNT' | 'RUB', value: number) => {
@@ -53,7 +47,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
             let total = value
 
             for (const productId in productIds) {
-                const product = productsIndexed[productId]!
+                const product = products[productId]!
                 const items = productIds[productId]!
 
                 for (const item of items) {
@@ -68,7 +62,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
 
             return userBalance - total > 0
         },
-        [productsIndexed, productIds, userBalance],
+        [products, productIds, userBalance],
     )
 
     const addProduct = (id: string) => {
@@ -81,7 +75,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
                 copy[id] = [...copy[id]]
             }
 
-            const product = productsIndexed[id]!
+            const product = products[id]!
             const price = product.prices.find((p) => p.currency === 'RUB') ?? product.prices[0]!
 
             copy[id].push({ currency: price.currency })
@@ -158,7 +152,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
 
             const cart: Cart = {}
             for (const id in json) {
-                if (productsIndexed[id] !== undefined && Array.isArray(json[id]) !== false) {
+                if (products[id] !== undefined && Array.isArray(json[id]) !== false) {
                     cart[id] = json[id]
                 }
             }
@@ -167,7 +161,7 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
         } catch (e) {
             console.log('Invalid cart')
         }
-    }, [productsIndexed])
+    }, [products])
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -188,8 +182,6 @@ export const useCart = ({ userBalance, ...props }: UseCartOptions) => {
         totalCount: totalCount,
         setPaymentMethodFor,
         totalPrice,
-        productsIndexed: productsIndexed,
-        products: props.allProducts,
         items: productIds,
         canSelectCurrencyAsPaymentMethod,
     }

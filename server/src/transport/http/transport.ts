@@ -12,6 +12,8 @@ import * as ErrorsController from './errors/errors.controller'
 import * as GiveawayItemsController from './giveawayItems/giveawayItems.controller'
 import * as ExpressGiveawaysController from './expressGiveaways/expressGiveaways.controller'
 import * as TelegramUsersController from './telegramUsers/telegramUsers.controller'
+import * as ShopOrdersController from './shopOrders/shopOrders.controller'
+import * as ShopProductsController from './shopProducts/shopProducts.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -200,6 +202,12 @@ export const setupHttpRouter = (
     authorized.post('/translations', TranslationsController.create)
     authorized.patch('/translations/:id', TranslationsController.update)
     authorized.delete('/translations/:id', TranslationsController.remove)
+
+    // Shop Orders
+    authorized.post('/shopOrders', ShopOrdersController.create)
+
+    // Shop Products
+    authorized.get('/shopProducts', ShopProductsController.list)
 
     // Giveaway items
     authorized.get('/admin/giveawayItems', isAdmin, GiveawayItemsController.list)

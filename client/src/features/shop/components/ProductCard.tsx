@@ -4,6 +4,7 @@ import { cn } from 'tailwind-cn'
 import { Price } from './Price'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartPlus, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { Fragment } from 'react/jsx-runtime'
 
 interface Props {
     product: IShopProduct
@@ -35,10 +36,10 @@ export const ProductCard = ({ product, selectedCount, onAddToCart, onRemoveFromC
 
             <div className="px-1 bg-primary-700/50 text-white flex items-center justify-center h-6">
                 {product.prices.map((p, idx) => (
-                    <>
+                    <Fragment key={idx}>
                         <Price currency={p.currency} value={p.price} className="px-1" />
                         {idx !== product.prices.length - 1 && <div>/</div>}
-                    </>
+                    </Fragment>
                 ))}
             </div>
 

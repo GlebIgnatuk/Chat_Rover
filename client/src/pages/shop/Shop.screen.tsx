@@ -1,4 +1,5 @@
 import { useStore } from '@/context/app/useStore'
+import { IIdentity } from '@/context/auth/AuthContext'
 import { FloatingCartButton } from '@/features/shop/components/FloatingCartButton'
 import { MultiCategoryList } from '@/features/shop/components/MultiCategoryList'
 import { OrderModal } from '@/features/shop/components/OrderModal'
@@ -6,93 +7,20 @@ import { SingleCategoryList } from '@/features/shop/components/SingleCategoryLis
 import { SuccessOrderModal } from '@/features/shop/components/SuccessOrderModal'
 import { useCart } from '@/features/shop/hooks/useCart'
 import { useMutation } from '@/hooks/common/useMutation'
-import { IShopProduct } from '@/store/types'
-import { useEffect, useState } from 'react'
+import { api } from '@/services/api'
+import { IShopOrder, IShopProduct } from '@/store/types'
+import { useEffect, useMemo, useState } from 'react'
 import { cn } from 'tailwind-cn'
 
 export const ShopScreen = () => {
+    const productsIndexed = useStore((state) => state.products.items)
+    const products = useMemo(() => Object.values(productsIndexed), [productsIndexed])
+
     const [isCartOpen, setIsCartOpen] = useState(false)
-    const [isSuccessOrderMessageShown, setIsSuccessOrderMessageShown] = useState(false)
-    const [products, setProducts] = useState<IShopProduct[]>([
-        {
-            _id: '1',
-            name: 'Lunite subscription',
-            photoPath: '/products/lunite_subscription.png',
-            category: 'Bundles',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 449 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 300 },
-            ],
-            mode: 'request',
-        },
-        {
-            _id: '2',
-            name: 'Lunite x60',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 99 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 60 },
-            ],
-            mode: 'request',
-        },
-        {
-            _id: '2.2',
-            name: 'Lunite x100',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [{ currency: 'XLNT', discount: 0, discountEndsAt: null, price: 100 }],
-            mode: 'request',
-        },
-        {
-            _id: '3',
-            name: 'Lunite x300',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 449 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 300 },
-            ],
-            mode: 'request',
-        },
-        {
-            _id: '4',
-            name: 'Lunite x980',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 1290 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 980 },
-            ],
-            mode: 'request',
-        },
-        {
-            _id: '5',
-            name: 'Lunite x3280',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 4490 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 3280 },
-            ],
-            mode: 'request',
-        },
-        {
-            _id: '6',
-            name: 'Lunite x6480',
-            photoPath: '/currency/lunite.png',
-            category: 'Purchase',
-            prices: [
-                { currency: 'RUB', discount: 0, discountEndsAt: null, price: 8990 },
-                { currency: 'XLNT', discount: 0, discountEndsAt: null, price: 6480 },
-            ],
-            mode: 'request',
-        },
-    ])
-    void setProducts
+    const [completedOrder, setCompletedOrder] = useState<IShopOrder | null>(null)
     const [category, setCategory] = useState<string | null>(null)
 
-    const user = useStore((state) => state.identity.user)
+    const { user, setUser } = useStore((state) => state.identity)
     const grouped = products.reduce<Record<string, IShopProduct[]>>((acc, n) => {
         if (!acc[n.category]) acc[n.category] = []
         acc[n.category]!.push(n)
@@ -106,19 +34,42 @@ export const ShopScreen = () => {
             .map((c) => ({ key: c, label: c })),
     ]
 
-    const cart = useCart({ allProducts: products, userBalance: user.balance })
+    const cart = useCart({ products: productsIndexed, userBalance: user.balance })
 
-    const createOrder = useMutation<null>({
+    const refreshUser = useMutation<IIdentity>({
         fn: async () => {
-            await new Promise((res) => setTimeout(res, 3000))
-
-            return { success: true, data: null, error: null }
+            return api('/users/me')
         },
-        onSuccess: () => {
+        onSuccess: (identity) => {
+            setUser(identity.user)
+        },
+    })
+
+    const createOrder = useMutation<IShopOrder>({
+        fn: async () => {
+            const body = Object.keys(cart.items)
+                .map((key) => {
+                    const items = cart.items[key]!.map((item) => ({
+                        productId: key,
+                        currency: item.currency,
+                    }))
+
+                    return items
+                })
+                .flat()
+
+            return api('/shopOrders', {
+                method: 'POST',
+                body: JSON.stringify(body),
+            })
+        },
+        onSuccess: (order) => {
             cart.reset()
             setIsCartOpen(false)
-            setIsSuccessOrderMessageShown(true)
+            refreshUser.send()
+            setCompletedOrder(order)
         },
+        errorTimerMs: 3000,
     })
 
     useEffect(() => {
@@ -170,15 +121,17 @@ export const ShopScreen = () => {
             </div>
 
             <SuccessOrderModal
-                open={isSuccessOrderMessageShown}
-                onContinue={() => setIsSuccessOrderMessageShown(false)}
+                open={completedOrder !== null}
+                onContinue={() => setCompletedOrder(null)}
                 onShowOrder={() => {}}
             />
 
             <OrderModal
                 open={isCartOpen}
                 loading={createOrder.isLoading}
+                error={createOrder.error}
                 cart={cart}
+                products={productsIndexed}
                 onClose={() => setIsCartOpen(false)}
                 onCancel={() => {
                     cart.reset()

@@ -70,7 +70,7 @@ const handler = async () => {
         expressGiveaway: new ExpressGiveawayRepository(userRepo, giveawayItemRepo),
         giveawayItem: giveawayItemRepo,
         shopProduct: shopProductRepo,
-        shopOrder: new ShopOrderRepository(shopProductRepo),
+        shopOrder: new ShopOrderRepository(shopProductRepo, userRepo),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

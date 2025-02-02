@@ -160,3 +160,22 @@ export type IShopProduct = {
     }[]
     mode: 'request' | 'instant'
 }
+
+export const SHOP_ORDER_STATUSES = ['pending', 'cancelled', 'processed', 'refunded'] as const
+export type IShopOrderStatus = (typeof SHOP_ORDER_STATUSES)[number]
+
+export type IShopOrder = {
+    _id: string
+    userId: string
+    products: {
+        _id: string
+        productId: string
+        name: string
+        photoPath: string
+        category: string
+        currency: 'XLNT' | 'RUB'
+        price: number
+        processed: boolean
+    }[]
+    status: IShopOrderStatus
+}
