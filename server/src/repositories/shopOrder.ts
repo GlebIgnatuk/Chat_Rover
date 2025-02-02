@@ -19,6 +19,10 @@ export type IShopOrderAdminListItemDTO = mongo.WithId<{
     price: Record<IShopCurrency, number>
 }>
 
+export type IShopOrderAdminDTO = Omit<IShopOrderDTO, 'userId'> & {
+    user: Pick<IUserDTO, '_id' | 'nickname'>
+}
+
 export type IShopOrderCreate = {
     userId: ID
     products: {
@@ -29,14 +33,15 @@ export type IShopOrderCreate = {
 
 export interface IShopOrderRepository {
     get(id: ID): Promise<IShopOrderDTO | null>
+    getAdmin(id: ID): Promise<IShopOrderAdminDTO | null>
     list(userId: ID, status?: IShopOrderStatus): Promise<IShopOrderListItemDTO[]>
     listAdmin(status?: IShopOrderStatus): Promise<IShopOrderAdminListItemDTO[]>
     create(payload: IShopOrderCreate): Promise<IShopOrderDTO>
-    cancel(id: ID): Promise<IShopOrderDTO | null>
+    cancel(id: ID): Promise<IShopOrderAdminDTO | null>
     // @todo
     // refund(id: ID): Promise<IShopOrderDTO | null>
-    markAsProcessed(id: ID): Promise<IShopOrderDTO | null>
-    markAsPending(id: ID): Promise<IShopOrderDTO | null>
-    markProductAsProcessed(orderId: ID, productId: ID): Promise<IShopOrderDTO | null>
-    markProductAsPending(orderId: ID, productId: ID): Promise<IShopOrderDTO | null>
+    markAsProcessed(id: ID): Promise<IShopOrderAdminDTO | null>
+    markAsPending(id: ID): Promise<IShopOrderAdminDTO | null>
+    markProductAsProcessed(orderId: ID, productId: ID): Promise<IShopOrderAdminDTO | null>
+    markProductAsPending(orderId: ID, productId: ID): Promise<IShopOrderAdminDTO | null>
 }

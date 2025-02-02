@@ -146,6 +146,9 @@ export type IAdminExpressGiveawayListItem = {
     finishedAt: string
 }
 
+export const CURRENCIES = ['XLNT', 'RUB'] as const
+export type ICurrency = (typeof CURRENCIES)[number]
+
 export type IShopProduct = {
     _id: string
     name: string
@@ -153,7 +156,7 @@ export type IShopProduct = {
     category: string
 
     prices: {
-        currency: 'XLNT' | 'RUB'
+        currency: ICurrency
         price: number
         discount: number
         discountEndsAt: Date | null
@@ -161,19 +164,43 @@ export type IShopProduct = {
     mode: 'request' | 'instant'
 }
 
-export const SHOP_ORDER_STATUSES = ['pending', 'cancelled', 'processed', 'refunded'] as const
+export const SHOP_ORDER_STATUSES = ['pending', 'cancelled', 'processed'] as const
 export type IShopOrderStatus = (typeof SHOP_ORDER_STATUSES)[number]
 
 export type IShopOrder = {
     _id: string
-    userId: string
     products: {
         _id: string
         productId: string
         name: string
         photoPath: string
         category: string
-        currency: 'XLNT' | 'RUB'
+        currency: ICurrency
+        price: number
+        processed: boolean
+    }[]
+    status: IShopOrderStatus
+}
+
+export type IShopOrderAdminListItem = {
+    _id: string
+    status: IShopOrderStatus
+    user: Pick<IUser, '_id' | 'nickname'>
+    processedCount: number
+    totalCount: number
+    price: Record<ICurrency, number>
+}
+
+export type IShopOrderAdmin = {
+    _id: string
+    user: Pick<IUser, '_id' | 'nickname'>
+    products: {
+        _id: string
+        productId: string
+        name: string
+        photoPath: string
+        category: string
+        currency: ICurrency
         price: number
         processed: boolean
     }[]

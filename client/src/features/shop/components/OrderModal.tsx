@@ -5,7 +5,7 @@ import { Modal } from '@mui/material'
 import { Cart, UseCartReturn } from '../hooks/useCart'
 import { Price } from './Price'
 import { cn } from 'tailwind-cn'
-import { IShopProduct } from '@/store/types'
+import { ICurrency, IShopProduct } from '@/store/types'
 import { Fragment } from 'react/jsx-runtime'
 
 interface Props {
@@ -28,8 +28,8 @@ const Product = ({
 }: {
     product: IShopProduct
     items: Cart[string]
-    canSelectCurrencyAsPaymentMethod: (currency: 'XLNT' | 'RUB', value: number) => boolean
-    setPaymentMethodFor: (productId: string, idx: number, currency: 'XLNT' | 'RUB') => void
+    canSelectCurrencyAsPaymentMethod: (currency: ICurrency, value: number) => boolean
+    setPaymentMethodFor: (productId: string, idx: number, currency: ICurrency) => void
     removeProductUnit: (productId: string, idx: number) => void
 }) => {
     return (
@@ -92,8 +92,8 @@ const SubProduct = ({
 }: {
     product: IShopProduct
     item: Cart[string][number]
-    canSelectCurrencyAsPaymentMethod: (currency: 'XLNT' | 'RUB', value: number) => boolean
-    setPaymentMethod: (currency: 'XLNT' | 'RUB') => void
+    canSelectCurrencyAsPaymentMethod: (currency: ICurrency, value: number) => boolean
+    setPaymentMethod: (currency: ICurrency) => void
     removeProductUnit: () => void
 }) => {
     return (

@@ -1,6 +1,7 @@
 import { Card } from '@/components/Card'
 import Checkbox from '@/components/Checkbox'
 import { buildImageUrl } from '@/config/path'
+import { TelegramUserLink } from '@/features/accounts/components/TelegramUserLink'
 import { useMutation } from '@/hooks/common/useMutation'
 import { api } from '@/services/api'
 import { IAdminExpressGiveawayListItem } from '@/store/types'
@@ -104,26 +105,11 @@ export const AdminGiveawaysScreen = () => {
                                     }}
                                 />
 
-                                <a
-                                    href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault()
-
-                                        api<{ user: { username: string } }[]>(
-                                            `/admin/users/${w._id}/telegramUsers`,
-                                        ).then((r) => {
-                                            if (!r.success || r.data.length === 0) return
-
-                                            window.open(
-                                                `https://t.me/${r.data[0]!.user.username}`,
-                                                '_blank',
-                                            )
-                                        })
-                                    }}
+                                <TelegramUserLink
+                                    nickname={w.nickname}
+                                    userId={w._id}
                                     className="underline underline-offset-4 text-primary-700"
-                                >
-                                    {w.nickname}
-                                </a>
+                                />
                                 <button
                                     disabled={rerollWinner.isLoading || w.processed}
                                     onClick={() => {

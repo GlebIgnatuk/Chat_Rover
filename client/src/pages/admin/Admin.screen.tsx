@@ -4,6 +4,7 @@ import { cn } from 'tailwind-cn'
 
 const links = [
     { path: buildAdminPath('giveaways'), label: 'Розыгрыши', disabled: false },
+    { path: buildAdminPath('orders'), label: 'Заказы', disabled: false },
     //
 ].concat(
     Array.from({ length: 13 }, (_, idx) => ({

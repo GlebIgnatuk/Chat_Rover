@@ -205,6 +205,16 @@ export const setupHttpRouter = (
 
     // Shop Orders
     authorized.post('/shopOrders', ShopOrdersController.create)
+    authorized.get('/shopOrders', ShopOrdersController.list)
+    authorized.get('/shopOrders/:id', ShopOrdersController.get)
+    authorized.get('/admin/shopOrders', isAdmin, ShopOrdersController.listAdmin)
+    authorized.get('/admin/shopOrders/:id', isAdmin, ShopOrdersController.getAdmin)
+    authorized.post('/admin/shopOrders/:id/statuses', isAdmin, ShopOrdersController.changeStatus)
+    authorized.post(
+        '/admin/shopOrders/:id/shopProducts/:productId/statuses',
+        isAdmin,
+        ShopOrdersController.changeProductStatus,
+    )
 
     // Shop Products
     authorized.get('/shopProducts', ShopProductsController.list)

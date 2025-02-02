@@ -1,4 +1,4 @@
-import { IShopProduct } from '@/store/types'
+import { ICurrency, IShopProduct } from '@/store/types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const LOCAL_STORAGE_KEY = '@shop/cart'
@@ -8,7 +8,7 @@ interface UseCartOptions {
     userBalance: number
 }
 
-export type Cart = Record<string, { currency: 'XLNT' | 'RUB' }[]>
+export type Cart = Record<string, { currency: ICurrency }[]>
 
 export const useCart = ({ userBalance, products }: UseCartOptions) => {
     const isFirstRender = useRef(true)
@@ -41,7 +41,7 @@ export const useCart = ({ userBalance, products }: UseCartOptions) => {
     }, [products, productIds])
 
     const canSelectCurrencyAsPaymentMethod = useCallback(
-        (currency: 'XLNT' | 'RUB', value: number) => {
+        (currency: ICurrency, value: number) => {
             if (currency !== 'XLNT') return true
 
             let total = value
@@ -84,7 +84,7 @@ export const useCart = ({ userBalance, products }: UseCartOptions) => {
         })
     }
 
-    const setPaymentMethodFor = (id: string, index: number, currency: 'XLNT' | 'RUB') => {
+    const setPaymentMethodFor = (id: string, index: number, currency: ICurrency) => {
         setProductIds((prev) => {
             if (prev[id] === undefined || prev[id].length <= index) {
                 return prev

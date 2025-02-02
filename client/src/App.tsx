@@ -37,6 +37,8 @@ import {
 } from './config/path'
 import { AdminRoute } from './context/auth/AdminRoute'
 import { ShopScreen } from './pages/shop/Shop.screen'
+import { AdminOrdersScreen } from './pages/admin/orders/AdminOrders.screen'
+import { AdminOrderScreen } from './pages/admin/orders/AdminOrder.screen'
 
 const router = createBrowserRouter([
     {
@@ -181,6 +183,14 @@ const router = createBrowserRouter([
                                             {
                                                 path: 'giveaways',
                                                 element: <AdminGiveawaysScreen />,
+                                            },
+                                            {
+                                                path: 'orders',
+                                                element: <AdminOrdersScreen />,
+                                            },
+                                            {
+                                                path: 'orders/:id',
+                                                element: <AdminOrderScreen />,
                                             },
                                         ],
                                     },

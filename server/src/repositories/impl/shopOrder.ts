@@ -3,6 +3,7 @@ import { IShopProductRepository } from '../shopProduct'
 import { IShopProductDTO } from '@/models/shopProduct'
 import { ID } from '../types'
 import {
+    IShopOrderAdminDTO,
     IShopOrderAdminListItemDTO,
     IShopOrderCreate,
     IShopOrderListItemDTO,
@@ -229,8 +230,8 @@ export class ShopOrderRepository implements IShopOrderRepository {
         })
     }
 
-    async cancel(id: ID): Promise<IShopOrderDTO | null> {
-        return await ShopOrderModel.getCollection().findOneAndUpdate(
+    async cancel(id: ID): Promise<IShopOrderAdminDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(id),
             },
@@ -243,6 +244,8 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 returnDocument: 'after',
             },
         )
+
+        return this.getAdmin(id)
     }
 
     // @todo
@@ -262,8 +265,8 @@ export class ShopOrderRepository implements IShopOrderRepository {
     //     )
     // }
 
-    async markAsProcessed(id: ID): Promise<IShopOrderDTO | null> {
-        return await ShopOrderModel.getCollection().findOneAndUpdate(
+    async markAsProcessed(id: ID): Promise<IShopOrderAdminDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(id),
             },
@@ -276,10 +279,12 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 returnDocument: 'after',
             },
         )
+
+        return this.getAdmin(id)
     }
 
-    async markAsPending(id: ID): Promise<IShopOrderDTO | null> {
-        return await ShopOrderModel.getCollection().findOneAndUpdate(
+    async markAsPending(id: ID): Promise<IShopOrderAdminDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(id),
             },
@@ -292,10 +297,12 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 returnDocument: 'after',
             },
         )
+
+        return this.getAdmin(id)
     }
 
-    async markProductAsProcessed(orderId: ID, productId: ID): Promise<IShopOrderDTO | null> {
-        return await ShopOrderModel.getCollection().findOneAndUpdate(
+    async markProductAsProcessed(orderId: ID, productId: ID): Promise<IShopOrderAdminDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(orderId),
                 products: { $elemMatch: { _id: new Types.ObjectId(productId) } },
@@ -309,10 +316,12 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 returnDocument: 'after',
             },
         )
+
+        return this.getAdmin(orderId)
     }
 
-    async markProductAsPending(orderId: ID, productId: ID): Promise<IShopOrderDTO | null> {
-        return await ShopOrderModel.getCollection().findOneAndUpdate(
+    async markProductAsPending(orderId: ID, productId: ID): Promise<IShopOrderAdminDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(orderId),
                 products: { $elemMatch: { _id: new Types.ObjectId(productId) } },
@@ -326,6 +335,8 @@ export class ShopOrderRepository implements IShopOrderRepository {
                 returnDocument: 'after',
             },
         )
+
+        return this.getAdmin(orderId)
     }
 
     async get(id: ID, tx?: ClientSession): Promise<IShopOrderDTO | null> {
@@ -335,5 +346,29 @@ export class ShopOrderRepository implements IShopOrderRepository {
             },
             { session: tx },
         )
+    }
+
+    async getAdmin(id: ID): Promise<IShopOrderAdminDTO | null> {
+        const orders = await ShopOrderModel.getCollection()
+            .aggregate<IShopOrderAdminDTO>([
+                { $match: { _id: new Types.ObjectId(id) } },
+                { $limit: 1 },
+                {
+                    $lookup: {
+                        from: UserModel.getCollection().name,
+                        localField: 'userId',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$user',
+                    },
+                },
+            ])
+            .toArray()
+
+        return orders[0] ?? null
     }
 }
