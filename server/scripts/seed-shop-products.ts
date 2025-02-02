@@ -11,7 +11,7 @@ async function main() {
         {
             name: 'Lunite subscription',
             photoPath: '/products/lunite_subscription.png',
-            category: 'Special',
+            category: 'Special Offers',
             prices: [
                 { currency: 'RUB', price: 449 },
                 { currency: 'XLNT', price: 675 },
@@ -20,7 +20,7 @@ async function main() {
         {
             name: 'Insider Channel',
             photoPath: '/products/insider_channel.png',
-            category: 'Special',
+            category: 'Channel',
             prices: [
                 { currency: 'RUB', price: 899 },
                 { currency: 'XLNT', price: 1349 },
@@ -29,7 +29,7 @@ async function main() {
         {
             name: 'Connoiseur Channel',
             photoPath: '/products/connoiseur_channel.png',
-            category: 'Special',
+            category: 'Channel',
             prices: [
                 { currency: 'RUB', price: 1790 },
                 { currency: 'XLNT', price: 2685 },
@@ -88,6 +88,52 @@ async function main() {
             prices: [
                 { currency: 'RUB', price: 8990 },
                 { currency: 'XLNT', price: 13485 },
+            ],
+        },
+
+        {
+            name: "Vault's Tide Collection",
+            photoPath: '/products/vaults_tide_collection.png',
+            category: 'Special Offers',
+            prices: [
+                { currency: 'RUB', price: 249 },
+                { currency: 'XLNT', price: 375 },
+            ],
+        },
+        {
+            name: "Vault's Radiant Collection I",
+            photoPath: '/products/vaults_tide_collection.png',
+            category: 'Special Offers',
+            prices: [
+                { currency: 'RUB', price: 899 },
+                { currency: 'XLNT', price: 1350 },
+            ],
+        },
+        {
+            name: "Vault's Forging Collection",
+            photoPath: '/products/vaults_tide_collection.png',
+            category: 'Special Offers',
+            prices: [
+                { currency: 'RUB', price: 899 },
+                { currency: 'XLNT', price: 1350 },
+            ],
+        },
+        {
+            name: "Vault's Tide Selection",
+            photoPath: '/products/vaults_tide_collection.png',
+            category: 'Special Offers',
+            prices: [
+                { currency: 'RUB', price: 1790 },
+                { currency: 'XLNT', price: 2685 },
+            ],
+        },
+        {
+            name: "Vault's Radiant Collection II",
+            photoPath: '/products/vaults_tide_collection.png',
+            category: 'Special Offers',
+            prices: [
+                { currency: 'RUB', price: 2490 },
+                { currency: 'XLNT', price: 3735 },
             ],
         },
     ]
