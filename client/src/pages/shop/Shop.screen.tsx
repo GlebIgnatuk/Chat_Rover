@@ -91,7 +91,7 @@ export const ShopScreen = () => {
                 --- {localize('shop__how_it_works')} ---
             </button>
 
-            <div className="grid grid-cols-[max-content,minmax(0,1fr)] bg-stone-800">
+            <div className="grid grid-cols-[minmax(0,1fr)] bg-stone-800">
                 <div className="space-x-2 whitespace-nowrap overflow-x-scroll overflow-y-hidden w-full px-1 py-1 scrollbar-none ">
                     {categories.map((c) => (
                         <button
