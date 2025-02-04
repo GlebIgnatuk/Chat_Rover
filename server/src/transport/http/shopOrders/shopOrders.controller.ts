@@ -1,6 +1,7 @@
 import { IShopOrderStatus, SHOP_ORDER_STATUSES } from '@/models/shopOrder'
 import { IAuthorizedRequestHandler } from '../types'
 import { IShopOrderAdminDTO } from '@/repositories/shopOrder'
+import { NotificationService } from '@/services/notification'
 
 export const create: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -150,6 +151,28 @@ export const changeProductStatus: IAuthorizedRequestHandler = async (req, res, n
         }
 
         res.json({ success: true, data: order })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const sendOrderReminder: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { repositories } = res.locals
+
+        const order = await repositories.shopOrder.get(req.params.id)
+        if (!order) {
+            return res.status(400).json({ success: false, error: 'No such order' })
+        }
+
+        const user = await repositories.user.get(order.userId)
+        if (!user) {
+            return res.status(400).json({ success: false, error: 'No such user' })
+        }
+
+        await NotificationService.sendOrderReminder(user, order)
+
+        res.json({ success: true })
     } catch (e) {
         next(e)
     }

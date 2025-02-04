@@ -4,12 +4,14 @@ import { useState } from 'react'
 interface UseMutationProps<T, A extends unknown[]> {
     fn: (...args: A) => Promise<APIResponse<T>>
     onSuccess?: (data: T, ...args: A) => void
+    onError?: (error: string, ...args: A) => void
     errorTimerMs?: number
 }
 
 export const useMutation = <T = void, A extends unknown[] = []>({
     fn,
     onSuccess,
+    onError,
     errorTimerMs,
 }: UseMutationProps<T, A>) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -26,6 +28,7 @@ export const useMutation = <T = void, A extends unknown[] = []>({
                 setData(response.data)
                 onSuccess?.(response.data, ...args)
             } else {
+                onError?.(response.error, ...args)
                 setError(response.error)
                 if (errorTimerMs !== undefined) {
                     setTimeout(() => setError(''), errorTimerMs)
@@ -34,7 +37,9 @@ export const useMutation = <T = void, A extends unknown[] = []>({
 
             setIsLoading(false)
         } catch {
-            setError('Something went wrong')
+            const error = 'Something went wrong'
+            onError?.(error, ...args)
+            setError(error)
             if (errorTimerMs !== undefined) {
                 setTimeout(() => setError(''), errorTimerMs)
             }

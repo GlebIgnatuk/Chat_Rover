@@ -215,6 +215,11 @@ export const setupHttpRouter = (
         isAdmin,
         ShopOrdersController.changeProductStatus,
     )
+    authorized.post(
+        '/admin/shopOrders/:id/reminders',
+        isAdmin,
+        ShopOrdersController.sendOrderReminder,
+    )
 
     // Shop Products
     authorized.get('/shopProducts', ShopProductsController.list)

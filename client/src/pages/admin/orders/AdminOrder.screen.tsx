@@ -98,6 +98,20 @@ const Order = ({ ...props }: { order: IShopOrderAdmin }) => {
         },
     })
 
+    const sendOrderReminder = useMutation({
+        fn: async () => {
+            return api(`/admin/shopOrders/${order._id}/reminders`, {
+                method: 'POST',
+            })
+        },
+        onSuccess: () => {
+            alert('Success!')
+        },
+        onError: (error) => {
+            alert(`Error: ${error}`)
+        },
+    })
+
     const grouped = order.products.reduce<Record<string, IShopOrderAdmin['products']>>((acc, n) => {
         if (acc[n.productId] === undefined) acc[n.productId] = []
         acc[n.productId]!.push(n)
@@ -118,12 +132,20 @@ const Order = ({ ...props }: { order: IShopOrderAdmin }) => {
                         changeStatus.send(order._id, e.target.value as IShopOrderStatus)
                     }
                     value={order.status}
-                    className="bg-stone-800 text-primary-700 px-3 py-2 rounded-full"
+                    className="bg-stone-800 text-primary-700 px-3 py-2 rounded-full border border-primary-700"
                 >
                     {SHOP_ORDER_STATUSES.map((s) => (
                         <option key={s}>{s}</option>
                     ))}
                 </select>
+
+                <button
+                    disabled={sendOrderReminder.isLoading}
+                    className="bg-primary-700 text-stone-800 rounded-full px-2 py-1 disabled:bg-gray-400"
+                    onClick={sendOrderReminder.send}
+                >
+                    Reminder
+                </button>
             </div>
 
             <div className="overflow-y-auto p-1 space-y-2 py-2">
