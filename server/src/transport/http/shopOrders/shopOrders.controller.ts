@@ -17,6 +17,12 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
             products: req.body,
         })
 
+        try {
+            await NotificationService.sendOrderNotification(user, order)
+        } catch (e) {
+            console.error(e)
+        }
+
         res.json({ success: true, data: order })
     } catch (e) {
         next(e)
