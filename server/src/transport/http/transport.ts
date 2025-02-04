@@ -252,6 +252,11 @@ export const setupHttpRouter = (
         isAdmin,
         ExpressGiveawaysController.markWinnerAsPending,
     )
+    authorized.post(
+        '/admin/expressGiveaways/:id/winners/:winnerId/notifications',
+        isAdmin,
+        ExpressGiveawaysController.sendWinnerNotification,
+    )
 
     authorized.get('/expressGiveaways', ExpressGiveawaysController.listInListing)
     authorized.post('/expressGiveaways/:id/participants', ExpressGiveawaysController.addParticipant)

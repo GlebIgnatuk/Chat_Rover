@@ -52,6 +52,7 @@ export type IAdminExpressGiveawayListItem = mongo.WithId<{
 }>
 
 export interface IExpressGiveawayRepository {
+    get(id: ID): Promise<IExpressGiveawayDTO | null>
     list(): Promise<IExpressGiveawayDTO[]>
     listInListing(userId: ID): Promise<IListingExpressGiveawayDTO[]>
     listAdmin(): Promise<IAdminExpressGiveawayListItem[]>

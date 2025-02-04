@@ -1,5 +1,6 @@
 import { RepositoryError } from '@/repositories/types'
 import { IAuthorizedRequestHandler } from '../types'
+import { NotificationService } from '@/services/notification'
 
 // export const list: IAuthorizedRequestHandler = async (req, res, next) => {
 //     try {
@@ -144,6 +145,34 @@ export const remove: IAuthorizedRequestHandler = async (req, res, next) => {
         const { repositories } = res.locals
 
         await repositories.expressGiveaway.delete(giveawayId)
+
+        res.json({ success: true })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const sendWinnerNotification: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const giveawayId = req.params.id
+        const winnerId = req.params.winnerId
+
+        const { repositories } = res.locals
+
+        const giveaway = await repositories.expressGiveaway.get(giveawayId)
+        if (!giveaway) {
+            return res.status(400).json({ success: false, error: 'No such giveaway' })
+        }
+        if (giveaway.winners.some((w) => w.equals(winnerId)) === false) {
+            return res.status(400).json({ success: false, error: 'Invalid winner' })
+        }
+
+        const user = await repositories.user.get(winnerId)
+        if (!user) {
+            return res.status(400).json({ success: false, error: 'No such winner' })
+        }
+
+        await NotificationService.sendExpressGiveawayReminder(user, giveaway)
 
         res.json({ success: true })
     } catch (e) {

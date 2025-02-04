@@ -52,6 +52,20 @@ export const AdminGiveawaysScreen = () => {
         },
     })
 
+    const sendNotification = useMutation<IAdminExpressGiveawayListItem, [string, string]>({
+        fn: async (giveawayId, winnerId) => {
+            return api(`/admin/expressGiveaways/${giveawayId}/winners/${winnerId}/notifications`, {
+                method: 'POST',
+            })
+        },
+        onSuccess: () => {
+            alert('Success!')
+        },
+        onError: (error) => {
+            alert(`Error: ${error}`)
+        },
+    })
+
     const listGiveaways = useMutation<IAdminExpressGiveawayListItem[]>({
         fn: async () => {
             return api(`/admin/expressGiveaways`)
@@ -88,7 +102,7 @@ export const AdminGiveawaysScreen = () => {
                         {g.winners.map((w) => (
                             <div
                                 key={w._id}
-                                className="grid grid-cols-[max-content,minmax(0,1fr),max-content] gap-3 items-center py-3"
+                                className="grid grid-cols-[max-content,minmax(0,1fr),max-content,max-content] gap-2 items-center py-3"
                             >
                                 <Checkbox
                                     checked={w.processed}
@@ -110,6 +124,24 @@ export const AdminGiveawaysScreen = () => {
                                     userId={w._id}
                                     className="underline underline-offset-4 text-primary-700"
                                 />
+                                <button
+                                    disabled={sendNotification.isLoading}
+                                    onClick={() => {
+                                        if (
+                                            confirm(
+                                                `Вы уверены что хотите отправить оповещение "${w.nickname}"?`,
+                                            )
+                                        ) {
+                                            sendNotification.send(g._id, w._id)
+                                        }
+                                    }}
+                                    className={cn(
+                                        'bg-stone-800 text-primary-700 disabled:bg-gray-400 disabled:border-black disabled:text-black rounded-full px-2 py-1 border border-primary-700',
+                                        {},
+                                    )}
+                                >
+                                    Notify
+                                </button>
                                 <button
                                     disabled={rerollWinner.isLoading || w.processed}
                                     onClick={() => {

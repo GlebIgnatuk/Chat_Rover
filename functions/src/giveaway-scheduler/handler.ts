@@ -1,5 +1,6 @@
 import mongoose, { mongo, Types } from 'mongoose'
 import { MongoDBService } from '../shared/services/MongoDB'
+import { MarkupV2 } from '../shared/services/telegram'
 
 const giveawayScheduler = async () => {
     await MongoDBService.lazy(process.env.MONGO_URI)
@@ -7,6 +8,7 @@ const giveawayScheduler = async () => {
     const giveaways = mongoose.connection
         .collection<
             mongo.WithId<{
+                name: string
                 participants: Types.ObjectId[]
                 maxWinners: number
                 giveawayItemId: Types.ObjectId
@@ -38,7 +40,7 @@ const giveawayScheduler = async () => {
                     },
                 ],
             },
-            { projection: { _id: 1, participants: 1, maxWinners: 1, giveawayItemId: 1 } }
+            { projection: { _id: 1, name: 1, participants: 1, maxWinners: 1, giveawayItemId: 1 } }
         )
 
     for await (const giveaway of giveaways) {
@@ -82,6 +84,18 @@ const giveawayScheduler = async () => {
                     .findOne({ _id: winner })
                 if (!user) continue
 
+                const text = new MarkupV2()
+                    .plain(
+                        `🎉 Здравствуйте, вы победили в розыгрыше ${giveaway.name} в приложении `
+                    )
+                    .link('Rover Chat', `tg://resolve?domain=rover_chat_bot&appname=rover_chat`)
+                    .plain(`🎉`)
+                    .br(2)
+                    .plain('Для того чтобы забрать приз, пожалуйста напишите нам на этот аккаунт ')
+                    .link('@WuWa007', 'https://t.me/WuWa007')
+                    .plain('. Спасибо!')
+                    .build()
+
                 const response = await fetch(
                     `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
                     {
@@ -91,17 +105,11 @@ const giveawayScheduler = async () => {
                         method: 'POST',
                         body: JSON.stringify({
                             chat_id: user.externalId,
-                            text: `Hello! You won ${product.name} in a giveaway!\nWe will contact you from this account @WuWa007 soon.`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        {
-                                            text: 'Go to app',
-                                            url: `tg://resolve?domain=rover_chat_bot&appname=rover_chat`,
-                                        },
-                                    ],
-                                ],
+                            text: text,
+                            link_preview_options: {
+                                is_disabled: true,
                             },
+                            parse_mode: 'MarkdownV2',
                         }),
                     }
                 )
