@@ -73,6 +73,10 @@ async function main() {
                 description: 'todo',
                 value: 'Continue',
             },
+            general__cancel: {
+                description: 'todo',
+                value: 'Cancel',
+            },
             general__create: {
                 description: 'todo',
                 value: 'Create',
@@ -133,6 +137,14 @@ async function main() {
                 description: 'todo',
                 value: 'Skip',
             },
+            general__instructions: {
+                description: 'todo',
+                value: 'Instructions',
+            },
+            general__information: {
+                description: 'todo',
+                value: 'Information',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Filters',
@@ -187,31 +199,51 @@ async function main() {
             },
             shop__instructions_1: {
                 description: 'todo',
-                value: 'Select the products you are insterested in',
+                value: 'Select the goods you are insterested in',
             },
             shop__instructions_2: {
                 description: 'todo',
-                value: 'Complete the order in the cart by selecting the currency',
+                value: 'Complete the order by selecting the currency',
             },
             shop__instructions_3: {
                 description: 'todo',
-                value: 'After the order is created send as a message at',
+                value: 'After the order is completed, please send us a message to this account',
             },
-            shop__instructions_4: {
+            shop__info_1: {
                 description: 'todo',
-                value: 'We will process your order as soon as possible',
+                value: 'You can pay with Rover Chat currency (Lunites)',
             },
-            shop__instructions_5: {
+            shop__info_2: {
                 description: 'todo',
-                value: 'You can buy products for the Rover Chat currency (Lunites)',
+                value: 'The payment can be done with the following methods: phone number, PayPal, Revolut, USDT (TRC20)',
             },
-            shop__p_s: {
+            shop__info_3: {
                 description: 'todo',
-                value: 'Shop reviews can be found here',
+                value: 'Reviews can be found here',
             },
             shop__how_it_works: {
                 description: 'todo',
                 value: 'How does this work?',
+            },
+            shop__add_to_cart: {
+                description: 'todo',
+                value: 'Add to cart',
+            },
+            shop__order: {
+                description: 'todo',
+                value: 'Order',
+            },
+            shop__order__subtitle1: {
+                description: 'todo',
+                value: 'Please confirm and submit your order',
+            },
+            shop__order__subtitle2: {
+                description: 'todo',
+                value: 'Select the currency you prefer to pay with',
+            },
+            shop__order__total: {
+                description: 'todo',
+                value: 'Total',
             },
         },
         ru: {
@@ -275,6 +307,10 @@ async function main() {
                 description: 'todo',
                 value: 'Продолжить',
             },
+            general__cancel: {
+                description: 'todo',
+                value: 'Отменить',
+            },
             general__create: {
                 description: 'todo',
                 value: 'Создать',
@@ -335,6 +371,14 @@ async function main() {
                 description: 'todo',
                 value: 'Пропустить',
             },
+            general__instructions: {
+                description: 'todo',
+                value: 'Инструкция',
+            },
+            general__information: {
+                description: 'todo',
+                value: 'Информация',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Фильтры',
@@ -389,7 +433,7 @@ async function main() {
             },
             shop__instructions_1: {
                 description: 'todo',
-                value: 'Выберете товар который вас интересует',
+                value: 'Выберете товары, которые вас интересуют',
             },
             shop__instructions_2: {
                 description: 'todo',
@@ -397,23 +441,43 @@ async function main() {
             },
             shop__instructions_3: {
                 description: 'todo',
-                value: 'После того как заказ создан отправьте нам сообщение на этот аккаунт',
+                value: 'После того, как заказ создан, отправьте сообщение на этот аккаунт',
             },
-            shop__instructions_4: {
-                description: 'todo',
-                value: 'Мы обработаем ваш заказ как можно скорее',
-            },
-            shop__instructions_5: {
+            shop__info_1: {
                 description: 'todo',
                 value: 'Вы можете покупать донат за валюту Rover Chat (Lunites)',
             },
-            shop__p_s: {
+            shop__info_2: {
+                description: 'todo',
+                value: 'Оплата производится следующими способами: по номеру телефона, PayPal, Revolut, USDT (TRC20)',
+            },
+            shop__info_3: {
                 description: 'todo',
                 value: 'Отзывы о покупках можно посмотреть здесь',
             },
             shop__how_it_works: {
                 description: 'todo',
                 value: 'Как это работает?',
+            },
+            shop__add_to_cart: {
+                description: 'todo',
+                value: 'В корзину',
+            },
+            shop__order: {
+                description: 'todo',
+                value: 'Заказ',
+            },
+            shop__order__subtitle1: {
+                description: 'todo',
+                value: 'Пожалуйста, проверьте и завершите заказ',
+            },
+            shop__order__subtitle2: {
+                description: 'todo',
+                value: 'Выберете валюту в которой вы хотите провести оплату',
+            },
+            shop__order__total: {
+                description: 'todo',
+                value: 'Итого',
             },
         },
     }
@@ -440,7 +504,12 @@ async function main() {
             key: t.key,
             language: t.language,
         })
-        if (found) continue
+        if (found) {
+            await TranslationModel.getCollection().updateOne(
+                { _id: found._id },
+                { $set: { value: t.value } },
+            )
+        }
 
         filtered.push(t)
     }

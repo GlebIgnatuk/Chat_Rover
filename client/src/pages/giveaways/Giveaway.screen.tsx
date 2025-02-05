@@ -249,7 +249,7 @@ export const GiveawayScreen = () => {
             <SubscribeChannelModal
                 open={isShowingSubscribeModal}
                 channelLink="https://t.me/wuthering_waves_en"
-                text="Для того чтобы участвовать в розыгрыше вы должны быть подписаны на наш канал"
+                text="Для того, чтобы участвовать в розыгрыше вы должны быть подписаны на наш канал"
                 onClose={() => setIsShowingSubscribeModal(false)}
             />
         </>

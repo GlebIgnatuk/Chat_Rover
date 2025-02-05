@@ -91,7 +91,7 @@ const giveawayScheduler = async () => {
                     .link('Rover Chat', `tg://resolve?domain=rover_chat_bot&appname=rover_chat`)
                     .plain(`🎉`)
                     .br(2)
-                    .plain('Для того чтобы забрать приз, пожалуйста напишите нам на этот аккаунт ')
+                    .plain('Чтобы забрать приз, пожалуйста, напишите нам на этот аккаунт ')
                     .link('@WuWa007', 'https://t.me/WuWa007')
                     .plain('. Спасибо!')
                     .build()

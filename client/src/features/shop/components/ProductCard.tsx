@@ -5,6 +5,7 @@ import { Price } from './Price'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartPlus, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Fragment } from 'react/jsx-runtime'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 interface Props {
     product: IShopProduct
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export const ProductCard = ({ product, selectedCount, onAddToCart, onRemoveFromCart }: Props) => {
+    const localize = useLocalize()
+
     return (
         <div
             className={cn('shadow-sm rounded-lg overflow-hidden bg-stone-800/80', {
@@ -55,7 +58,9 @@ export const ProductCard = ({ product, selectedCount, onAddToCart, onRemoveFromC
                         onClick={onAddToCart}
                     >
                         <FontAwesomeIcon icon={faCartPlus} className="w-5 h-5" />
-                        <span className="font-semibold leading-none">Add to cart</span>
+                        <span className="font-semibold leading-none">
+                            {localize('shop__add_to_cart')}
+                        </span>
                     </button>
                 ) : (
                     <>

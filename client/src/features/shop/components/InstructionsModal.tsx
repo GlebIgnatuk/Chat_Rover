@@ -6,37 +6,48 @@ export const InstructionsModal = ({ open, onClose }: { open: boolean; onClose: (
 
     return (
         <Modal open={open}>
-            <div className="h-full flex flex-col items-center justify-center bg-stone-800/70">
-                <div className="p-2 text-primary-700 font-semibold text-2xl">Instructions</div>
-                <ol className="list-decimal text-white text-md w-4/5">
-                    <li>{localize('shop__instructions_1')}</li>
-                    <li>{localize('shop__instructions_2')}</li>
-                    <li>{localize('shop__instructions_5')}</li>
-                    <li>
-                        {localize('shop__instructions_3')}{' '}
-                        <a
-                            href="https://t.me/WuWa007"
-                            className="text-blue-500 underline underline-offset-2"
-                        >
-                            @WuWa007
-                        </a>
-                    </li>
-                    <li>{localize('shop__instructions_4')}</li>
-                </ol>
-                <div className="text-white mt-6 px-2 text-center">
-                    P.S. {localize('shop__p_s')}{' '}
-                    <a
-                        href="https://t.me/Donation_Changli"
-                        className="text-blue-500 underline underline-offset-2"
-                    >
-                        @Donation_Changli
-                    </a>
+            <div className="h-full grid grid-rows-[minmax(0,1fr),max-content] bg-stone-800/70">
+                <div className="overflow-y-auto">
+                    <div className="p-2 text-primary-700 font-semibold text-2xl w-full">
+                        {localize('general__instructions')}
+                    </div>
+                    <ol className="pl-8 pr-2 list-decimal text-white text-md">
+                        <li>{localize('shop__instructions_1')}</li>
+                        <li>{localize('shop__instructions_2')}</li>
+                        <li>
+                            {localize('shop__instructions_3')}{' '}
+                            <a
+                                href="https://t.me/WuWa007"
+                                className="text-blue-500 underline underline-offset-2"
+                            >
+                                @WuWa007
+                            </a>
+                        </li>
+                    </ol>
+
+                    <div className="p-2 text-primary-700 font-semibold text-2xl w-full mt-4">
+                        {localize('general__information')}
+                    </div>
+                    <ol className="pl-8 pr-2 list-disc text-white text-md">
+                        <li>{localize('shop__info_1')}</li>
+                        <li>{localize('shop__info_2')}</li>
+                        <li>
+                            {localize('shop__info_3')}{' '}
+                            <a
+                                href="https://t.me/Donation_Changli"
+                                className="text-blue-500 underline underline-offset-2"
+                            >
+                                @Donation_Changli
+                            </a>
+                        </li>
+                    </ol>
                 </div>
+
                 <button
-                    className="text-stone-800 bg-primary-700 px-6 py-2 rounded-full mt-6"
+                    className="text-stone-800 bg-primary-700 px-6 py-2 rounded-full mb-2"
                     onClick={onClose}
                 >
-                    OK
+                    {localize('general__continue')}
                 </button>
             </div>
         </Modal>

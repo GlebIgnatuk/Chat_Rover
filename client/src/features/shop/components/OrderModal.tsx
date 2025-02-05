@@ -7,6 +7,7 @@ import { Price } from './Price'
 import { cn } from 'tailwind-cn'
 import { ICurrency, IShopProduct } from '@/store/types'
 import { Fragment } from 'react/jsx-runtime'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 interface Props {
     open: boolean
@@ -139,21 +140,21 @@ export const OrderModal = ({
     onCancel,
     onConfirm,
 }: Props) => {
+    const localize = useLocalize()
+
     return (
         <Modal open={open}>
             <div className="bg-stone-800/90 h-full p-2 grid grid-rows-[max-content,max-content,minmax(0,1fr),max-content]">
                 <div className="flex justify-between items-center">
-                    <div className="text-xl text-primary-700">Order</div>
+                    <div className="text-xl text-primary-700">{localize('shop__order')}</div>
                     <button className="bg-primary-700 w-6 h-6 rounded" onClick={onClose}>
                         <FontAwesomeIcon icon={faX} className="text-stone-800 w-4 h-4" />
                     </button>
                 </div>
 
                 <div className="mt-3 border-b-2 border-primary-700 pb-2">
-                    <p className="text-gray-300">Please confirm and submit your order.</p>
-                    <p className="text-sm text-gray-400">
-                        Select the currency you prefer to pay with.
-                    </p>
+                    <p className="text-gray-300">{localize('shop__order__subtitle1')}.</p>
+                    <p className="text-sm text-gray-400">{localize('shop__order__subtitle2')}.</p>
                 </div>
 
                 <div className="divide-y divide-primary-700/50 overflow-y-auto pt-2">
@@ -175,7 +176,9 @@ export const OrderModal = ({
 
                 <div className="border-t-2 border-primary-700 pt-3">
                     <div className="flex justify-between items-end">
-                        <div className="text-3xl text-white font-semibold">Total:</div>
+                        <div className="text-3xl text-white font-semibold">
+                            {localize('shop__order__total')}:
+                        </div>
                         <div className="text-white text-xl">
                             {cart.totalPrice === 0 ? (
                                 'FREE'
@@ -193,7 +196,7 @@ export const OrderModal = ({
                             className="bg-red-700 text-white rounded-full py-1 px-6 disabled:bg-gray-500"
                             onClick={onCancel}
                         >
-                            Cancel
+                            {localize('general__cancel')}
                         </button>
 
                         <button
@@ -201,7 +204,7 @@ export const OrderModal = ({
                             className="bg-primary-700 text-stone-800 rounded-full py-2 font-semibold disabled:bg-gray-500"
                             onClick={onConfirm}
                         >
-                            Confirm
+                            {localize('general__continue')}
                         </button>
                     </div>
                 </div>
