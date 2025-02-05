@@ -1,13 +1,16 @@
-export type APIResponse<T> =
-    | {
-          success: true
-          data: T
-      }
-    | {
-          success: false
-          error: string
-          details?: { message: string; path: string[]; type: string }[]
-      }
+export type APISuccessResponse<T = unknown> = {
+    success: true
+    data: T
+}
+
+export type APIErrorResponse = {
+    success: false
+    error: string
+    code?: string
+    details?: { message: string; path: string[]; type: string }[]
+}
+
+export type APIResponse<T = unknown> = APISuccessResponse<T> | APIErrorResponse
 
 export const api = async <T = unknown>(
     path: string,

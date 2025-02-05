@@ -1,7 +1,9 @@
+import { SubscribeChannelModal } from '@/components/SubscribeChannelModal'
 import { buildImageUrl } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
 import { IIdentity } from '@/context/auth/AuthContext'
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar'
+import { useMutation } from '@/hooks/common/useMutation'
 import { api } from '@/services/api'
 import { IListingExpressGiveaway } from '@/store/types'
 import { useEffect, useState } from 'react'
@@ -39,41 +41,34 @@ const formatClock = (timeLeftInS: number, reachedMaxParticipants: boolean) => {
 const Giveaway = ({
     giveaway,
     onParticipateSuccess,
+    onRequireSubscription,
 }: {
     giveaway: IListingExpressGiveaway
     onParticipateSuccess: () => Promise<void>
+    onRequireSubscription: () => void
 }) => {
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [error, setError] = useState('')
     const [clock, setClock] = useState(0)
     void clock
 
-    const onParticipate = async () => {
-        try {
-            setIsSubmitting(true)
-            setError('')
-            const response = await api(`/expressGiveaways/${giveaway._id}/participants`, {
+    const participate = useMutation({
+        fn: async () => {
+            return api(`/expressGiveaways/${giveaway._id}/participants`, {
                 method: 'POST',
             })
-            if (response.success) {
-                try {
-                    await onParticipateSuccess()
-                } catch (e) {
-                    console.error(e)
-                }
-            } else {
-                setError(response.error)
+        },
+        onError: (err) => {
+            if (typeof err !== 'object') return err
+
+            if (err.code && err.code === 'NOT_SUBSCRIBED') {
+                return onRequireSubscription()
             }
-        } catch (e) {
-            console.error(e)
-            setError('Something went wrong')
-        } finally {
-            setIsSubmitting(false)
-            setTimeout(() => {
-                setError('')
-            }, 3000)
-        }
-    }
+
+            return err.error
+        },
+        onSuccess: () => {
+            onParticipateSuccess()
+        },
+    })
 
     const timeLeftInSeconds = calculateTimeLeftInSeconds(
         giveaway.startedAt ? new Date(giveaway.startedAt) : null,
@@ -171,9 +166,9 @@ const Giveaway = ({
                             giveaway.finishedAt !== null ||
                             giveaway.isParticipating ||
                             timeLeftInSeconds <= 60 ||
-                            isSubmitting
+                            participate.isLoading
                         }
-                        onClick={() => onParticipate()}
+                        onClick={participate.send}
                         className="mb-4 mt-6 self-center group disabled:cursor-not-allowed rounded-md overflow-hidden font-semibold flex items-center justify-center"
                     >
                         <span className="text-sm bg-primary-700 text-stone-800 px-5 py-2 group-disabled:bg-gray-400">
@@ -195,10 +190,10 @@ const Giveaway = ({
 
                 <div
                     className={cn('italic text-red-500 text-center h-8 invisible', {
-                        visible: error,
+                        visible: participate.error,
                     })}
                 >
-                    {error}
+                    {participate.error}
                 </div>
             </div>
         </div>
@@ -206,6 +201,7 @@ const Giveaway = ({
 }
 
 export const GiveawayScreen = () => {
+    const [isShowingSubscribeModal, setIsShowingSubscribeModal] = useState(false)
     const { setUser } = useStore((state) => state.identity)
     const { items, setItems } = useStore((state) => state.expressGiveaways)
 
@@ -239,10 +235,23 @@ export const GiveawayScreen = () => {
     }, [])
 
     return (
-        <div className="h-full overflow-auto space-y-2 p-1 py-2">
-            {items.map((item) => (
-                <Giveaway giveaway={item} onParticipateSuccess={onParticipateSuccess} />
-            ))}
-        </div>
+        <>
+            <div className="h-full overflow-auto space-y-2 p-1 py-2">
+                {items.map((item) => (
+                    <Giveaway
+                        giveaway={item}
+                        onParticipateSuccess={onParticipateSuccess}
+                        onRequireSubscription={() => setIsShowingSubscribeModal(true)}
+                    />
+                ))}
+            </div>
+
+            <SubscribeChannelModal
+                open={isShowingSubscribeModal}
+                channelLink="https://t.me/wuthering_waves_en"
+                text="Для того чтобы участвовать в розыгрыше вы должны быть подписаны на наш канал"
+                onClose={() => setIsShowingSubscribeModal(false)}
+            />
+        </>
     )
 }

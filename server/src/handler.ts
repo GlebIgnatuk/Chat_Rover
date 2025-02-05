@@ -29,6 +29,7 @@ import { BalancePromocodeRepository } from './repositories/impl/balancePromocode
 import { BalancePromocodeActivationRepository } from './repositories/impl/balancePromocodeActivation'
 import { ShopProductRepository } from './repositories/impl/shopProduct'
 import { ShopOrderRepository } from './repositories/impl/shopOrder'
+import { TelegramApi } from './services/telegram'
 
 const app = express()
 let server: http.Server | https.Server
@@ -86,6 +87,7 @@ const handler = async () => {
             globalChat,
         ),
         online: new OnlineService(wss, repositories.user),
+        telegramApi: new TelegramApi(config.TELEGRAM_BOT_TOKEN),
     }
 
     // API routes

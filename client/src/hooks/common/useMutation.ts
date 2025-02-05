@@ -1,10 +1,10 @@
-import { APIResponse } from '@/services/api'
+import { APIErrorResponse, APIResponse } from '@/services/api'
 import { useState } from 'react'
 
 interface UseMutationProps<T, A extends unknown[]> {
     fn: (...args: A) => Promise<APIResponse<T>>
     onSuccess?: (data: T, ...args: A) => void
-    onError?: (error: string, ...args: A) => void
+    onError?: (error: APIErrorResponse | string, ...args: A) => string | void
     errorTimerMs?: number
 }
 
@@ -28,18 +28,23 @@ export const useMutation = <T = void, A extends unknown[] = []>({
                 setData(response.data)
                 onSuccess?.(response.data, ...args)
             } else {
-                onError?.(response.error, ...args)
-                setError(response.error)
+                const message = onError ? onError?.(response, ...args) : response.error
+                if (message) {
+                    setError(message)
+                }
                 if (errorTimerMs !== undefined) {
                     setTimeout(() => setError(''), errorTimerMs)
                 }
             }
 
             setIsLoading(false)
-        } catch {
-            const error = 'Something went wrong'
-            onError?.(error, ...args)
-            setError(error)
+        } catch (e) {
+            const message = onError
+                ? onError?.((e as Error).message, ...args)
+                : 'Something went wrong'
+            if (message) {
+                setError(message)
+            }
             if (errorTimerMs !== undefined) {
                 setTimeout(() => setError(''), errorTimerMs)
             }

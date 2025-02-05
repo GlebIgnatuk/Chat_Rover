@@ -112,3 +112,102 @@ export class MarkupV2 {
         return this.text
     }
 }
+
+export class TelegramServerError extends Error {
+    code: string
+
+    constructor(code: string, message: string) {
+        super(message)
+
+        this.code = code
+    }
+}
+
+export class TelegramClientError extends Error {
+    code: string
+
+    constructor(code: string, message: string, stack?: string) {
+        super(message)
+
+        this.code = code
+        this.stack = stack
+    }
+}
+
+export type TelegramSuccessResponse<T = any> = { ok: true; result: T }
+export type TelegramErrorResponse = { ok: false; error_code: number; description: string }
+
+export type TelegramResponse<T = any> = TelegramSuccessResponse<T> | TelegramErrorResponse
+
+export class TelegramApi {
+    private readonly baseUrl: string
+    private readonly apiKey: string
+
+    constructor(apiKey: string) {
+        this.apiKey = apiKey
+        this.baseUrl = 'https://api.telegram.org'
+    }
+
+    async _request<D = any>(path: string, init?: RequestInit): Promise<TelegramResponse<D>> {
+        let response: Response
+        try {
+            response = await fetch(`${this.baseUrl}/bot${this.apiKey}${path}`, {
+                ...init,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...init?.headers,
+                },
+            })
+        } catch (e) {
+            throw new TelegramClientError(
+                '',
+                `Failed to send request: ${(e as Error).message}`,
+                (e as Error).stack,
+            )
+        }
+
+        if (!response.ok) {
+            try {
+                return (await response.json()) as TelegramErrorResponse
+            } catch {
+                const text = await response.text()
+                throw new TelegramServerError(
+                    '',
+                    `Request failed with code ${response.status}: ${text}`,
+                )
+            }
+        }
+
+        let json: any
+        try {
+            json = await response.json()
+        } catch (e) {
+            throw new TelegramClientError(
+                '',
+                `Failed to parse json: ${(e as Error).message}`,
+                (e as Error).stack,
+            )
+        }
+
+        return json as TelegramResponse<D>
+    }
+
+    async getChatMember(chatId: string | number, userId: string | number) {
+        const response = await this._request<{
+            user: { id: number; is_bot: boolean; first_name: string; username?: string }
+            status: string
+        }>('/getChatMember', {
+            method: 'POST',
+            body: JSON.stringify({
+                chat_id: chatId,
+                user_id: userId,
+            }),
+        })
+
+        if (response.ok !== true) {
+            return null
+        }
+
+        return response.result
+    }
+}

@@ -1,18 +1,7 @@
 import { RepositoryError } from '@/repositories/types'
 import { IAuthorizedRequestHandler } from '../types'
 import { NotificationService } from '@/services/notification'
-
-// export const list: IAuthorizedRequestHandler = async (req, res, next) => {
-//     try {
-//         const { repositories } = res.locals
-
-//         const giveaways = await repositories.expressGiveaway.list()
-
-//         res.json({ success: true, data: giveaways })
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+import { config } from '@/config/config'
 
 export const listInListing: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
@@ -117,7 +106,20 @@ export const create: IAuthorizedRequestHandler = async (req, res, next) => {
 
 export const addParticipant: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
-        const { identity, repositories } = res.locals
+        const { identity, repositories, services } = res.locals
+
+        const externalUser = await services.telegramApi.getChatMember(
+            config.TELEGRAM_CHANNEL_ID,
+            identity.user.id,
+        )
+
+        if (!externalUser || ['left', 'kicked'].includes(externalUser.status)) {
+            return res.json({
+                success: false,
+                error: 'Must be subscribed to the channel',
+                code: 'NOT_SUBSCRIBED',
+            })
+        }
 
         const user = await repositories.user.getByExternalId(identity.user.id)
         if (!user) {
