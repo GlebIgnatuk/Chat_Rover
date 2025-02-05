@@ -4,9 +4,12 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { cn } from 'tailwind-cn'
 import { buildAppPath } from '@/config/path'
 import { InstructionsModal } from '@/features/shop/components/InstructionsModal'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 
 export const ShopLayout = () => {
     const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false)
+
+    const localize = useLocalize()
 
     return (
         <div className="relative h-full grid grid-rows-[max-content,minmax(0,1fr)]">
@@ -15,7 +18,7 @@ export const ShopLayout = () => {
                     className="px-4 py-2 text-center font-semibold"
                     onClick={() => setIsInstructionsModalOpen(true)}
                 >
-                    Помощь
+                    {localize('general__help')}
                 </button>
                 <NavLink
                     className={({ isActive }) =>
@@ -26,7 +29,7 @@ export const ShopLayout = () => {
                     to={buildAppPath('/shop')}
                     end
                 >
-                    Магазин
+                    {localize('nav__shop')}
                 </NavLink>
                 <NavLink
                     className={({ isActive }) =>
@@ -36,7 +39,7 @@ export const ShopLayout = () => {
                     }
                     to={buildAppPath('/shop/orders')}
                 >
-                    Мои заказы
+                    {localize('shop__my_orders')}
                 </NavLink>
             </div>
 
