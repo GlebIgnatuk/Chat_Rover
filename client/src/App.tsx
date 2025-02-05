@@ -39,6 +39,9 @@ import { AdminRoute } from './context/auth/AdminRoute'
 import { ShopScreen } from './pages/shop/Shop.screen'
 import { AdminOrdersScreen } from './pages/admin/orders/AdminOrders.screen'
 import { AdminOrderScreen } from './pages/admin/orders/AdminOrder.screen'
+import { OrdersScreen } from './pages/shop/Orders.screen'
+import { OrderScreen } from './pages/shop/Order.screen'
+import { ShopLayout } from './pages/shop/Shop.layout'
 
 const router = createBrowserRouter([
     {
@@ -170,7 +173,21 @@ const router = createBrowserRouter([
                                     },
                                     {
                                         path: 'shop',
-                                        element: <ShopScreen />,
+                                        element: <ShopLayout />,
+                                        children: [
+                                            {
+                                                path: '',
+                                                element: <ShopScreen />,
+                                            },
+                                            {
+                                                path: 'orders',
+                                                element: <OrdersScreen />,
+                                            },
+                                            {
+                                                path: 'orders/:id',
+                                                element: <OrderScreen />,
+                                            },
+                                        ],
                                     },
                                     {
                                         path: APP_ADMIN_PATH,

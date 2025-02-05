@@ -38,7 +38,7 @@ const OrdersList = ({
     return orders.map((order) => (
         <Card
             className={cn(
-                'grid gap-2 grid-cols-[max-content,minmax(0,1fr),max-content,max-content] p-2 items-center',
+                'grid gap-2 grid-cols-[max-content,minmax(0,1fr),max-content] p-2 items-center',
                 {
                     'bg-green-100/20': order.status === 'pending',
                 },
@@ -51,26 +51,27 @@ const OrdersList = ({
                     userId={order.user._id}
                     className="underline underline-offset-4 text-primary-700"
                 />
-                <div>
-                    {order.processedCount} / {order.totalCount}
+                <div className="flex gap-2 items-center">
+                    <span>
+                        {order.processedCount} / {order.totalCount}
+                    </span>
+                    {Object.keys(order.price)
+                        .sort()
+                        .map((currency, idx, arr) => (
+                            <Fragment key={currency}>
+                                <div className="flex items-center px-1">
+                                    <Price
+                                        className="text-xs"
+                                        currency={currency as ICurrency}
+                                        value={order.price[currency as ICurrency]!}
+                                    />
+                                </div>
+                                {idx !== arr.length - 1 && <div>/</div>}
+                            </Fragment>
+                        ))}
                 </div>
             </div>
-            <div className="flex items-center">
-                {Object.keys(order.price)
-                    .sort()
-                    .map((currency, idx, arr) => (
-                        <Fragment key={currency}>
-                            <div className="flex items-center px-1">
-                                <Price
-                                    className="text-xs"
-                                    currency={currency as ICurrency}
-                                    value={order.price[currency as ICurrency]!}
-                                />
-                            </div>
-                            {idx !== arr.length - 1 && <div>/</div>}
-                        </Fragment>
-                    ))}
-            </div>
+
             <div className="flex flex-col gap-2 justify-between">
                 <select
                     onChange={(e) =>

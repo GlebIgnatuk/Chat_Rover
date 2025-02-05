@@ -1,4 +1,4 @@
-import { IShopOrderStatus, SHOP_ORDER_STATUSES } from '@/models/shopOrder'
+import { IShopOrderDTO, IShopOrderStatus, SHOP_ORDER_STATUSES } from '@/models/shopOrder'
 import { IAuthorizedRequestHandler } from '../types'
 import { IShopOrderAdminDTO } from '@/repositories/shopOrder'
 import { NotificationService } from '@/services/notification'
@@ -96,6 +96,29 @@ export const changeStatus: IAuthorizedRequestHandler = async (req, res, next) =>
     try {
         const { repositories } = res.locals
 
+        let order: IShopOrderDTO | null
+        switch (req.body.status) {
+            case 'cancelled':
+                {
+                    order = await repositories.shopOrder.cancel(req.params.id)
+                }
+                break
+
+            default: {
+                return res.status(400).json({ success: false, error: 'Invalid status' })
+            }
+        }
+
+        res.json({ success: true, data: order })
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const changeStatusAdmin: IAuthorizedRequestHandler = async (req, res, next) => {
+    try {
+        const { repositories } = res.locals
+
         let order: IShopOrderAdminDTO | null
         switch (req.body.status) {
             case 'pending':
@@ -112,7 +135,7 @@ export const changeStatus: IAuthorizedRequestHandler = async (req, res, next) =>
 
             case 'cancelled':
                 {
-                    order = await repositories.shopOrder.cancel(req.params.id)
+                    order = await repositories.shopOrder.cancelAdmin(req.params.id)
                 }
                 break
 

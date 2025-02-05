@@ -182,6 +182,15 @@ export type IShopOrder = {
     status: IShopOrderStatus
 }
 
+export type IShopOrderListItem = {
+    _id: string
+    status: IShopOrderStatus
+    processedCount: number
+    totalCount: number
+    price: Record<ICurrency, number>
+    createdAt: string
+}
+
 export type IShopOrderAdminListItem = {
     _id: string
     status: IShopOrderStatus
@@ -189,6 +198,7 @@ export type IShopOrderAdminListItem = {
     processedCount: number
     totalCount: number
     price: Record<ICurrency, number>
+    createdAt: string
 }
 
 export type IShopOrderAdmin = {

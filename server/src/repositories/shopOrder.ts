@@ -9,6 +9,7 @@ export type IShopOrderListItemDTO = mongo.WithId<{
     processedCount: number
     totalCount: number
     price: Record<IShopCurrency, number>
+    createdAt: string
 }>
 
 export type IShopOrderAdminListItemDTO = mongo.WithId<{
@@ -17,6 +18,7 @@ export type IShopOrderAdminListItemDTO = mongo.WithId<{
     processedCount: number
     totalCount: number
     price: Record<IShopCurrency, number>
+    createdAt: string
 }>
 
 export type IShopOrderAdminDTO = Omit<IShopOrderDTO, 'userId'> & {
@@ -37,7 +39,8 @@ export interface IShopOrderRepository {
     list(userId: ID, status?: IShopOrderStatus): Promise<IShopOrderListItemDTO[]>
     listAdmin(status?: IShopOrderStatus): Promise<IShopOrderAdminListItemDTO[]>
     create(payload: IShopOrderCreate): Promise<IShopOrderDTO>
-    cancel(id: ID): Promise<IShopOrderAdminDTO | null>
+    cancel(id: ID): Promise<IShopOrderDTO | null>
+    cancelAdmin(id: ID): Promise<IShopOrderAdminDTO | null>
     // @todo
     // refund(id: ID): Promise<IShopOrderDTO | null>
     markAsProcessed(id: ID): Promise<IShopOrderAdminDTO | null>

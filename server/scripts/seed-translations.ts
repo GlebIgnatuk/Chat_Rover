@@ -145,6 +145,10 @@ async function main() {
                 description: 'todo',
                 value: 'Information',
             },
+            general__details: {
+                description: 'todo',
+                value: 'Details',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Filters',
@@ -244,6 +248,18 @@ async function main() {
             shop__order__total: {
                 description: 'todo',
                 value: 'Total',
+            },
+            shop__order__processed: {
+                description: 'todo',
+                value: 'Processed',
+            },
+            shop__order__cancelled: {
+                description: 'todo',
+                value: 'Cancelled',
+            },
+            shop__order__pending: {
+                description: 'todo',
+                value: 'Pending',
             },
         },
         ru: {
@@ -379,6 +395,10 @@ async function main() {
                 description: 'todo',
                 value: 'Информация',
             },
+            general__details: {
+                description: 'todo',
+                value: 'Детали',
+            },
             search__filters: {
                 description: 'todo',
                 value: 'Фильтры',
@@ -478,6 +498,18 @@ async function main() {
             shop__order__total: {
                 description: 'todo',
                 value: 'Итого',
+            },
+            shop__order__processed: {
+                description: 'todo',
+                value: 'Обработан',
+            },
+            shop__order__cancelled: {
+                description: 'todo',
+                value: 'Отменён',
+            },
+            shop__order__pending: {
+                description: 'todo',
+                value: 'Обрабатывается',
             },
         },
     }

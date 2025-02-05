@@ -141,6 +141,7 @@ export class ShopOrderRepository implements IShopOrderRepository {
                         processedCount: 1,
                         totalCount: 1,
                         products: 1,
+                        createdAt: 1,
                     },
                 },
             ])
@@ -212,6 +213,7 @@ export class ShopOrderRepository implements IShopOrderRepository {
                         processedCount: 1,
                         totalCount: 1,
                         products: 1,
+                        createdAt: 1,
                     },
                 },
             ])
@@ -230,7 +232,25 @@ export class ShopOrderRepository implements IShopOrderRepository {
         })
     }
 
-    async cancel(id: ID): Promise<IShopOrderAdminDTO | null> {
+    async cancel(id: ID): Promise<IShopOrderDTO | null> {
+        await ShopOrderModel.getCollection().findOneAndUpdate(
+            {
+                _id: new Types.ObjectId(id),
+            },
+            {
+                $set: {
+                    status: 'cancelled',
+                },
+            },
+            {
+                returnDocument: 'after',
+            },
+        )
+
+        return this.get(id)
+    }
+
+    async cancelAdmin(id: ID): Promise<IShopOrderAdminDTO | null> {
         await ShopOrderModel.getCollection().findOneAndUpdate(
             {
                 _id: new Types.ObjectId(id),
