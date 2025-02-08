@@ -573,6 +573,7 @@ async function main() {
                 { _id: found._id },
                 { $set: { value: t.value } },
             )
+            continue
         }
 
         filtered.push(t)
