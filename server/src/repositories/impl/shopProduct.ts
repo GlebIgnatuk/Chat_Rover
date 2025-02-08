@@ -36,6 +36,7 @@ export class ShopProductRepository implements IShopProductRepository {
             category: payload.category,
             photoPath: payload.photoPath,
             prices: payload.prices,
+            gameId: payload.gameId ? new Types.ObjectId(payload.gameId) : null,
             createdAt: now,
             updatedAt: now,
         })

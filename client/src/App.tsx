@@ -42,6 +42,7 @@ import { AdminOrderScreen } from './pages/admin/orders/AdminOrder.screen'
 import { OrdersScreen } from './pages/shop/Orders.screen'
 import { OrderScreen } from './pages/shop/Order.screen'
 import { ShopLayout } from './pages/shop/Shop.layout'
+import { GameShopScreen } from './pages/shop/GameShop.screen'
 
 const router = createBrowserRouter([
     {
@@ -178,6 +179,10 @@ const router = createBrowserRouter([
                                             {
                                                 path: '',
                                                 element: <ShopScreen />,
+                                            },
+                                            {
+                                                path: ':game',
+                                                element: <GameShopScreen />,
                                             },
                                             {
                                                 path: 'orders',

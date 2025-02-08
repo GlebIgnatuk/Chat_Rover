@@ -269,6 +269,14 @@ async function main() {
                 description: 'todo',
                 value: 'My orders',
             },
+            shop__by_game: {
+                description: 'todo',
+                value: 'By game',
+            },
+            shop__products: {
+                description: 'todo',
+                value: 'Products',
+            },
         },
         ru: {
             auth__greeting: {
@@ -526,6 +534,14 @@ async function main() {
             shop__my_orders: {
                 description: 'todo',
                 value: 'Мои заказы',
+            },
+            shop__by_game: {
+                description: 'todo',
+                value: 'По игре',
+            },
+            shop__products: {
+                description: 'todo',
+                value: 'Товаров',
             },
         },
     }

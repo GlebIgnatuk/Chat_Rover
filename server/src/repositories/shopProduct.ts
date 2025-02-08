@@ -7,6 +7,7 @@ export type IShopProductCreate = {
     name: string
     photoPath: string
     category: string
+    gameId?: ID
     prices: {
         currency: IShopCurrency
         price: number

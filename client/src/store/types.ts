@@ -154,7 +154,7 @@ export type IShopProduct = {
     name: string
     photoPath: string
     category: string
-
+    gameId: string | null
     prices: {
         currency: ICurrency
         price: number
@@ -215,4 +215,11 @@ export type IShopOrderAdmin = {
         processed: boolean
     }[]
     status: IShopOrderStatus
+}
+
+export type IGame = {
+    _id: string
+    name: string
+    slug: string
+    photoPath: string
 }

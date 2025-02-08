@@ -13,6 +13,7 @@ import { createIdentitySlice } from './slices/identity'
 import { createWuwaCharactersSlice } from './slices/wuwaCharacters'
 import {
     IAppConfig,
+    IGame,
     IGlobalChatWithMetadata,
     IIntl,
     IListingExpressGiveaway,
@@ -22,6 +23,7 @@ import {
 } from './types'
 import { createExpressGiveawaysSlice } from './slices/expressGiveaways'
 import { createShopSlice } from './slices/shop'
+import { createGamesSlice } from './slices/game'
 
 export interface CreateStoreOptions {
     identity: IIdentity
@@ -29,6 +31,7 @@ export interface CreateStoreOptions {
     globalChats: IGlobalChatWithMetadata[]
     expressGiveaways: IListingExpressGiveaway[]
     products: IShopProduct[]
+    games: IGame[]
 }
 
 export const createStore = (options: CreateStoreOptions) =>
@@ -42,6 +45,7 @@ export const createStore = (options: CreateStoreOptions) =>
         ...createIdentitySlice(options.identity)(...a),
         ...createExpressGiveawaysSlice(options.expressGiveaways)(...a),
         ...createShopSlice(options.products)(...a),
+        ...createGamesSlice(options.games)(...a),
     }))
 
 export interface CreatePublicStoreOptions {

@@ -27,7 +27,7 @@ export const ProductCard = ({ product, selectedCount, onAddToCart, onRemoveFromC
                 <img
                     src={buildImageUrl(product.photoPath)}
                     alt={product.name}
-                    className="aspect-square object-contain object-center w-full pt-8 pb-3"
+                    className="aspect-square object-contain object-center w-full pt-14 pb-3"
                 />
                 <div className="absolute left-1 top-1 font-semibold px-2 pb-2">{product.name}</div>
                 {selectedCount !== 0 && (

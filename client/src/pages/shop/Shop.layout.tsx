@@ -13,7 +13,7 @@ export const ShopLayout = () => {
 
     return (
         <div className="relative h-full grid grid-rows-[max-content,minmax(0,1fr)]">
-            <div className="grid grid-cols-[max-content,1fr,1fr] border-b border-primary-700 bg-stone-800/90">
+            <div className="grid grid-cols-[max-content,1fr,1fr] border-b border-primary-700 bg-stone-800/90 divide-x divide-primary-700">
                 <button
                     className="px-4 py-2 text-center font-semibold"
                     onClick={() => setIsInstructionsModalOpen(true)}

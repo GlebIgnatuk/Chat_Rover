@@ -1,6 +1,7 @@
 import { ILoading } from './common'
 import {
     IAppConfig,
+    IGame,
     IGlobalChatWithMetadata,
     IIntl,
     IListingExpressGiveaway,
@@ -164,6 +165,19 @@ export type IExpressGiveawaysState = {
     }
 }
 
+export type IShopState = {
+    products: {
+        items: Record<string, IShopProduct>
+    }
+}
+
+export type IGamesState = {
+    games: {
+        // slug to game
+        items: Record<string, IGame>
+    }
+}
+
 export type IState = IChatsState &
     IGlobalChatsState &
     IP2PState &
@@ -172,7 +186,8 @@ export type IState = IChatsState &
     ICommunityState &
     IIdentityState &
     IExpressGiveawaysState &
-    IShopState
+    IShopState &
+    IGamesState
 
 export type IAppConfigState = {
     appConfig: {
@@ -194,12 +209,6 @@ export type ISettingsState = {
 export type IWuwaCharactersState = {
     wuwaCharacters: {
         items: Record<string, IWuwaCharacter>
-    }
-}
-
-export type IShopState = {
-    products: {
-        items: Record<string, IShopProduct>
     }
 }
 

@@ -13,6 +13,7 @@ import { IExpressGiveawayRepository } from './expressGiveaway'
 import { IBalancePromocodeRepository } from './balancePromocode'
 import { IShopProductRepository } from './shopProduct'
 import { IShopOrderRepository } from './shopOrder'
+import { IGameRepository } from './game'
 
 export interface IRepositories {
     balancePromocode: IBalancePromocodeRepository
@@ -30,4 +31,5 @@ export interface IRepositories {
     expressGiveaway: IExpressGiveawayRepository
     shopProduct: IShopProductRepository
     shopOrder: IShopOrderRepository
+    game: IGameRepository
 }

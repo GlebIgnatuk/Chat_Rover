@@ -30,6 +30,7 @@ import { BalancePromocodeActivationRepository } from './repositories/impl/balanc
 import { ShopProductRepository } from './repositories/impl/shopProduct'
 import { ShopOrderRepository } from './repositories/impl/shopOrder'
 import { TelegramApi } from './services/telegram'
+import { GameRepository } from './repositories/impl/game'
 
 const app = express()
 let server: http.Server | https.Server
@@ -72,6 +73,7 @@ const handler = async () => {
         giveawayItem: giveawayItemRepo,
         shopProduct: shopProductRepo,
         shopOrder: new ShopOrderRepository(shopProductRepo, userRepo),
+        game: new GameRepository(),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

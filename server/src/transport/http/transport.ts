@@ -14,6 +14,7 @@ import * as ExpressGiveawaysController from './expressGiveaways/expressGiveaways
 import * as TelegramUsersController from './telegramUsers/telegramUsers.controller'
 import * as ShopOrdersController from './shopOrders/shopOrders.controller'
 import * as ShopProductsController from './shopProducts/shopProducts.controller'
+import * as GamesController from './games/games.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -228,6 +229,9 @@ export const setupHttpRouter = (
 
     // Shop Products
     authorized.get('/shopProducts', ShopProductsController.list)
+
+    // Games
+    authorized.get('/games', GamesController.list)
 
     // Giveaway items
     authorized.get('/admin/giveawayItems', isAdmin, GiveawayItemsController.list)

@@ -1,143 +1,51 @@
+import { buildAppPath, buildImageUrl } from '@/config/path'
 import { useStore } from '@/context/app/useStore'
-import { IIdentity } from '@/context/auth/AuthContext'
-import { FloatingCartButton } from '@/features/shop/components/FloatingCartButton'
-import { MultiCategoryList } from '@/features/shop/components/MultiCategoryList'
-import { OrderModal } from '@/features/shop/components/OrderModal'
-import { SingleCategoryList } from '@/features/shop/components/SingleCategoryList'
-import { SuccessOrderModal } from '@/features/shop/components/SuccessOrderModal'
-import { useCart } from '@/features/shop/hooks/useCart'
-import { useMutation } from '@/hooks/common/useMutation'
-import { api } from '@/services/api'
-import { IShopOrder, IShopProduct } from '@/store/types'
-import { useEffect, useMemo, useState } from 'react'
-import { cn } from 'tailwind-cn'
+import { useLocalize } from '@/hooks/intl/useLocalize'
+import { IShopProduct } from '@/store/types'
+import { useMemo } from 'react'
+import { NavLink } from 'react-router-dom'
 
 export const ShopScreen = () => {
-    const productsIndexed = useStore((state) => state.products.items)
-    const products = useMemo(() => Object.values(productsIndexed), [productsIndexed])
+    const games = useStore((state) => state.games.items)
+    const products = useStore((state) => state.products.items)
 
-    const [isCartOpen, setIsCartOpen] = useState(false)
+    const localize = useLocalize()
 
-    const [completedOrder, setCompletedOrder] = useState<IShopOrder | null>(null)
-    const [category, setCategory] = useState<string | null>(null)
-
-    const { user, setUser } = useStore((state) => state.identity)
-    const grouped = products.reduce<Record<string, IShopProduct[]>>((acc, n) => {
-        if (!acc[n.category]) acc[n.category] = []
-        acc[n.category]!.push(n)
-        return acc
-    }, {})
-
-    const categories = [
-        { key: null, label: 'All' },
-        ...Object.keys(grouped)
-            .sort()
-            .map((c) => ({ key: c, label: c })),
-    ]
-
-    const cart = useCart({ products: productsIndexed, userBalance: user.balance })
-
-    const refreshUser = useMutation<IIdentity>({
-        fn: async () => {
-            return api('/users/me')
-        },
-        onSuccess: (identity) => {
-            setUser(identity.user)
-        },
-    })
-
-    const createOrder = useMutation<IShopOrder>({
-        fn: async () => {
-            const body = Object.keys(cart.items)
-                .map((key) => {
-                    const items = cart.items[key]!.map((item) => ({
-                        productId: key,
-                        currency: item.currency,
-                    }))
-
-                    return items
-                })
-                .flat()
-
-            return api('/shopOrders', {
-                method: 'POST',
-                body: JSON.stringify(body),
-            })
-        },
-        onSuccess: (order) => {
-            cart.reset()
-            setIsCartOpen(false)
-            refreshUser.send()
-            setCompletedOrder(order)
-        },
-        errorTimerMs: 3000,
-    })
-
-    useEffect(() => {
-        if (cart.isEmpty) {
-            setIsCartOpen(false)
-        }
-    }, [cart.isEmpty])
+    const productsByGame = useMemo(() => {
+        return Object.values(products).reduce<Record<string, IShopProduct[]>>((acc, n) => {
+            const key = n.gameId || 'other'
+            if (acc[key] === undefined) acc[key] = []
+            acc[key].push(n)
+            return acc
+        }, {})
+    }, [products])
 
     return (
-        <div className="grid grid-rows-[max-content,minmax(0,1fr)]">
-            <div className="grid grid-cols-[minmax(0,1fr)] bg-stone-800">
-                <div className="space-x-2 whitespace-nowrap overflow-x-scroll overflow-y-hidden w-full px-1 py-1 scrollbar-none ">
-                    {categories.map((c) => (
-                        <button
-                            key={c.key}
-                            onClick={() => setCategory(c.key)}
-                            className={cn('text-lg px-4 py-1 rounded-full', {
-                                'text-primary-700': category === c.key,
-                            })}
-                        >
-                            {c.label}
-                        </button>
-                    ))}
-                </div>
+        <div className="grid grid-cols-1 auto-rows-max overflow-y-auto gap-2 py-2">
+            <div className="font-semibold text-2xl text-white bg-gradient-to-r from-primary-700/80 to-transparent px-1 py-1">
+                {localize('shop__by_game')}
             </div>
 
-            <div className="relative">
-                <div className="h-full overflow-y-auto pb-20">
-                    {category ? (
-                        <SingleCategoryList
-                            products={grouped[category]!}
-                            onAddProductToCart={cart.addProduct}
-                            onRemoveProductToCart={cart.removeProduct}
-                            cartItems={cart.items}
-                        />
-                    ) : (
-                        <MultiCategoryList
-                            products={grouped}
-                            onAddProductToCart={cart.addProduct}
-                            onRemoveProductToCart={cart.removeProduct}
-                            cartItems={cart.items}
-                        />
-                    )}
-                </div>
+            {Object.values(games).map((game) => (
+                <NavLink
+                    key={game._id}
+                    to={buildAppPath(`/shop/${game.slug}`)}
+                    className="flex gap-2 bg-stone-800/50 rounded-lg mx-1"
+                >
+                    <img
+                        src={buildImageUrl(game.photoPath)}
+                        alt={game.name}
+                        className="aspect-square object-cover object-center w-20 rounded-lg"
+                    />
 
-                {!cart.isEmpty && <FloatingCartButton onClick={() => setIsCartOpen(true)} />}
-            </div>
-
-            <SuccessOrderModal
-                open={completedOrder !== null}
-                onContinue={() => setCompletedOrder(null)}
-                onShowOrder={() => {}}
-            />
-
-            <OrderModal
-                open={isCartOpen}
-                loading={createOrder.isLoading}
-                error={createOrder.error}
-                cart={cart}
-                products={productsIndexed}
-                onClose={() => setIsCartOpen(false)}
-                onCancel={() => {
-                    cart.reset()
-                    setIsCartOpen(false)
-                }}
-                onConfirm={createOrder.send}
-            />
+                    <div className="pt-2">
+                        <div className="text-primary-700 font-semibold">{game.name}</div>
+                        <div className="text-white lowercase">
+                            {productsByGame[game._id]?.length ?? 0} {localize('shop__products')}
+                        </div>
+                    </div>
+                </NavLink>
+            ))}
         </div>
     )
 }

@@ -14,6 +14,7 @@ import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
 import {
+    IGame,
     IGlobalChatWithMetadata,
     IListingExpressGiveaway,
     ISearchedProfile,
@@ -73,6 +74,15 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         }
     }
 
+    const loadGames = async () => {
+        const response = await api<IGame[]>(`/games`)
+        if (response.success) {
+            return response.data
+        } else {
+            return []
+        }
+    }
+
     const loadShopProducts = async () => {
         const response = await api<IShopProduct[]>(`/shopProducts`)
         if (response.success) {
@@ -87,11 +97,12 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
             () => searchProfiles(),
             () => loadGlobalChats(),
             () => loadExpressGiveaways(),
+            () => loadGames(),
             () => loadShopProducts(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
-            () => new Promise((res) => setTimeout(res, 1000)),
-            () => new Promise((res) => setTimeout(res, 900)),
+            () => new Promise((res) => setTimeout(res, 500)),
+            () => new Promise((res) => setTimeout(res, 500)),
         ],
         onCancel: () => {
             // abortController.current?.abort()
@@ -105,7 +116,8 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        const [searchedProfiles, globalChats, expressGiveaways, shopProducts] = loader.$unwrap()
+        const [searchedProfiles, globalChats, expressGiveaways, games, shopProducts] =
+            loader.$unwrap()
 
         return (
             <StoreProvider
@@ -114,6 +126,7 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
                 globalChats={globalChats}
                 expressGiveaways={expressGiveaways}
                 products={shopProducts}
+                games={games}
             />
         )
     } else {

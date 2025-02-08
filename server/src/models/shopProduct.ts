@@ -1,4 +1,4 @@
-import mongoose, { mongo } from 'mongoose'
+import mongoose, { mongo, Types } from 'mongoose'
 import { IBaseModel } from './base'
 import { IShopCurrency } from '@/config/config'
 
@@ -6,6 +6,7 @@ export interface IShopProductModel extends IBaseModel {
     name: string
     photoPath: string
     category: string
+    gameId: Types.ObjectId | null
     prices: {
         currency: IShopCurrency
         price: number
