@@ -14,6 +14,7 @@ import { IBalancePromocodeRepository } from './balancePromocode'
 import { IShopProductRepository } from './shopProduct'
 import { IShopOrderRepository } from './shopOrder'
 import { IGameRepository } from './game'
+import { ICharacterQuizRepository } from './characterQuiz'
 
 export interface IRepositories {
     balancePromocode: IBalancePromocodeRepository
@@ -32,4 +33,5 @@ export interface IRepositories {
     shopProduct: IShopProductRepository
     shopOrder: IShopOrderRepository
     game: IGameRepository
+    characterQuiz: ICharacterQuizRepository
 }

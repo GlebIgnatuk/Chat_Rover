@@ -15,6 +15,7 @@ import * as TelegramUsersController from './telegramUsers/telegramUsers.controll
 import * as ShopOrdersController from './shopOrders/shopOrders.controller'
 import * as ShopProductsController from './shopProducts/shopProducts.controller'
 import * as GamesController from './games/games.controller'
+import * as CharacterQuizzesController from './characterQuizzes/characterQuizzes.controller'
 import { Router } from 'express'
 import multer, { memoryStorage } from 'multer'
 import {
@@ -272,6 +273,12 @@ export const setupHttpRouter = (
 
     // Telegram users
     authorized.get('/admin/users/:id/telegramUsers', isAdmin, TelegramUsersController.list)
+
+    // Character quizzes
+    authorized.get('/characterQuizzes/today', CharacterQuizzesController.getToday)
+    authorized.get('/characterQuizzes/tomorrow', CharacterQuizzesController.getTomorrow)
+    authorized.post('/characterQuizzes/:id/guesses', CharacterQuizzesController.guess)
+    authorized.get('/characterQuizzes/:id/guesses', CharacterQuizzesController.getGuess)
 
     // Fallback
     router.use('*', (_, res) => res.sendStatus(404))

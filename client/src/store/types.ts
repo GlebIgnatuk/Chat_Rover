@@ -220,3 +220,26 @@ export type IGame = {
     slug: string
     photoPath: string
 }
+
+export type ICharacterQuiz = {
+    _id: string
+    name: string
+    characterId: string
+    photoPath: string
+    x: number
+    y: number
+    scheduledAt: string
+    guessedCount: number
+}
+
+export type ITomorrowCharacterQuiz = {
+    _id: string
+    scheduledAt: string
+}
+
+export type ICharacterQuizGuess = {
+    _id: string
+    quizId: string
+    guesses: string[]
+    guessedAt: string | null
+}

@@ -31,6 +31,7 @@ import { ShopProductRepository } from './repositories/impl/shopProduct'
 import { ShopOrderRepository } from './repositories/impl/shopOrder'
 import { TelegramApi } from './services/telegram'
 import { GameRepository } from './repositories/impl/game'
+import { CharacterQuizRepository } from './repositories/impl/characterQuiz'
 
 const app = express()
 let server: http.Server | https.Server
@@ -74,6 +75,7 @@ const handler = async () => {
         shopProduct: shopProductRepo,
         shopOrder: new ShopOrderRepository(shopProductRepo, userRepo),
         game: new GameRepository(),
+        characterQuiz: new CharacterQuizRepository(),
     }
     const services: IServices = {
         privateChat: new PrivateChatService(

@@ -14,11 +14,14 @@ import { api } from './services/api'
 import { ACTIVITY_POLLING_INTERVAL } from './config/config'
 import { useBatchedLoader } from './hooks/common/useBatchedLoader'
 import {
+    ICharacterQuiz,
+    ICharacterQuizGuess,
     IGame,
     IGlobalChatWithMetadata,
     IListingExpressGiveaway,
     ISearchedProfile,
     IShopProduct,
+    ITomorrowCharacterQuiz,
 } from './store/types'
 import { ITEMS_PER_PAGE } from './features/search/hooks/useSearch'
 
@@ -92,6 +95,38 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
         }
     }
 
+    const loadTodaysCharacterQuizGuess = async (quizId: string) => {
+        const response = await api<ICharacterQuizGuess[]>(`/characterQuizzes/${quizId}/guesses`)
+        if (response.success) {
+            return response.data[0]
+        } else {
+            return null
+        }
+    }
+
+    const loadTodaysCharacterQuiz = async () => {
+        const response = await api<ICharacterQuiz>(`/characterQuizzes/today`)
+        if (response.success) {
+            const guess = await loadTodaysCharacterQuizGuess(response.data._id)
+
+            return {
+                quiz: response.data,
+                guess,
+            }
+        } else {
+            return null
+        }
+    }
+
+    const loadTomorrowsCharacterQuiz = async () => {
+        const response = await api<ITomorrowCharacterQuiz>(`/characterQuizzes/tomorrow`)
+        if (response.success) {
+            return response.data
+        } else {
+            return null
+        }
+    }
+
     const loader = useBatchedLoader({
         values: [
             () => searchProfiles(),
@@ -99,6 +134,8 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
             () => loadExpressGiveaways(),
             () => loadGames(),
             () => loadShopProducts(),
+            () => loadTodaysCharacterQuiz(),
+            () => loadTomorrowsCharacterQuiz(),
             // mock loading
             () => new Promise((res) => setTimeout(res, 300)),
             () => new Promise((res) => setTimeout(res, 500)),
@@ -116,8 +153,15 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
     }, [loader.data])
 
     if (loader.data && loaded) {
-        const [searchedProfiles, globalChats, expressGiveaways, games, shopProducts] =
-            loader.$unwrap()
+        const [
+            searchedProfiles,
+            globalChats,
+            expressGiveaways,
+            games,
+            shopProducts,
+            todaysCharacterQuiz,
+            tomorrowsCharacterQuiz,
+        ] = loader.$unwrap()
 
         return (
             <StoreProvider
@@ -127,6 +171,9 @@ const DataLoader = ({ identity }: DataLoaderProps) => {
                 expressGiveaways={expressGiveaways}
                 products={shopProducts}
                 games={games}
+                todaysCharacterQuiz={todaysCharacterQuiz?.quiz ?? null}
+                todaysCharacterQuizGuess={todaysCharacterQuiz?.guess ?? null}
+                tomorrowsCharacterQuiz={tomorrowsCharacterQuiz}
             />
         )
     } else {

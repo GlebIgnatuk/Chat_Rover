@@ -189,6 +189,10 @@ async function main() {
                 description: 'todo',
                 value: 'Shop',
             },
+            nav__mini_games: {
+                description: 'todo',
+                value: 'Mini-games',
+            },
             exports__error__bot_start: {
                 description: 'todo',
                 value: 'If you didn\'t receive the exported image make sure that you started the bot <a href="%url">%url</a>. Come back and repeat the export.',
@@ -276,6 +280,22 @@ async function main() {
             shop__products: {
                 description: 'todo',
                 value: 'Products',
+            },
+            mini_games__guess_character: {
+                description: 'todo',
+                value: 'Guess the character on the picture',
+            },
+            guess_character__next_quiz_in: {
+                description: 'todo',
+                value: 'Next quiz in',
+            },
+            guess_character__guessed: {
+                description: 'todo',
+                value: 'Guessed',
+            },
+            guess_character__zoom_out: {
+                description: 'todo',
+                value: 'Zoom out with each incorrect guess',
             },
         },
         ru: {
@@ -455,6 +475,10 @@ async function main() {
                 description: 'todo',
                 value: 'Магазин',
             },
+            nav__mini_games: {
+                description: 'todo',
+                value: 'Мини-игры',
+            },
             exports__error__bot_start: {
                 description: 'todo',
                 value: 'Если вы не получили картинку проверьте что вы начали беседу с ботом <a href="%url">%url</a>. Попробуйте еще раз.',
@@ -473,7 +497,7 @@ async function main() {
             },
             shop__instructions_1: {
                 description: 'todo',
-                value: 'Выберете товары, которые вас интересуют',
+                value: 'Выберите товары, которые вас интересуют',
             },
             shop__instructions_2: {
                 description: 'todo',
@@ -513,7 +537,7 @@ async function main() {
             },
             shop__order__subtitle2: {
                 description: 'todo',
-                value: 'Выберете валюту в которой вы хотите провести оплату',
+                value: 'Выберите валюту в которой вы хотите провести оплату',
             },
             shop__order__total: {
                 description: 'todo',
@@ -542,6 +566,22 @@ async function main() {
             shop__products: {
                 description: 'todo',
                 value: 'Товаров',
+            },
+            mini_games__guess_character: {
+                description: 'todo',
+                value: 'Угадай персонажа на картинке',
+            },
+            guess_character__next_quiz_in: {
+                description: 'todo',
+                value: 'Следующий через',
+            },
+            guess_character__guessed: {
+                description: 'todo',
+                value: 'Угадало',
+            },
+            guess_character__zoom_out: {
+                description: 'todo',
+                value: 'Отдалять картинку при неверном угадывании',
             },
         },
     }

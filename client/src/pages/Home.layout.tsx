@@ -14,28 +14,43 @@ import RedeemOutlinedIcon from '@mui/icons-material/RedeemOutlined'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import StorefronIcon from '@mui/icons-material/Storefront'
 import StorefronOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
-import wuwaIcon from '@/assets/wuwa_icon.png'
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
+import SportsEsportsOutlinedIcon from '@mui/icons-material/SportsEsportsOutlined'
 import { useLocalize } from '@/hooks/intl/useLocalize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '@/context/app/useStore'
 import { buildImageUrl, buildProtectedPath } from '@/config/path'
 
-const createNavigation = (userRole: string) => {
+const createNavigation = (userRole: string, highlightCharacterQuiz: boolean) => {
     void userRole
 
     return [
+        // {
+        //     path: buildProtectedPath('/game_chat'),
+        //     label: 'nav__chat',
+        //     IconActive: () => (
+        //         <img
+        //             src={wuwaIcon}
+        //             className="w-6 h-6 rounded-full object-cover object-center border-primary-700 border"
+        //         />
+        //     ),
+        //     IconInactive: () => (
+        //         <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
+        //     ),
+        // },
         {
-            path: buildProtectedPath('/game_chat'),
-            label: 'nav__chat',
-            IconActive: () => (
-                <img
-                    src={wuwaIcon}
-                    className="w-6 h-6 rounded-full object-cover object-center border-primary-700 border"
-                />
-            ),
+            path: buildProtectedPath('/mini-games'),
+            label: 'nav__mini_games',
+            IconActive: SportsEsportsIcon,
             IconInactive: () => (
-                <img src={wuwaIcon} className="w-6 h-6 rounded-full object-cover object-center" />
+                <div className="relative">
+                    <SportsEsportsOutlinedIcon />
+
+                    {highlightCharacterQuiz && (
+                        <div className="w-2 h-2 rounded-full bg-red-600 absolute top-1 right-0"></div>
+                    )}
+                </div>
             ),
         },
         {
@@ -118,6 +133,13 @@ export const HomeLayout = () => {
 
     const [hasAvailableGift, setHasAvailableGift] = useState(false)
 
+    const characterQuiz = useStore((state) => state.characterQuizzes.today)
+    const characterQuizGuess = useStore((state) =>
+        characterQuiz ? state.characterQuizzes.guesses[characterQuiz._id] : null,
+    )
+    const highlightCharacterQuiz =
+        !!characterQuiz && (!characterQuizGuess || characterQuizGuess.guessedAt === null)
+
     useEffect(() => {
         const nextBonusAt = new Date(user.dailyBonusCollectedAt).getTime() + 12 * 60 * 60 * 1000
         const timeLeft = nextBonusAt - Date.now()
@@ -133,7 +155,7 @@ export const HomeLayout = () => {
         return () => window.clearTimeout(timer)
     }, [user])
 
-    const navigation = createNavigation(user.role)
+    const navigation = createNavigation(user.role, highlightCharacterQuiz)
 
     return (
         <div className="h-full grid grid-rows-[max-content,minmax(0,1fr),max-content]">

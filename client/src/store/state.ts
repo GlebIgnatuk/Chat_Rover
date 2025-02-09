@@ -1,6 +1,8 @@
 import { ILoading } from './common'
 import {
     IAppConfig,
+    ICharacterQuiz,
+    ICharacterQuizGuess,
     IGame,
     IGlobalChatWithMetadata,
     IIntl,
@@ -10,6 +12,7 @@ import {
     IPrivateChatWithMetadata,
     ISearchedProfile,
     IShopProduct,
+    ITomorrowCharacterQuiz,
     IUser,
     IWuwaCharacter,
 } from './types'
@@ -178,6 +181,18 @@ export type IGamesState = {
     }
 }
 
+export type ICharacterQuizzesState = {
+    characterQuizzes: {
+        today: ICharacterQuiz | null
+        tomorrow: ITomorrowCharacterQuiz | null
+        guesses: Record<string, ICharacterQuizGuess>
+
+        setToday: (quiz: ICharacterQuiz) => void
+        setTomorrow: (quiz: ITomorrowCharacterQuiz) => void
+        setGuess: (quizId: string, guess: ICharacterQuizGuess) => void
+    }
+}
+
 export type IState = IChatsState &
     IGlobalChatsState &
     IP2PState &
@@ -187,7 +202,8 @@ export type IState = IChatsState &
     IIdentityState &
     IExpressGiveawaysState &
     IShopState &
-    IGamesState
+    IGamesState &
+    ICharacterQuizzesState
 
 export type IAppConfigState = {
     appConfig: {

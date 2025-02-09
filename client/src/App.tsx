@@ -3,7 +3,7 @@ import { AuthLayout } from '@/pages/auth/Auth.layout'
 import { SignInScreen } from '@/pages/auth/signin/SignIn.screen'
 import { SignUpNicknameScreen } from '@/pages/auth/signup/SignUpNickname.screen'
 import { RootLayout } from '@/pages/Root.layout'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { ChatsScreen } from './pages/chats/Chats.screen'
 import { ChatScreen } from './pages/chats/Chat.screen'
 import { CommunityScreen } from './pages/community/Community.screen'
@@ -44,6 +44,8 @@ import { OrderScreen } from './pages/shop/Order.screen'
 import { ShopLayout } from './pages/shop/Shop.layout'
 import { GameShopScreen } from './pages/shop/GameShop.screen'
 import { SEOShopScreen } from './pages/shop/SEOShop.screen'
+import { QuizScreen } from './pages/minigames/Quiz.screen'
+import { MiniGamesScreen } from './pages/minigames/MiniGames.screen'
 
 const router = createBrowserRouter([
     {
@@ -197,6 +199,20 @@ const router = createBrowserRouter([
                                             {
                                                 path: 'orders/:id',
                                                 element: <OrderScreen />,
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        path: 'mini-games',
+                                        element: <Outlet />,
+                                        children: [
+                                            {
+                                                path: '',
+                                                element: <MiniGamesScreen />,
+                                            },
+                                            {
+                                                path: 'character-quiz',
+                                                element: <QuizScreen />,
                                             },
                                         ],
                                     },
