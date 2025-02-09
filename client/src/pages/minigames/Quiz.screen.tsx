@@ -104,7 +104,7 @@ const Quiz = ({ quiz }: { quiz: ICharacterQuiz }) => {
     }, [guesses, zoomOut])
 
     return (
-        <div className="h-full grid grid-rows-[max-content,max-content,minmax(0,1fr)] gap-4 bg-stone-800/70">
+        <div className="h-full grid grid-rows-[max-content,max-content,minmax(200px,1fr)] overflow-y-auto gap-4 bg-stone-800/70">
             <div className="pt-6">
                 <div className="text-center mb-4">
                     {quizzes.tomorrow && guesses && guesses.guessedAt !== null && (
