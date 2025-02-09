@@ -3,35 +3,23 @@ import { IAuthorizedRequestHandler } from '../types'
 
 export const list: IAuthorizedRequestHandler = async (req, res, next) => {
     try {
-        const { repositories } = res.locals
+        const { repositories, services } = res.locals
 
         const user = await repositories.user.get(req.params.id)
         if (!user) {
             return res.status(403).json({ success: false, error: 'No such user' })
         }
 
-        const response = await fetch(
-            `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/getChatMember`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: user.externalId,
-                    user_id: user.externalId,
-                }),
-            },
+        const externalUser = await services.telegramApi.getChatMember(
+            config.TELEGRAM_CHANNEL_ID,
+            user.externalId,
         )
-        if (!response.ok) {
-            const text = await response.text()
-            console.error(text)
-            return res.status(400).json({ success: false, error: 'Something went wrong' })
+
+        if (externalUser) {
+            res.json({ success: true, data: [externalUser] })
+        } else {
+            res.json({ success: true, data: [] })
         }
-
-        const data = await response.json()
-
-        res.json({ success: true, data: [data.result] })
     } catch (e) {
         next(e)
     }
