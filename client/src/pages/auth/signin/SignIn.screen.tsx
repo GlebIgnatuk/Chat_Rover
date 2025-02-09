@@ -58,6 +58,12 @@ export const SignInScreen = () => {
             } else {
                 if (response.error === 'NOT_FOUND') {
                     navigate(buildAuthPath('/signup/nickname'), { replace: true })
+                } else if (response.error.toLowerCase().includes('invalid user data')) {
+                    if (import.meta.env.VITE_ALLOW_FAKE_PROFILES === 'true') {
+                        setError(response.error)
+                    } else {
+                        navigate(buildPublicPath('/shop'), { replace: true })
+                    }
                 } else {
                     setError(response.error)
                 }

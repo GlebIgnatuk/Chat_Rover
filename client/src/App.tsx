@@ -43,11 +43,17 @@ import { OrdersScreen } from './pages/shop/Orders.screen'
 import { OrderScreen } from './pages/shop/Order.screen'
 import { ShopLayout } from './pages/shop/Shop.layout'
 import { GameShopScreen } from './pages/shop/GameShop.screen'
+import { SEOShopScreen } from './pages/shop/SEOShop.screen'
 
 const router = createBrowserRouter([
     {
         index: true,
         element: <SplashScreen />,
+        errorElement: <ErrorBoundaryScreen />,
+    },
+    {
+        path: '/shop',
+        element: <SEOShopScreen />,
         errorElement: <ErrorBoundaryScreen />,
     },
     {

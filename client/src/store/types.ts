@@ -146,7 +146,7 @@ export type IAdminExpressGiveawayListItem = {
     finishedAt: string
 }
 
-export const CURRENCIES = ['XLNT', 'RUB'] as const
+export const CURRENCIES = ['XLNT', 'RUB', 'USD'] as const
 export type ICurrency = (typeof CURRENCIES)[number]
 
 export type IShopProduct = {
@@ -158,10 +158,7 @@ export type IShopProduct = {
     prices: {
         currency: ICurrency
         price: number
-        discount: number
-        discountEndsAt: Date | null
     }[]
-    mode: 'request' | 'instant'
 }
 
 export const SHOP_ORDER_STATUSES = ['pending', 'cancelled', 'processed'] as const
