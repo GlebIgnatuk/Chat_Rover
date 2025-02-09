@@ -27,7 +27,7 @@ const Quiz = ({ quiz }: { quiz: ICharacterQuiz }) => {
         (c) =>
             text.trim().length !== 0 &&
             (!guesses || guesses.guesses.includes(c._id) === false) &&
-            c.name.toLowerCase().includes(text),
+            c.name.toLowerCase().includes(text.toLowerCase()),
     )
 
     const localize = useLocalize()
