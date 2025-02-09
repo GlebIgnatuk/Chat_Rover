@@ -1,0 +1,8 @@
+# *
+User-agent: *
+Allow: /
+# Host
+Host: https://roverchat.pokoichangli.ru/
+# Sitemaps
+Sitemap: https://roverchat.pokoichangli.ru/sitemap.xml
+# Disallow
