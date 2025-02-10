@@ -23,14 +23,18 @@ const Quiz = ({ quiz }: { quiz: ICharacterQuiz }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     const wuwaCharacters = useWuwaCharacters((state) => state.items)
+
+    const localize = useLocalize()
+
     const autocompleteOptions = Object.values(wuwaCharacters).filter(
         (c) =>
             text.trim().length !== 0 &&
             (!guesses || guesses.guesses.includes(c._id) === false) &&
-            c.name.toLowerCase().includes(text.toLowerCase()),
+            (c.name.toLowerCase().includes(text.toLowerCase()) ||
+                localize('character__' + c.name.toLowerCase().replace(/\s+/g, '_'))
+                    .toLowerCase()
+                    .includes(text.toLowerCase())),
     )
-
-    const localize = useLocalize()
 
     const guess = useMutation<ICharacterQuizGuess, [string]>({
         fn: (characterId) => {
@@ -167,7 +171,12 @@ const Quiz = ({ quiz }: { quiz: ICharacterQuiz }) => {
                                     src={buildImageUrl(option.photoPath)}
                                     className="w-10 h-10 object-cover object-top rounded-full bg-primary-700/70"
                                 />
-                                <span className="capitalize font-medium">{option.name}</span>
+                                <span className="capitalize font-medium">
+                                    {localize(
+                                        'character__' +
+                                            option.name.toLowerCase().replace(/\s+/g, '_'),
+                                    )}
+                                </span>
                             </div>
                         ))}
                     </div>
@@ -191,7 +200,14 @@ const Quiz = ({ quiz }: { quiz: ICharacterQuiz }) => {
                                 src={character ? buildImageUrl(character.photoPath) : ''}
                                 className="w-10 h-10 object-cover object-top rounded-full bg-primary-700/70"
                             />
-                            <span className="capitalize font-medium">{character?.name ?? '-'}</span>
+                            <span className="capitalize font-medium">
+                                {character
+                                    ? localize(
+                                          'character__' +
+                                              character.name.toLowerCase().replace(/\s+/g, '_'),
+                                      )
+                                    : '-'}
+                            </span>
                         </div>
                     )
                 })}

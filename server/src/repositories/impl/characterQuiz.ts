@@ -31,8 +31,8 @@ export class CharacterQuizRepository implements ICharacterQuizRepository {
         const imgWidth = 330
         const imgHeight = 650
 
-        const xMax = imgWidth / windowSize - 0.3
-        const yMax = imgHeight / windowSize - 0.3
+        const xMax = imgWidth / windowSize - 1.3
+        const yMax = imgHeight / windowSize - 1.3
 
         const xMin = 0.3
         const yMin = 0.3

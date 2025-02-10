@@ -297,6 +297,114 @@ async function main() {
                 description: 'todo',
                 value: 'Zoom out with each incorrect guess',
             },
+            character__sanhua: {
+                description: 'todo',
+                value: 'Sanhua',
+            },
+            character__baizhi: {
+                description: 'todo',
+                value: 'Baizhi',
+            },
+            character__lingyang: {
+                description: 'todo',
+                value: 'Lingyang',
+            },
+            character__zhezhi: {
+                description: 'todo',
+                value: 'Zhezhi',
+            },
+            character__youhu: {
+                description: 'todo',
+                value: 'Youhu',
+            },
+            character__carlotta: {
+                description: 'todo',
+                value: 'Carlotta',
+            },
+            character__chixia: {
+                description: 'todo',
+                value: 'Chixia',
+            },
+            character__encore: {
+                description: 'todo',
+                value: 'Encore',
+            },
+            character__mortefi: {
+                description: 'todo',
+                value: 'Mortefi',
+            },
+            character__changli: {
+                description: 'todo',
+                value: 'Changli',
+            },
+            character__calcharo: {
+                description: 'todo',
+                value: 'Calcharo',
+            },
+            character__yinlin: {
+                description: 'todo',
+                value: 'Yinlin',
+            },
+            character__yuanwu: {
+                description: 'todo',
+                value: 'Yuanwu',
+            },
+            character__xiangli_yao: {
+                description: 'todo',
+                value: 'Xiangli Yao',
+            },
+            character__lumi: {
+                description: 'todo',
+                value: 'Lumi',
+            },
+            character__yangyang: {
+                description: 'todo',
+                value: 'Yangyang',
+            },
+            character__aalto: {
+                description: 'todo',
+                value: 'Aalto',
+            },
+            character__jiyan: {
+                description: 'todo',
+                value: 'Jiyan',
+            },
+            character__jianxin: {
+                description: 'todo',
+                value: 'Jianxin',
+            },
+            character__verina: {
+                description: 'todo',
+                value: 'Verina',
+            },
+            character__rover: {
+                description: 'todo',
+                value: 'Rover',
+            },
+            character__jinhsi: {
+                description: 'todo',
+                value: 'Jinhsi',
+            },
+            character__shorekeeper: {
+                description: 'todo',
+                value: 'Shorekeeper',
+            },
+            character__taoqi: {
+                description: 'todo',
+                value: 'Taoqi',
+            },
+            character__danjin: {
+                description: 'todo',
+                value: 'Danjin',
+            },
+            character__camellya: {
+                description: 'todo',
+                value: 'Camellya',
+            },
+            character__roccia: {
+                description: 'todo',
+                value: 'Roccia',
+            },
         },
         ru: {
             auth__greeting: {
@@ -582,6 +690,114 @@ async function main() {
             guess_character__zoom_out: {
                 description: 'todo',
                 value: 'Отдалять картинку при неверном угадывании',
+            },
+            character__sanhua: {
+                description: 'todo',
+                value: 'Саньхуа',
+            },
+            character__baizhi: {
+                description: 'todo',
+                value: 'Байчжи',
+            },
+            character__lingyang: {
+                description: 'todo',
+                value: 'Лин Ян',
+            },
+            character__zhezhi: {
+                description: 'todo',
+                value: 'Чжечжи',
+            },
+            character__youhu: {
+                description: 'todo',
+                value: 'Юху',
+            },
+            character__carlotta: {
+                description: 'todo',
+                value: 'Карлотта',
+            },
+            character__chixia: {
+                description: 'todo',
+                value: 'Чиксия',
+            },
+            character__encore: {
+                description: 'todo',
+                value: 'Энкор',
+            },
+            character__mortefi: {
+                description: 'todo',
+                value: 'Мортефи',
+            },
+            character__changli: {
+                description: 'todo',
+                value: 'Чанли',
+            },
+            character__calcharo: {
+                description: 'todo',
+                value: 'Кальчаро',
+            },
+            character__yinlin: {
+                description: 'todo',
+                value: 'Инь Линь',
+            },
+            character__yuanwu: {
+                description: 'todo',
+                value: 'Юаньву',
+            },
+            character__xiangli_yao: {
+                description: 'todo',
+                value: 'Сянли Яо',
+            },
+            character__lumi: {
+                description: 'todo',
+                value: 'Луми',
+            },
+            character__yangyang: {
+                description: 'todo',
+                value: 'Ян ян',
+            },
+            character__aalto: {
+                description: 'todo',
+                value: 'Аалто',
+            },
+            character__jiyan: {
+                description: 'todo',
+                value: 'Цзиянь',
+            },
+            character__jianxin: {
+                description: 'todo',
+                value: 'Цзяньсинь',
+            },
+            character__verina: {
+                description: 'todo',
+                value: 'Верина',
+            },
+            character__rover: {
+                description: 'todo',
+                value: 'Ровер',
+            },
+            character__jinhsi: {
+                description: 'todo',
+                value: 'Цзиньси',
+            },
+            character__shorekeeper: {
+                description: 'todo',
+                value: 'Хранительница Берегов',
+            },
+            character__taoqi: {
+                description: 'todo',
+                value: 'Таоци',
+            },
+            character__danjin: {
+                description: 'todo',
+                value: 'Даньцзинь',
+            },
+            character__camellya: {
+                description: 'todo',
+                value: 'Камелия',
+            },
+            character__roccia: {
+                description: 'todo',
+                value: 'Роччия',
             },
         },
     }

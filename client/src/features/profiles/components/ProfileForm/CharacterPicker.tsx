@@ -1,4 +1,5 @@
 import { buildImageUrl } from '@/config/path'
+import { useLocalize } from '@/hooks/intl/useLocalize'
 import { IWuwaCharacter } from '@/store/types'
 import { faPlus, faRefresh, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,6 +16,8 @@ interface Props {
 export const CharacterPicker = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [selected, setSelected] = useState<string | null>(props.selected ?? null)
+
+    const localize = useLocalize()
 
     const select = (id: string | null) => {
         setSelected(id)
@@ -86,7 +89,12 @@ export const CharacterPicker = (props: Props) => {
 
                                     <span className="absolute bottom-0 left-0 w-full bg-black/50 text-white px-1 overflow-hidden text-ellipsis whitespace-nowrap">
                                         <span className="text-sm capitalize">
-                                            {character.name}{' '}
+                                            {localize(
+                                                'character__' +
+                                                    character.name
+                                                        .toLowerCase()
+                                                        .replace(/\s+/g, '_'),
+                                            )}{' '}
                                         </span>
                                         <span
                                             className="text-[10px]"

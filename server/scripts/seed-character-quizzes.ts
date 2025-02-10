@@ -18,7 +18,7 @@ async function main() {
 
     const startAt = new Date('2025-02-09T18:00:00Z')
 
-    for (let i = 0; i < allCharacters.length; i++) {
+    for (let i = 1; i < allCharacters.length; i++) {
         if (allCharacters.length === 0 && pickedCharacters.length === 0) {
             throw new Error('Nothing to pick')
         }
